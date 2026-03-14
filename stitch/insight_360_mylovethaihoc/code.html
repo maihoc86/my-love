@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Insight 360° - MyLoveThaiHoc</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Plus Jakarta Sans & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#f43e5c',
+            background: '#f8f5f6',
+            accent: '#8b5cf6', // Purple for summary/AI
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="layout-styles">
+    body {
+      background-color: #f8f5f6;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .neuron-node {
+      transition: all 0.3s ease;
+    }
+    .neuron-node:active {
+      transform: scale(0.95);
+    }
+
+    /* Gradient Border for AI Card */
+    .ai-gradient-border {
+      position: relative;
+      background: white;
+      background-clip: padding-box;
+      border: 2px solid transparent;
+      border-radius: 1rem;
+    }
+    .ai-gradient-border::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      z-index: -1;
+      margin: -2px;
+      border-radius: inherit;
+      background: linear-gradient(to right, #8b5cf6, #ec4899);
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-900">
+<!-- BEGIN: Header Navigation -->
+<header class="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-md z-50 px-4 py-3 flex items-center justify-between">
+<button aria-label="Quay lại" class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm">
+<span class="material-symbols-outlined text-slate-700">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-slate-800">Insight 360°</h1>
+<button aria-label="Lọc" class="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm">
+<span class="material-symbols-outlined text-slate-700">tune</span>
+</button>
+</header>
+<!-- END: Header Navigation -->
+<main class="pt-16 pb-10 px-4 space-y-6">
+<!-- BEGIN: Top Summary Bar -->
+<section class="flex justify-center pt-2" data-purpose="summary-bar">
+<div class="bg-accent/10 border border-accent/20 px-4 py-2 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-sm">analytics</span>
+<span class="text-accent font-semibold text-xs uppercase tracking-wider">
+          56 ghi chú · 11 danh mục · 5 cảm xúc
+        </span>
+</div>
+</section>
+<!-- END: Top Summary Bar -->
+<!-- BEGIN: Neuron Map -->
+<section class="relative w-full h-[55vh] rounded-3xl overflow-hidden bg-white/50 shadow-inner border border-white" data-purpose="neuron-map">
+<!-- Connection Lines SVG Layer -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="lineGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#f43e5c" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.2"></stop>
+</lineargradient>
+</defs>
+<!-- Dynamic Lines (Simulated Paths) -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="25%" y1="50%" y2="25%"></line> <!-- Món ăn -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="75%" y1="50%" y2="30%"></line> <!-- Địa điểm -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="80%" y1="50%" y2="60%"></line> <!-- Sở thích -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="50%" y1="50%" y2="85%"></line> <!-- Âm nhạc -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="15%" y1="50%" y2="70%"></line> <!-- Dị ứng -->
+<line stroke="url(#lineGrad)" stroke-width="2" x1="50%" x2="20%" y1="50%" y2="45%"></line> <!-- Tính cách -->
+</svg>
+<!-- Center Node -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+<div class="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-rose-400 flex flex-col items-center justify-center shadow-lg shadow-primary/30 animate-pulse-slow">
+<span class="text-white font-extrabold text-sm">THÁI HỌC</span>
+<span class="text-white/80 text-[10px]">Trung tâm</span>
+</div>
+</div>
+<!-- Category Nodes -->
+<!-- Món ăn (Orange) -->
+<div class="absolute top-[20%] left-[15%] flex flex-col items-center animate-float">
+<div class="w-16 h-16 rounded-full bg-orange-100 border-2 border-orange-400 flex items-center justify-center shadow-md neuron-node">
+<span class="text-orange-600 font-bold text-xs text-center leading-tight">Món ăn<br/>(24)</span>
+</div>
+<div class="mt-1 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200">
+<span class="text-[9px] text-orange-700 font-medium">Phở bò, Mắm tôm</span>
+</div>
+</div>
+<!-- Địa điểm (Blue) -->
+<div class="absolute top-[25%] right-[15%] flex flex-col items-center animate-float" style="animation-delay: 1s">
+<div class="w-14 h-14 rounded-full bg-blue-100 border-2 border-blue-400 flex items-center justify-center shadow-md neuron-node">
+<span class="text-blue-600 font-bold text-xs text-center leading-tight">Địa điểm<br/>(8)</span>
+</div>
+</div>
+<!-- Sở thích (Pink) -->
+<div class="absolute top-[55%] right-[10%] flex flex-col items-center animate-float" style="animation-delay: 2s">
+<div class="w-14 h-14 rounded-full bg-pink-100 border-2 border-pink-400 flex items-center justify-center shadow-md neuron-node">
+<span class="text-pink-600 font-bold text-xs text-center leading-tight">Sở thích<br/>(15)</span>
+</div>
+</div>
+<!-- Âm nhạc (Indigo) -->
+<div class="absolute bottom-[10%] left-1/2 -translate-x-1/2 flex flex-col items-center animate-float" style="animation-delay: 0.5s">
+<div class="w-12 h-12 rounded-full bg-indigo-100 border-2 border-indigo-400 flex items-center justify-center shadow-md neuron-node">
+<span class="text-indigo-600 font-bold text-[10px] text-center leading-tight">Âm nhạc<br/>(6)</span>
+</div>
+</div>
+<!-- Dị ứng (Red - Warning) -->
+<div class="absolute bottom-[20%] left-[10%] flex flex-col items-center animate-float" style="animation-delay: 1.5s">
+<div class="relative w-12 h-12 rounded-full bg-red-100 border-2 border-red-500 flex items-center justify-center shadow-md neuron-node">
+<span class="material-symbols-outlined text-red-500 text-sm absolute -top-1 -right-1">warning</span>
+<span class="text-red-600 font-bold text-[10px] text-center leading-tight">Dị ứng<br/>(4)</span>
+</div>
+</div>
+<!-- Tính cách (Amber) -->
+<div class="absolute top-[40%] left-[5%] flex flex-col items-center animate-float" style="animation-delay: 2.5s">
+<div class="w-12 h-12 rounded-full bg-amber-100 border-2 border-amber-400 flex items-center justify-center shadow-md neuron-node">
+<span class="text-amber-600 font-bold text-[10px] text-center leading-tight">Tính cách<br/>(7)</span>
+</div>
+</div>
+</section>
+<!-- END: Neuron Map -->
+<!-- BEGIN: Sentiment Breakdown -->
+<section class="space-y-3" data-purpose="sentiment-analysis">
+<h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">favorite</span>
+        Phân tích cảm xúc
+      </h2>
+<div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+<!-- Progress Bar: Yêu thích -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-600">Yêu thích</span>
+<span class="text-rose-500">50%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-rose-500 h-full rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<!-- Progress Bar: Thích -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-600">Thích</span>
+<span class="text-orange-500">25%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-orange-500 h-full rounded-full" style="width: 25%"></div>
+</div>
+</div>
+<!-- Progress Bar: Bình thường -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-600">Bình thường</span>
+<span class="text-slate-400">11%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-slate-300 h-full rounded-full" style="width: 11%"></div>
+</div>
+</div>
+<!-- Progress Bar: Ghét/Dị ứng -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-600">Ghét/Dị ứng</span>
+<span class="text-red-500">14%</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-red-500 h-full rounded-full" style="width: 14%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Sentiment Breakdown -->
+<!-- BEGIN: AI Insight Summary -->
+<section data-purpose="ai-insights">
+<h2 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-accent text-lg">psychology</span>
+        AI Tổng quan
+      </h2>
+<div class="ai-gradient-border p-5">
+<div class="flex items-start gap-3">
+<div class="bg-accent/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-accent">auto_awesome</span>
+</div>
+<div class="space-y-2">
+<p class="text-xs leading-relaxed text-slate-600">
+              Thái Học là một người có gu ẩm thực truyền thống phong phú, đặc biệt yêu thích các món có hương vị đậm đà như <b>Phở bò</b> và <b>Mắm tôm</b>. Về tính cách, anh ấy thể hiện sự hướng nội nhưng rất quan tâm đến chi tiết.
+            </p>
+<p class="text-xs leading-relaxed text-slate-600">
+<span class="font-bold text-accent">Gợi ý hẹn hò:</span> Một buổi tối tại quán ăn cổ điển với không gian yên tĩnh sẽ là lựa chọn hoàn hảo. Lưu ý tránh các món có đậu phộng do tiền sử dị ứng nhẹ.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: AI Insight Summary -->
+</main>
+<script data-purpose="animations">
+    // Subtle parallax or interaction effects could be added here
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Insight 360 map initialized');
+    });
+  </script>
+</body></html>

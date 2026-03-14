@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lịch sử Chat - MyLoveThaiHoc</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43e5c",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-10 flex items-center bg-background-light/80 backdrop-blur-md px-4 py-4 justify-between">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900">arrow_back</span>
+</button>
+<h2 class="text-slate-900 text-xl font-bold leading-tight tracking-tight">Lịch sử Chat</h2>
+</div>
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900">search</span>
+</button>
+</header>
+<main class="flex flex-col p-4 gap-6">
+<!-- Summary Stats Card -->
+<div class="w-full rounded-2xl p-5 bg-gradient-to-br from-purple-600 via-primary to-orange-400 text-white shadow-lg shadow-primary/20">
+<p class="text-white/80 text-sm font-medium mb-3">Tổng quan hoạt động</p>
+<div class="grid grid-cols-3 gap-2">
+<div class="flex flex-col items-center border-r border-white/20">
+<span class="text-2xl font-bold">12</span>
+<span class="text-xs text-white/90">Cuộc chat</span>
+</div>
+<div class="flex flex-col items-center border-r border-white/20">
+<span class="text-2xl font-bold">34</span>
+<span class="text-xs text-white/90">Ghi chú</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-2xl font-bold">3</span>
+<span class="text-xs text-white/90">Voice</span>
+</div>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative">
+<label class="flex items-center bg-white border border-slate-200 rounded-xl px-4 py-3 focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-slate-400 mr-2">search</span>
+<input class="w-full border-none focus:ring-0 bg-transparent text-slate-900 placeholder:text-slate-400 p-0 text-base" placeholder="Tìm kiếm lịch sử..." type="text"/>
+</label>
+</div>
+<!-- Filter Pills -->
+<div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-white text-sm font-semibold">Tất cả</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-sm font-medium">Có ghi chú</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-sm font-medium">Giọng nói</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 text-sm font-medium">Gợi ý AI</button>
+</div>
+<!-- History List -->
+<div class="flex flex-col gap-6">
+<!-- Group: HÔM NAY -->
+<section>
+<h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3 px-1">Hôm nay</h3>
+<div class="space-y-3">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-[0.98] transition-transform">
+<div class="flex items-center justify-center size-12 rounded-xl bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-slate-900 font-semibold text-sm truncate">Em thích ăn bún bò, ghét mắm tôm...</h4>
+<p class="text-slate-500 text-xs mt-1">3 entries đã lưu · 14:30</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+<span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-[0.98] transition-transform">
+<div class="flex items-center justify-center size-12 rounded-xl bg-purple-100 text-purple-600 shrink-0">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-slate-900 font-semibold text-sm truncate">Gợi ý hôm nay: Mua hoa hồng trắng...</h4>
+<p class="text-slate-500 text-xs mt-1">Gợi ý AI · 09:15</p>
+</div>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Group: HÔM QUA -->
+<section>
+<h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3 px-1">Hôm qua</h3>
+<div class="space-y-3">
+<!-- Item 3 -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-[0.98] transition-transform">
+<div class="flex items-center justify-center size-12 rounded-xl bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-slate-900 font-semibold text-sm truncate">Em mê phim Ghibli, thích vẽ tranh...</h4>
+<p class="text-slate-500 text-xs mt-1">5 entries đã lưu · 20:45</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
+<span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-[0.98] transition-transform">
+<div class="flex items-center justify-center size-12 rounded-xl bg-orange-100 text-orange-500 shrink-0">
+<span class="material-symbols-outlined">mic</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-slate-900 font-semibold text-sm truncate">Ghi âm: Em kể về quán cafe mới...</h4>
+<p class="text-slate-500 text-xs mt-1">Voice · 2 entries · 18:20</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">2</span>
+<span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Group: 12 THÁNG 3 -->
+<section>
+<h3 class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3 px-1">12 Tháng 3</h3>
+<div class="space-y-3">
+<!-- Item 5 -->
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-slate-100 active:scale-[0.98] transition-transform">
+<div class="flex items-center justify-center size-12 rounded-xl bg-primary/10 text-primary shrink-0">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-slate-900 font-semibold text-sm truncate">Dị ứng tôm, phấn hoa. Sinh nhật 15/8...</h4>
+<p class="text-slate-500 text-xs mt-1">4 entries đã lưu · 10:00</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">4</span>
+<span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Spacer -->
+<div class="h-10"></div>
+</div>
+</body></html>

@@ -1,0 +1,47 @@
+Subject: Đề Xuất Giải Pháp Kỹ Thuật - {{projectScope}} | {{companyName}}
+
+Kính gửi {{customerName}},
+
+Cảm ơn {{customerName}} đã dành thời gian trao đổi về nhu cầu {{projectScope}} của quý công ty. Sau khi phân tích kỹ lưỡng, chúng tôi xin trình bày giải pháp được thiết kế riêng cho {{customerCompany}}.
+
+--- TỔNG QUAN GIẢI PHÁP ---
+
+Chúng tôi đề xuất giải pháp {{solutionName}} với các điểm nổi bật:
+
+• Kiến trúc: {{architectureType}} - đảm bảo khả năng mở rộng và hiệu suất cao
+• Công nghệ: {{techStack}} - stack công nghệ hiện đại, được kiểm chứng
+• Tích hợp: Kết nối liền mạch với hệ thống hiện tại của {{customerCompany}}
+• Bảo mật: Tuân thủ các tiêu chuẩn bảo mật quốc tế
+
+--- GIÁ TRỊ KINH DOANH ---
+
+Giải pháp này mang lại giá trị cụ thể:
+
+1. Tăng hiệu suất vận hành lên {{efficiencyGain}}%
+2. Giảm chi phí vận hành {{costReduction}}% trong {{timeframe}}
+3. Cải thiện trải nghiệm người dùng cuối
+4. Khả năng mở rộng đáp ứng tăng trưởng {{growthTarget}}
+
+--- TIMELINE DỰ KIẾN ---
+
+• Giai đoạn 1 - Phân tích & Thiết kế: {{phase1Duration}}
+• Giai đoạn 2 - Phát triển & Kiểm thử: {{phase2Duration}}
+• Giai đoạn 3 - Triển khai & Hỗ trợ: {{phase3Duration}}
+• Tổng thời gian: {{timeline}}
+
+--- BƯỚC TIẾP THEO ---
+
+Chúng tôi rất mong được sắp xếp một buổi trình bày chi tiết giải pháp này. Xin {{customerName}} vui lòng cho biết thời gian phù hợp trong tuần tới để chúng tôi có thể:
+
+1. Demo giải pháp chi tiết
+2. Thảo luận yêu cầu tùy chỉnh
+3. Thống nhất timeline và ngân sách
+
+Vui lòng phản hồi email này hoặc liên hệ trực tiếp qua {{contactPhone}} để sắp xếp lịch hẹn.
+
+Trân trọng,
+
+{{senderName}}
+{{senderTitle}}
+{{companyName}}
+{{contactEmail}} | {{contactPhone}}

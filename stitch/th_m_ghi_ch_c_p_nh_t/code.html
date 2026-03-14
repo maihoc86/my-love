@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Thêm Ghi Chú - MyLoveThaiHoc</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43e5c",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f43e5c33;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header Section -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-md mx-auto w-full">
+<h1 class="text-lg font-bold leading-tight flex-1 text-center">Ghi chú mới</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<main class="flex-1 max-w-md mx-auto w-full p-4 pb-32 space-y-6">
+<!-- Title Section -->
+<section class="text-center py-4">
+<h2 class="text-2xl font-bold leading-tight text-slate-900 dark:text-slate-100">
+                Thêm một điều về Thái Học
+            </h2>
+<p class="dark:text-slate-400 mt-2 text-sm text-[#f43e5c]/70">Ghi lại những điều quan trọng cần nhớ</p>
+</section>
+<!-- Category Selector -->
+<section>
+<p class="text-sm font-semibold mb-3 text-primary uppercase tracking-wider">Danh mục</p>
+<div class="grid grid-cols-3 gap-3">
+<button class="flex flex-col gap-1 rounded-xl border-2 border-[#f43e5c] bg-[#f43e5c]/5 p-3 items-center justify-center transition-all shadow-md scale-[1.02]">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+<span class="text-xs font-bold">Món ăn</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="text-xs font-bold">Địa điểm</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">favorite</span>
+<span class="text-xs font-bold">Sở thích</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+<span class="text-xs font-bold">Ngày đặc biệt</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">featured_seasonal_and_gifts</span>
+<span class="text-xs font-bold">Quà tặng</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<span class="text-xs font-bold">Tính cách</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">block</span>
+<span class="text-xs font-bold">Dị ứng</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">apparel</span>
+<span class="text-xs font-bold">Phong cách</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">music_note</span>
+<span class="text-xs font-bold">Âm nhạc</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">movie</span>
+<span class="text-xs font-bold">Phim</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white dark:bg-slate-800 p-3 items-center justify-center transition-all hover:border-primary">
+<span class="material-symbols-outlined text-primary">more_horiz</span>
+<span class="text-xs font-bold">Khác</span>
+</button>
+</div>
+</section>
+<!-- Form Inputs -->
+<section class="space-y-4">
+<div class="flex flex-col">
+<label class="text-slate-900 dark:text-slate-100 text-sm font-semibold mb-2">Tiêu đề ghi chú *</label>
+<input class="w-full rounded-xl border border-primary/20 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="🍜 Thái Học thích..." type="text"/>
+</div>
+<div class="flex flex-col">
+<label class="text-slate-900 dark:text-slate-100 text-sm font-semibold mb-2">Chi tiết</label>
+<textarea class="w-full rounded-xl border border-primary/20 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none" placeholder="Nhập thêm thông tin chi tiết tại đây..." rows="4"></textarea>
+</div>
+</section>
+<!-- Sentiment Picker -->
+<section>
+<p class="text-sm font-semibold mb-3 text-slate-900 dark:text-slate-100">Cảm xúc của Thái Học về điều này</p>
+<div class="flex justify-between gap-1"><button class="w-14 h-14 rounded-full flex flex-col items-center justify-center bg-white border border-slate-200 transition-all">
+<span class="text-2xl">❤️</span>
+</button>
+<button class="w-14 h-14 rounded-full flex flex-col items-center justify-center bg-[#f43e5c]/5 border-2 border-[#f43e5c] shadow-md scale-105 transition-all">
+<span class="text-2xl">👍</span>
+</button>
+<button class="w-14 h-14 rounded-full flex flex-col items-center justify-center bg-white border border-slate-200 transition-all">
+<span class="text-2xl">😐</span>
+</button>
+<button class="w-14 h-14 rounded-full flex flex-col items-center justify-center bg-white border border-slate-200 transition-all">
+<span class="text-2xl">👎</span>
+</button>
+<button class="w-14 h-14 rounded-full flex flex-col items-center justify-center bg-white border border-slate-200 transition-all">
+<span class="text-2xl">🚫</span>
+</button></div>
+</section>
+<!-- Action Button -->
+<section class="space-y-4">
+<div class="flex items-center gap-3">
+<p class="text-sm font-semibold text-slate-900 dark:text-slate-100">Tùy chọn nâng cao</p>
+<div class="flex-1 h-[1px] bg-slate-200 dark:bg-slate-700"></div>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col">
+<label class="text-slate-900 dark:text-slate-100 text-sm font-semibold mb-2">Ngày sự kiện</label>
+<input class="w-full rounded-xl border border-primary/20 bg-white dark:bg-slate-800 p-4 focus:ring-2 focus:ring-primary outline-none" type="date" value="2024-10-24"/>
+</div>
+<div class="flex items-center justify-between p-1">
+<span class="text-sm font-medium">Lặp lại hàng năm</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section><button class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-[#ff6b81] text-white font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+            Lưu ghi chú
+        </button>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-primary/10 px-4 pb-8 pt-3 z-20">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Trang chủ</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-[#f43e5c]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">add_circle</span>
+<span class="text-[10px] font-bold">Thêm</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[10px] font-medium">AI Chat</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-medium">Lịch</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Cài đặt</span>
+</a>
+</div>
+</nav>
+</body></html>

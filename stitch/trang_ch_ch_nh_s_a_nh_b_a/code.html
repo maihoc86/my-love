@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MyLoveThaiHoc - Trang Chủ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43e5c",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-50 glass-effect border-b border-primary/10 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined fill-1">favorite</span>
+</div>
+<div>
+<h1 class="text-lg font-bold leading-tight">MyLoveThaiHoc</h1>
+<p class="text-xs text-primary/70 font-medium">Ghi nhớ mọi điều về em</p>
+</div>
+</div>
+</header>
+<main class="p-4 space-y-6">
+<!-- Hero Card -->
+<section class="relative overflow-hidden rounded-xl bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 p-6 text-white shadow-lg shadow-primary/20"><div class="relative z-10"><p class="text-xs font-bold mb-1">♥ Thái Hoc của bạn</p><h2 class="text-xl font-medium">Bạn đã lưu giữ</h2><div class="text-[36px] font-bold leading-none my-1">12</div><p class="text-sm font-medium opacity-80">kỉ niệm tuyệt vời</p></div><div class="absolute -right-4 -bottom-4 opacity-20"><span class="material-symbols-outlined text-[120px]">favorite</span></div><div class="absolute top-4 right-8 w-16 h-16 bg-white/10 rounded-full"></div><div class="absolute bottom-8 right-16 w-10 h-10 bg-white/15 rounded-full"></div><div class="absolute top-12 left-4 w-8 h-8 bg-white/10 rounded-full"></div><button class="absolute top-3 right-3 z-20 size-8 flex items-center justify-center rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">photo_camera</span>
+</button></section>
+<!-- Section: Sắp tới -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-slate-800 dark:text-slate-200">Sắp tới</h3>
+<span class="text-primary text-xs font-bold uppercase tracking-wider">Xem tất cả</span>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+<div class="flex-shrink-0 w-44 p-4 rounded-xl bg-white dark:bg-slate-800 border border-primary/5 shadow-sm relative"><span class="absolute top-3 right-3 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">5 ngày</span>
+<div class="size-10 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-500 flex items-center justify-center mb-3"><span class="text-xl">🎂</span></div>
+<p class="text-sm font-bold truncate">Sinh nhật em</p>
+</div>
+<div class="flex-shrink-0 w-44 p-4 rounded-xl bg-white dark:bg-slate-800 border border-primary/5 shadow-sm relative"><span class="absolute top-3 right-3 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">12 ngày</span>
+<div class="size-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center mb-3"><span class="text-xl">💕</span></div>
+<p class="text-sm font-bold truncate">Kỷ niệm 1 năm</p>
+</div>
+<div class="flex-shrink-0 w-44 p-4 rounded-xl bg-white dark:bg-slate-800 border border-primary/5 shadow-sm relative"><span class="absolute top-3 right-3 bg-pink-400 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">28 ngày</span>
+<div class="size-10 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-500 flex items-center justify-center mb-3"><span class="text-xl">🎉</span></div>
+<p class="text-sm font-bold truncate">Du lịch Đà Lạt</p>
+</div>
+</div>
+</section>
+<!-- Section: Lưu ý quan trọng -->
+<section class="bg-primary/5 dark:bg-primary/10 rounded-xl p-4 border border-primary/10">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-sm">warning</span>
+<h3 class="font-bold text-sm text-primary uppercase tracking-tight">Lưu ý quan trọng</h3>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">error</span>
+                    Dị ứng tôm
+                </span>
+<span class="px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">error</span>
+                    Ghét ăn hành
+                </span>
+<span class="px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">error</span>
+                    Không uống đá
+                </span>
+</div>
+</section>
+<!-- Section: Phân loại -->
+<section class="space-y-4"><h3 class="font-bold text-slate-800 dark:text-slate-200">Tiện ích</h3><div class="grid grid-cols-4 gap-y-6 gap-x-2"><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-lg relative"><span class="material-symbols-outlined">smart_toy</span><span class="absolute -top-1 -right-1 bg-red-500 text-[8px] font-bold px-1 rounded text-white">HOT</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">AI Chat</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg relative"><span class="material-symbols-outlined">map</span><span class="absolute -top-1 -right-1 bg-blue-500 text-[8px] font-bold px-1 rounded text-white">MỚI</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Bản đồ</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-lg relative"><span class="material-symbols-outlined">favorite</span><span class="absolute -top-1 -right-1 bg-red-500 text-[8px] font-bold px-1 rounded text-white">HOT</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Đếm ngày</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white shadow-lg relative"><span class="material-symbols-outlined">insights</span><span class="absolute -top-1 -right-1 bg-blue-500 text-[8px] font-bold px-1 rounded text-white">MỚI</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Insight 360</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white shadow-lg relative"><span class="material-symbols-outlined">mic</span><span class="absolute -top-1 -right-1 bg-blue-500 text-[8px] font-bold px-1 rounded text-white">MỚI</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Ghi âm</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white shadow-lg"><span class="material-symbols-outlined">photo_library</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Album ảnh</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-orange-500 to-yellow-500 flex items-center justify-center text-white shadow-lg"><span class="material-symbols-outlined">notifications</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Nhắc nhở</span></div><div class="flex flex-col items-center gap-2"><div class="size-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-lg"><span class="material-symbols-outlined">event_repeat</span></div><span class="text-[10px] font-bold text-slate-600 dark:text-slate-400 text-center">Ngày đặc biệt</span></div></div></section>
+<!-- Section: Ghi chép gần đây -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="font-bold text-slate-800 dark:text-slate-200">Ghi chép gần đây</h3>
+<span class="text-primary text-xs font-bold">Xem tất cả &gt;</span>
+</div>
+<div class="space-y-3"><div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm"><div class="size-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-orange-500 text-xl">restaurant</span></div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate text-slate-800 dark:text-slate-200">Phở bò là món em yêu nhất</p><p class="text-xs text-slate-500 dark:text-slate-400">Món ăn · 2 giờ trước</p></div><span class="text-xs font-medium text-primary/60">Chi tiết</span></div><div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm"><div class="size-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-blue-500 text-xl">location_on</span></div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate text-slate-800 dark:text-slate-200">Góc chill của hai đứa</p><p class="text-xs text-slate-400 dark:text-slate-500">Quán cafe nhỏ quận 1</p><p class="text-[10px] text-slate-500 dark:text-slate-400">Địa điểm · Hôm qua</p></div><span class="text-xs font-medium text-primary/60">Chi tiết</span></div><div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm"><div class="size-10 rounded-full bg-pink-100 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-pink-500 text-xl">palette</span></div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate text-slate-800 dark:text-slate-200">Em mê vẽ tranh sơn dầu</p><p class="text-xs text-slate-500 dark:text-slate-400">Sở thích · 2 ngày trước</p></div><span class="text-xs font-medium text-primary/60">Chi tiết</span></div><div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm"><div class="size-10 rounded-full bg-red-100 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-red-500 text-xl">warning</span></div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate text-slate-800 dark:text-slate-200">Dị ứng tôm</p><p class="text-xs text-slate-400 dark:text-slate-500">Ăn tôm bị nổi mề đay</p><p class="text-[10px] text-slate-500 dark:text-slate-400">Dị ứng · 3 ngày trước</p></div><span class="text-xs font-medium text-primary/60">Chi tiết</span></div><div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-primary/5 shadow-sm"><div class="size-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-indigo-500 text-xl">music_note</span></div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate text-slate-800 dark:text-slate-200">Thích nghe Vũ Cát Tường</p><p class="text-xs text-slate-500 dark:text-slate-400">Âm nhạc · 1 tuần trước</p></div><span class="text-xs font-medium text-primary/60">Chi tiết</span></div></div>
+</section>
+</main>
+<!-- Bottom Nav -->
+<nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-2 py-2 pb-6 flex items-center justify-between z-50"><a class="flex flex-col items-center gap-1 flex-1 text-primary" href="#"><span class="material-symbols-outlined fill-1">favorite</span><span class="text-[10px] font-bold">Trang chủ</span></a><a class="flex flex-col items-center gap-1 flex-1 text-slate-400" href="#"><span class="material-symbols-outlined">add_circle</span><span class="text-[10px] font-medium">Thêm</span></a><a class="flex flex-col items-center gap-1 flex-1 text-slate-400" href="#"><span class="material-symbols-outlined">chat_bubble</span><span class="text-[10px] font-medium">AI Chat</span></a><a class="flex flex-col items-center gap-1 flex-1 text-slate-400" href="#"><span class="material-symbols-outlined">calendar_today</span><span class="text-[10px] font-medium">Lịch</span></a><a class="flex flex-col items-center gap-1 flex-1 text-slate-400" href="#"><span class="material-symbols-outlined">settings</span><span class="text-[10px] font-medium">Cài đặt</span></a></nav>
+</body></html>

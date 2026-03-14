@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Album ảnh hẹn hò - MyLoveThaiHoc</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#f43e5c',
+            background: '#f8f5f6',
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    /* Smooth scroll for category tabs */
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    /* Soft shadows for cards */
+    .soft-shadow {
+      box-shadow: 0 4px 20px -2px rgba(244, 62, 92, 0.08);
+    }
+
+    /* Gradient for FAB */
+    .bg-gradient-pink {
+      background: linear-gradient(135deg, #f43e5c 0%, #fb7185 100%);
+    }
+
+    /* Grid layouts for photo previews */
+    .photo-grid-mixed {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: 100px 100px;
+      gap: 8px;
+    }
+    .photo-grid-triple {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body class="bg-background font-sans text-slate-800 antialiased min-h-screen">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-30 bg-background/80 backdrop-blur-md px-4 py-4 flex items-center justify-between">
+<button aria-label="Back" class="p-2 hover:bg-rose-50 rounded-full transition-colors">
+<span class="material-icons-round text-slate-800">arrow_back_ios_new</span>
+</button>
+<h1 class="text-xl font-bold text-slate-900">Album ảnh</h1>
+<button aria-label="Camera" class="p-2 hover:bg-rose-50 rounded-full transition-colors text-primary">
+<span class="material-icons-round">photo_camera</span>
+</button>
+</header>
+<!-- END: MainHeader -->
+<main class="pb-24">
+<!-- BEGIN: StatsBar -->
+<section class="px-6 py-4 mb-2" data-purpose="statistics-overview">
+<div class="bg-white rounded-3xl p-5 flex justify-between items-center soft-shadow border border-rose-100/50">
+<div class="text-center flex-1 border-r border-slate-100">
+<p class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wider">Tổng ảnh</p>
+<p class="text-xl font-bold text-slate-800">128</p>
+</div>
+<div class="text-center flex-1 border-r border-slate-100">
+<p class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wider">Sự kiện</p>
+<p class="text-xl font-bold text-slate-800">12</p>
+</div>
+<div class="text-center flex-1">
+<p class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wider">Tháng</p>
+<p class="text-xl font-bold text-slate-800">5</p>
+</div>
+</div>
+</section>
+<!-- END: StatsBar -->
+<!-- BEGIN: FilterTabs -->
+<section class="mb-6 overflow-hidden">
+<div class="flex overflow-x-auto hide-scrollbar gap-3 px-6 py-2">
+<button class="px-5 py-2.5 bg-primary text-white rounded-full text-sm font-semibold shadow-lg shadow-rose-200 shrink-0">Tất cả</button>
+<button class="px-5 py-2.5 bg-white text-slate-500 rounded-full text-sm font-semibold soft-shadow border border-slate-100 shrink-0">Hẹn hò</button>
+<button class="px-5 py-2.5 bg-white text-slate-500 rounded-full text-sm font-semibold soft-shadow border border-slate-100 shrink-0">Du lịch</button>
+<button class="px-5 py-2.5 bg-white text-slate-500 rounded-full text-sm font-semibold soft-shadow border border-slate-100 shrink-0">Kỷ niệm</button>
+<button class="px-5 py-2.5 bg-white text-slate-500 rounded-full text-sm font-semibold soft-shadow border border-slate-100 shrink-0">Yêu thích</button>
+</div>
+</section>
+<!-- END: FilterTabs -->
+<!-- BEGIN: PhotoGroups -->
+<section class="space-y-8 px-6">
+<!-- Group 1: Hẹn hò Phố Cổ -->
+<div class="photo-group" data-purpose="event-gallery-item">
+<div class="flex justify-between items-end mb-3">
+<div>
+<h2 class="text-lg font-bold text-slate-800">Hẹn hò Phố Cổ</h2>
+<p class="text-xs font-medium text-slate-400">12/03/2026 • 8 ảnh</p>
+</div>
+<button class="text-sm font-semibold text-primary">Xem tất cả</button>
+</div>
+<div class="photo-grid-mixed rounded-2xl overflow-hidden">
+<div class="bg-rose-100 flex items-center justify-center rounded-lg row-span-2">
+<span class="material-icons-round text-rose-300 text-4xl">favorite</span>
+</div>
+<div class="bg-rose-200 flex items-center justify-center rounded-lg">
+<span class="material-icons-round text-rose-400">restaurant</span>
+</div>
+<div class="bg-rose-50 flex items-center justify-center rounded-lg relative">
+<span class="material-icons-round text-rose-300">camera_alt</span>
+<div class="absolute inset-0 bg-black/5 flex items-center justify-center text-slate-600 font-bold text-sm">+5</div>
+</div>
+</div>
+</div>
+<!-- Group 2: Du lịch Đà Lạt -->
+<div class="photo-group" data-purpose="event-gallery-item">
+<div class="flex justify-between items-end mb-3">
+<div>
+<h2 class="text-lg font-bold text-slate-800">Du lịch Đà Lạt</h2>
+<p class="text-xs font-medium text-slate-400">02/03/2026 • 24 ảnh</p>
+</div>
+<button class="text-sm font-semibold text-primary">Xem tất cả</button>
+</div>
+<div class="photo-grid-triple rounded-2xl overflow-hidden h-24">
+<div class="bg-blue-100 flex items-center justify-center rounded-lg">
+<span class="material-icons-round text-blue-300">terrain</span>
+</div>
+<div class="bg-emerald-100 flex items-center justify-center rounded-lg">
+<span class="material-icons-round text-emerald-300">wb_sunny</span>
+</div>
+<div class="bg-amber-100 flex items-center justify-center rounded-lg relative">
+<span class="material-icons-round text-amber-300">hotel</span>
+<div class="absolute inset-0 bg-black/5 flex items-center justify-center text-slate-600 font-bold text-sm">+21</div>
+</div>
+</div>
+</div>
+<!-- Group 3: Kỷ niệm 1 năm -->
+<div class="photo-group" data-purpose="event-gallery-item">
+<div class="flex justify-between items-end mb-3">
+<div>
+<h2 class="text-lg font-bold text-slate-800">Kỷ niệm 1 năm</h2>
+<p class="text-xs font-medium text-slate-400">14/02/2026 • 15 ảnh</p>
+</div>
+<button class="text-sm font-semibold text-primary">Xem tất cả</button>
+</div>
+<div class="photo-grid-mixed rounded-2xl overflow-hidden">
+<div class="bg-purple-100 flex items-center justify-center rounded-lg row-span-2">
+<span class="material-icons-round text-purple-300 text-4xl">celebration</span>
+</div>
+<div class="bg-pink-100 flex items-center justify-center rounded-lg">
+<span class="material-icons-round text-pink-300">cake</span>
+</div>
+<div class="bg-rose-50 flex items-center justify-center rounded-lg relative">
+<span class="material-icons-round text-rose-300">auto_awesome</span>
+<div class="absolute inset-0 bg-black/5 flex items-center justify-center text-slate-600 font-bold text-sm">+12</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PhotoGroups -->
+</main>
+<!-- BEGIN: FloatingActionButton -->
+<button aria-label="Add photo" class="fixed bottom-8 right-6 w-16 h-16 rounded-full bg-gradient-pink text-white flex items-center justify-center shadow-xl shadow-rose-300 active:scale-95 transition-transform z-40" data-purpose="fab-add-photo">
+<span class="material-icons-round text-3xl">add_a_photo</span>
+</button>
+<!-- END: FloatingActionButton -->
+</body></html>

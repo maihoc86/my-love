@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cài đặt - MyLoveThaiHoc</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#f43e5c',
+            background: '#f8f5f6',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styles">
+    body {
+      background-color: #f8f5f6;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .material-symbols-outlined.filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Hide scrollbar for cleaner look */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-800">
+<!-- BEGIN: Main Container -->
+<div class="max-w-md mx-auto min-h-screen pb-24 relative">
+<!-- BEGIN: Header Profile Card -->
+<header class="p-4 pt-8">
+<div class="bg-gradient-to-br from-[#f43e5c] to-[#9333ea] rounded-[2rem] p-6 text-white shadow-xl shadow-rose-200">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center text-2xl font-bold border-2 border-white/50">
+              N
+            </div>
+<div>
+<h1 class="text-xl font-bold">Nguyễn Văn A</h1>
+<p class="text-xs text-white/80 opacity-90">nguyenvana@gmail.com</p>
+<p class="text-xs text-white/80 opacity-90">0912 345 678</p>
+</div>
+</div>
+<button class="bg-white/20 p-2 rounded-xl backdrop-blur-sm hover:bg-white/30 transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-3 gap-2 bg-black/10 rounded-2xl p-3 backdrop-blur-sm">
+<div class="text-center border-r border-white/10">
+<p class="text-lg font-bold leading-tight">56</p>
+<p class="text-[10px] uppercase tracking-wider opacity-80">Ghi chú</p>
+</div>
+<div class="text-center border-r border-white/10">
+<p class="text-lg font-bold leading-tight">4</p>
+<p class="text-[10px] uppercase tracking-wider opacity-80">Ngày đặc biệt</p>
+</div>
+<div class="text-center">
+<p class="text-lg font-bold leading-tight">12</p>
+<p class="text-[10px] uppercase tracking-wider opacity-80">Cuộc chat</p>
+</div>
+</div>
+</div>
+</header>
+<!-- END: Header Profile Card -->
+<main class="px-4 space-y-6">
+<!-- BEGIN: Section Thông tin người yêu -->
+<section data-purpose="partner-info">
+<h2 class="px-2 mb-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Thông tin người yêu</h2>
+<div class="bg-white rounded-[1.5rem] p-2 shadow-sm border border-slate-100">
+<div class="flex items-center p-3 gap-4">
+<div class="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center text-pink-500">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex-1">
+<p class="text-xs text-slate-400">Tên gọi</p>
+<p class="font-semibold">Thái Học</p>
+</div>
+</div>
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-500">
+<span class="material-symbols-outlined">cake</span>
+</div>
+<div class="flex-1">
+<p class="text-xs text-slate-400">Sinh nhật</p>
+<p class="font-semibold">15 tháng 8</p>
+</div>
+</div>
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-500">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div class="flex-1">
+<p class="text-xs text-slate-400">Biệt danh</p>
+<p class="font-semibold">Em bé</p>
+</div>
+</div>
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-500">
+<span class="material-symbols-outlined">image</span>
+</div>
+<div class="flex-1">
+<p class="text-xs text-slate-400">Ảnh đại diện</p>
+<p class="font-semibold">Đã tải lên</p>
+</div>
+</div>
+<button class="w-full mt-2 py-3 bg-rose-50 text-primary font-bold rounded-2xl hover:bg-rose-100 transition-colors text-sm">
+            Chỉnh sửa thông tin người yêu
+          </button>
+</div>
+</section>
+<!-- END: Section Thông tin người yêu -->
+<!-- BEGIN: Section Tài khoản -->
+<section data-purpose="account-settings">
+<h2 class="px-2 mb-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Tài khoản</h2>
+<div class="bg-white rounded-[1.5rem] p-2 shadow-sm border border-slate-100">
+<button class="w-full flex items-center p-3 gap-4 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">badge</span>
+</div>
+<span class="flex-1 text-left font-medium">Thông tin cá nhân</span>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<span class="flex-1 text-left font-medium">Đổi mật khẩu</span>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">security</span>
+</div>
+<span class="flex-1 text-left font-medium">Bảo mật</span>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">cloud_upload</span>
+</div>
+<span class="flex-1 text-left font-medium">Sao lưu &amp; đồng bộ</span>
+<span class="material-symbols-outlined text-slate-300">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- END: Section Tài khoản -->
+<!-- BEGIN: Section Thông báo -->
+<section data-purpose="notification-settings">
+<h2 class="px-2 mb-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Thông báo</h2>
+<div class="bg-white rounded-[1.5rem] p-2 shadow-sm border border-slate-100">
+<!-- Toggle Row -->
+<div class="flex items-center p-3 gap-4">
+<div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">event_note</span>
+</div>
+<span class="flex-1 font-medium">Nhắc nhở ngày đặc biệt</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Row -->
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">lightbulb</span>
+</div>
+<span class="flex-1 font-medium">Gợi ý hàng ngày</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Row -->
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">send</span>
+</div>
+<span class="flex-1 font-medium">Thông báo Telegram</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Toggle Row -->
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<span class="flex-1 font-medium">Thông báo Email</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- END: Section Thông báo -->
+<!-- BEGIN: Section Chung -->
+<section data-purpose="general-settings">
+<h2 class="px-2 mb-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Chung</h2>
+<div class="bg-white rounded-[1.5rem] p-2 shadow-sm border border-slate-100">
+<div class="flex items-center p-3 gap-4">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">contrast</span>
+</div>
+<span class="flex-1 font-medium">Giao diện</span>
+<span class="text-sm font-semibold text-primary">Sáng</span>
+</div>
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">language</span>
+</div>
+<span class="flex-1 font-medium">Ngôn ngữ</span>
+<span class="text-sm font-semibold text-primary">Tiếng Việt</span>
+</div>
+<div class="flex items-center p-3 gap-4 border-t border-slate-50">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="flex-1 font-medium">Bộ nhớ</span>
+<span class="text-sm text-slate-400">124 MB</span>
+</div>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">delete_sweep</span>
+</div>
+<span class="flex-1 text-left font-medium">Xoá dữ liệu cache</span>
+</button>
+</div>
+</section>
+<!-- END: Section Chung -->
+<!-- BEGIN: Section Hỗ trợ -->
+<section data-purpose="support-settings">
+<h2 class="px-2 mb-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Hỗ trợ</h2>
+<div class="bg-white rounded-[1.5rem] p-2 shadow-sm border border-slate-100">
+<button class="w-full flex items-center p-3 gap-4 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">help</span>
+</div>
+<span class="flex-1 text-left font-medium">Trung tâm trợ giúp</span>
+<span class="material-symbols-outlined text-slate-300">open_in_new</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">feedback</span>
+</div>
+<span class="flex-1 text-left font-medium">Góp ý &amp; phản hồi</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">policy</span>
+</div>
+<span class="flex-1 text-left font-medium">Chính sách bảo mật</span>
+</button>
+<button class="w-full flex items-center p-3 gap-4 border-t border-slate-50 hover:bg-slate-50 rounded-xl transition-colors">
+<div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="flex-1 text-left font-medium">Điều khoản sử dụng</span>
+</button>
+</div>
+</section>
+<!-- END: Section Hỗ trợ -->
+<!-- BEGIN: Footer -->
+<footer class="mt-8 pb-10 flex flex-col items-center">
+<div class="w-full bg-gradient-to-r from-rose-500/10 to-purple-600/10 rounded-[2rem] p-8 text-center mb-6">
+<h3 class="text-xl font-extrabold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent">MyLoveThaiHoc</h3>
+<p class="text-xs text-slate-400 mt-1">Phiên bản 2.4.0 (Build 2023)</p>
+<p class="text-sm font-medium text-slate-500 mt-4 italic">Made with love for Thái Học</p>
+</div>
+<button class="w-full flex items-center justify-center gap-3 py-4 border-2 border-rose-500/20 text-primary font-bold rounded-2xl hover:bg-rose-50 transition-colors">
+<span class="material-symbols-outlined">logout</span>
+          Đăng xuất
+        </button>
+</footer>
+<!-- END: Footer -->
+</main>
+<!-- BEGIN: Bottom Navigation -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-xl border-t border-slate-100 h-20 px-4 flex items-center justify-between z-50">
+<button class="flex flex-col items-center justify-center flex-1 gap-1 group text-slate-400">
+<span class="material-symbols-outlined">favorite</span>
+<span class="text-[10px] font-medium">Trang chủ</span>
+</button>
+<button class="flex flex-col items-center justify-center flex-1 gap-1 group text-slate-400">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-[10px] font-medium">Thêm</span>
+</button>
+<button class="flex flex-col items-center justify-center flex-1 gap-1 group text-slate-400">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="text-[10px] font-medium">AI Chat</span>
+</button>
+<button class="flex flex-col items-center justify-center flex-1 gap-1 group text-slate-400">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-medium">Lịch</span>
+</button>
+<!-- Active Tab -->
+<button class="flex flex-col items-center justify-center flex-1 gap-1 group text-primary">
+<span class="material-symbols-outlined filled">settings</span>
+<span class="text-[10px] font-bold">Cài đặt</span>
+</button>
+</nav>
+<!-- END: Bottom Navigation -->
+</div>
+<!-- END: Main Container -->
+</body></html>

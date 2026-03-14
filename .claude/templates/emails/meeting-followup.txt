@@ -1,0 +1,44 @@
+Subject: Tổng Kết Cuộc Họp {{meetingTitle}} - {{meetingDate}}
+
+Kính gửi {{recipientName}},
+
+Cảm ơn quý vị đã tham dự cuộc họp "{{meetingTitle}}" vào {{meetingDate}} vừa qua. Dưới đây là tổng kết nội dung và các bước tiếp theo đã được thống nhất.
+
+--- TÓM TẮT CUỘC HỌP ---
+
+• Thời gian: {{meetingDate}}, {{meetingTime}}
+• Địa điểm: {{meetingLocation}}
+• Người tham dự: {{attendeesList}}
+• Chủ đề chính: {{mainTopics}}
+
+--- QUYẾT ĐỊNH ĐÃ THỐNG NHẤT ---
+
+{{decisions}}
+
+--- ACTION ITEMS ---
+
+| STT | Hạng mục | Người phụ trách | Deadline |
+|-----|----------|----------------|----------|
+| 1 | {{actionItem1}} | {{owner1}} | {{deadline1}} |
+| 2 | {{actionItem2}} | {{owner2}} | {{deadline2}} |
+| 3 | {{actionItem3}} | {{owner3}} | {{deadline3}} |
+| 4 | {{actionItem4}} | {{owner4}} | {{deadline4}} |
+
+--- VẤN ĐỀ CẦN THEO DÕI ---
+
+{{openIssues}}
+
+--- BƯỚC TIẾP THEO ---
+
+• Cuộc họp tiếp theo: {{nextMeetingDate}}, {{nextMeetingTime}}
+• Chủ đề dự kiến: {{nextMeetingTopics}}
+• Chuẩn bị trước: {{preparationNotes}}
+
+Nếu có bất kỳ điều chỉnh nào về nội dung tổng kết trên, xin vui lòng phản hồi email này trước {{feedbackDeadline}}.
+
+Trân trọng,
+
+{{senderName}}
+{{senderTitle}}
+{{companyName}}
+{{contactEmail}}

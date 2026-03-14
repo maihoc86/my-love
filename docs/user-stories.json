@@ -1,0 +1,323 @@
+[
+  {
+    "id": "US-DASH-01",
+    "module": "dashboard",
+    "title": "Xem tổng quan trên Dashboard",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn nhìn thấy tổng quan mọi thông tin đã lưu về người yêu ngay khi mở app, để nắm được bao nhiêu thông tin đã ghi nhận và có gì sắp tới.",
+    "acceptance_criteria": [
+      "Hero card hiển thị tổng số entries với text 'Bạn đã lưu giữ X kỉ niệm tuyệt vời'",
+      "Hiển thị top 6 categories với icon + số lượng (grid 3 cột)",
+      "Hiển thị 5 entries gần nhất với category icon, title, sentiment, date",
+      "Hero card có 2 quick action: 'Thêm mới' → /add, 'Chat AI' → /chat",
+      "Skeleton loading khi đang fetch data",
+      "Empty state hiển thị khi chưa có entries: icon Heart + 'Chưa có ghi chú nào' + CTA 'Thêm ngay'"
+    ],
+    "brd_ref": "docs/BRD.md#FR1,FR5",
+    "srs_ref": "docs/SRS.md#SCR-01",
+    "api_ref": "GET /entries?order=created_at.desc, GET /special_dates",
+    "depends_on": ["US-ENTRY-01"],
+    "priority": "P0",
+    "story_points": 5
+  },
+  {
+    "id": "US-DASH-02",
+    "module": "dashboard",
+    "title": "Xem ngày sắp tới trên Dashboard",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn thấy ngay các ngày đặc biệt sắp tới khi mở app, để không bao giờ quên sinh nhật, kỷ niệm.",
+    "acceptance_criteria": [
+      "Section 'Sắp tới' hiện khi có ngày trong vòng 30 ngày tới",
+      "Horizontal scroll cards (min-width 160px, snap-x)",
+      "Mỗi card: emoji (🎂/💕/🎉), countdown badge, title, date 'dd tháng MM'",
+      "Badge color: xanh (hôm nay), đỏ (<=3 ngày), cam (else)",
+      "'Xem tất cả >' link → navigate to Calendar tab",
+      "Tap card → navigate to Calendar tab",
+      "Không hiện section nếu không có upcoming dates"
+    ],
+    "brd_ref": "docs/BRD.md#FR5",
+    "srs_ref": "docs/SRS.md#SCR-01,FR-D03",
+    "api_ref": "GET /special_dates?order=event_date.asc",
+    "depends_on": ["US-CAL-01"],
+    "priority": "P0",
+    "story_points": 3
+  },
+  {
+    "id": "US-DASH-03",
+    "module": "dashboard",
+    "title": "Xem cảnh báo dị ứng và điều ghét",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn thấy cảnh báo nổi bật về dị ứng và điều người yêu ghét, để tránh sai lầm quan trọng.",
+    "acceptance_criteria": [
+      "Section 'Lưu ý quan trọng' hiện khi có entries với category='allergy' HOẶC sentiment='hate'",
+      "Background gradient đỏ nhạt (red-50 → rose-50), border đỏ, icon AlertTriangle",
+      "Mỗi item hiện dưới dạng pill badge: bg white/80, text đỏ, icon AlertTriangle nhỏ",
+      "Không hiện section nếu không có entries phù hợp"
+    ],
+    "brd_ref": "docs/BRD.md#FR1,FR5",
+    "srs_ref": "docs/SRS.md#SCR-01,FR-D04",
+    "api_ref": "GET /entries?or=(category.eq.allergy,sentiment.eq.hate)",
+    "depends_on": ["US-ENTRY-01"],
+    "priority": "P0",
+    "story_points": 2
+  },
+  {
+    "id": "US-ENTRY-01",
+    "module": "entry",
+    "title": "Thêm ghi chú mới (thủ công)",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn thêm ghi chú mới về người yêu bằng cách chọn danh mục và nhập thông tin, để lưu lại từng điều cụ thể.",
+    "acceptance_criteria": [
+      "Chọn 1 trong 11 danh mục từ grid 3 cột (icon lớn 3xl, press feedback scale 0.95)",
+      "Selected category: rose border + shadow + bg color",
+      "Nhập tiêu đề (required, min 1 / max 200 chars, icon prefix theo category)",
+      "Nhập chi tiết (optional, max 2000 chars, textarea 3 rows)",
+      "Chọn mức cảm xúc từ 5 circular buttons (w-14 h-14 rounded-full): ❤️→🚫",
+      "Selected sentiment: scale 1.1 + rose border + shadow",
+      "Expand 'Tùy chọn nâng cao' (slide-down): date picker + 'Lặp lại hàng năm' checkbox",
+      "Nhấn 'Lưu ghi chú' → loading spinner → success toast (slide-down animation)",
+      "Form auto-reset (giữ category + sentiment) sau khi lưu thành công",
+      "Keyboard aware: form scroll khi keyboard mở (KeyboardAvoidingView)"
+    ],
+    "brd_ref": "docs/BRD.md#FR1,M2",
+    "srs_ref": "docs/SRS.md#SCR-02,FR-A01~FR-A09",
+    "api_ref": "POST /entries",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 5
+  },
+  {
+    "id": "US-ENTRY-02",
+    "module": "entry",
+    "title": "Xoá ghi chú",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn xoá ghi chú không còn chính xác, để data luôn cập nhật.",
+    "acceptance_criteria": [
+      "Mỗi entry card có nút Trash icon (p-2 rounded-xl, gray-300)",
+      "Nhấn lần 1: hiện confirm inline (nút 'Xoá' đỏ + nút 'X' huỷ, animate scale-in)",
+      "Nhấn 'Xoá': entry bị xoá khỏi Supabase và UI (optimistic update)",
+      "Nhấn 'X' hoặc sau 3 giây: tự ẩn confirm buttons",
+      "Card có animation khi bị remove khỏi list"
+    ],
+    "brd_ref": "docs/BRD.md#FR1",
+    "srs_ref": "docs/SRS.md#SCR-01",
+    "api_ref": "DELETE /entries?id=eq.{id}",
+    "depends_on": ["US-ENTRY-01"],
+    "priority": "P0",
+    "story_points": 2
+  },
+  {
+    "id": "US-CHAT-01",
+    "module": "ai_chat",
+    "title": "Chat với AI để thêm thông tin bằng ngôn ngữ tự nhiên",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn kể về người yêu bằng câu văn tự nhiên tiếng Việt và AI tự phân tích thành các entries có cấu trúc, để thêm nhiều thông tin cùng lúc mà không cần điền form.",
+    "acceptance_criteria": [
+      "Chat bubble UI: assistant (trái, white bg, rounded-tl-md) + user (phải, gradient rose, rounded-tr-md)",
+      "Role labels 'Assistant'/'Bạn' với avatar icon trên mỗi message",
+      "Text input + send button tròn (disabled khi rỗng hoặc loading)",
+      "Gửi text → OpenRouter API (claude-sonnet-4) → parse JSON entries",
+      "Hiển thị summary: icon + title + category + sentiment cho mỗi entry parsed",
+      "Typing indicator (3 bouncing purple dots) khi chờ AI",
+      "Error handling: bubble 'Có lỗi xảy ra. Kiểm tra API key...' khi API fail",
+      "Auto-scroll to bottom khi có message mới",
+      "Welcome message mặc định khi mở chat lần đầu"
+    ],
+    "brd_ref": "docs/BRD.md#FR2,M3",
+    "srs_ref": "docs/SRS.md#SCR-03,FR-C01~FR-C10",
+    "api_ref": "POST https://openrouter.ai/api/v1/chat/completions",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 8
+  },
+  {
+    "id": "US-CHAT-02",
+    "module": "ai_chat",
+    "title": "Lưu batch entries từ AI",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn review và lưu tất cả thông tin AI đã phân tích với 1 nút bấm, để quá trình lưu nhanh chóng.",
+    "acceptance_criteria": [
+      "Nút 'Lưu tất cả (N mục)' xuất hiện khi AI parse thành công (animate scale-in)",
+      "Nút có gradient xanh lá (success), pill shape (rounded-full)",
+      "Nhấn → batch insert tất cả entries vào Supabase",
+      "Thành công → AI confirm 'Đã lưu N ghi chú thành công!'",
+      "Nút ẩn đi sau khi lưu",
+      "Entries mới xuất hiện trên Dashboard (useEntries refetch)"
+    ],
+    "brd_ref": "docs/BRD.md#FR2",
+    "srs_ref": "docs/SRS.md#SCR-03,FR-C05",
+    "api_ref": "POST /entries (batch insert)",
+    "depends_on": ["US-CHAT-01", "US-ENTRY-01"],
+    "priority": "P0",
+    "story_points": 3
+  },
+  {
+    "id": "US-CHAT-03",
+    "module": "ai_chat",
+    "title": "Nhận gợi ý hàng ngày từ AI",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn nhận gợi ý những việc nên làm hôm nay dựa trên thông tin đã lưu, để luôn có ý tưởng quan tâm người yêu.",
+    "acceptance_criteria": [
+      "Nút 'Gợi ý' (Sparkles icon, rose-50 bg) ở góc phải header chat",
+      "Nhấn → gửi tất cả entries + ngày hiện tại cho AI",
+      "AI trả về 3-5 gợi ý cụ thể bằng tiếng Việt, có emoji",
+      "Hiển thị trong assistant chat bubble",
+      "Disabled khi loading hoặc chưa có entries",
+      "Nếu chưa có entries: message 'Cần thêm thông tin trước đã nhé!'"
+    ],
+    "brd_ref": "docs/BRD.md#FR2,O3",
+    "srs_ref": "docs/SRS.md#SCR-03,FR-C06",
+    "api_ref": "POST https://openrouter.ai/api/v1/chat/completions (daily suggestions prompt)",
+    "depends_on": ["US-CHAT-01", "US-ENTRY-01"],
+    "priority": "P1",
+    "story_points": 3
+  },
+  {
+    "id": "US-CAL-01",
+    "module": "calendar",
+    "title": "Xem danh sách ngày đặc biệt với countdown",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn xem tất cả ngày đặc biệt sorted theo countdown, để biết ngày nào sắp đến gần nhất.",
+    "acceptance_criteria": [
+      "Danh sách sorted ascending theo số ngày còn lại",
+      "Mỗi card: countdown ring SVG (56px), title extrabold, category badge, date, description",
+      "Countdown ring color: xanh #10b981 (hôm nay), đỏ #ef4444 (<=3), cam #f97316 (<=7), hồng #f43f5e (else)",
+      "Ring hiển thị số ngày ở giữa + label 'NGÀY' nhỏ bên dưới",
+      "Cards trong vòng 7 ngày: border rose + elevated shadow",
+      "'Hàng năm' tag cho recurring events",
+      "Empty state: Calendar icon centered + 'Chưa có ngày đặc biệt' + 'Thêm sinh nhật, kỷ niệm của em!'",
+      "Stagger animation khi cards load"
+    ],
+    "brd_ref": "docs/BRD.md#FR3,M4",
+    "srs_ref": "docs/SRS.md#SCR-04,FR-L01~FR-L03",
+    "api_ref": "GET /special_dates?order=event_date.asc",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 5
+  },
+  {
+    "id": "US-CAL-02",
+    "module": "calendar",
+    "title": "Thêm ngày đặc biệt mới (bottom sheet form)",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn thêm ngày đặc biệt như sinh nhật, kỷ niệm, để app nhắc tôi trước ngày đó.",
+    "acceptance_criteria": [
+      "Nút '+' (gradient rose, 48x48) ở header → toggle form slide-down",
+      "Form style bottom sheet: sheet handle bar, close button",
+      "Labels uppercase rose-400 tracking-wider (TÊN SỰ KIỆN, DANH MỤC...)",
+      "Fields: tên sự kiện (required), danh mục select (4 options), ngày (date required)",
+      "Ghi chú textarea (optional), toggle switch 'Lặp lại hàng năm'",
+      "Nhắc trước N ngày (number input, default 7, range 1-30)",
+      "Submit → lưu Supabase → form ẩn → card xuất hiện trong list",
+      "Form mở: nút '+' chuyển thành 'X' màu gray"
+    ],
+    "brd_ref": "docs/BRD.md#FR3",
+    "srs_ref": "docs/SRS.md#SCR-04,FR-L04~FR-L06",
+    "api_ref": "POST /special_dates",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 3
+  },
+  {
+    "id": "US-CAL-03",
+    "module": "calendar",
+    "title": "Xoá ngày đặc biệt (double-tap confirm)",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn xoá ngày đặc biệt không còn cần thiết, với cơ chế xác nhận chống lỡ tay.",
+    "acceptance_criteria": [
+      "Nút Trash (w-9 h-9 rounded-xl) trên mỗi date card",
+      "Nhấn lần 1: nút chuyển đỏ (bg-red-500 text-white) — cảnh báo",
+      "Nhấn lần 2 (trong 3 giây): xoá thực sự khỏi Supabase + UI",
+      "Không nhấn lần 2 trong 3 giây → tự reset về bình thường (gray)",
+      "Optimistic update: card biến mất ngay, rollback nếu API fail"
+    ],
+    "brd_ref": "docs/BRD.md#FR3",
+    "srs_ref": "docs/SRS.md#SCR-04,FR-L08",
+    "api_ref": "DELETE /special_dates?id=eq.{id}",
+    "depends_on": ["US-CAL-01"],
+    "priority": "P0",
+    "story_points": 2
+  },
+  {
+    "id": "US-CAL-04",
+    "module": "calendar",
+    "title": "Gửi reminder ngày đặc biệt qua Telegram",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn gửi reminder về ngày đặc biệt sắp tới qua Telegram, để được nhắc nhở trên điện thoại.",
+    "acceptance_criteria": [
+      "Nút Bell (w-9 h-9 rounded-xl, text-blue-400) trên mỗi date card",
+      "Nhấn → loading spinner → gọi Telegram Bot sendMessage",
+      "Message format HTML: bold title + date + emoji + 'Đừng quên nhé! 🥰'",
+      "Thành công → icon chuyển thành Check (text-emerald-500) trong 2 giây",
+      "Disabled khi Telegram chưa cấu hình (token/chatId rỗng)"
+    ],
+    "brd_ref": "docs/BRD.md#FR4,M6",
+    "srs_ref": "docs/SRS.md#SCR-04,FR-L07",
+    "api_ref": "POST https://api.telegram.org/bot{TOKEN}/sendMessage",
+    "depends_on": ["US-CAL-01", "US-SET-01"],
+    "priority": "P1",
+    "story_points": 2
+  },
+  {
+    "id": "US-SET-01",
+    "module": "settings",
+    "title": "Xem trạng thái kết nối các service",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn biết các service (Supabase, AI, Telegram) đang connected hay chưa, để biết cần setup gì.",
+    "acceptance_criteria": [
+      "Section 'TRẠNG THÁI KẾT NỐI' (uppercase rose header)",
+      "3 connection items trong 1 card: Supabase, OpenRouter, Telegram Bot",
+      "Mỗi item: colored icon (emerald/purple/blue), tên service, mô tả, status dot",
+      "Status dot: xanh (3px, ping animation) khi env var có giá trị, đỏ khi rỗng",
+      "Check dựa trên: SUPABASE_URL, OPENROUTER_API_KEY, TELEGRAM_BOT_TOKEN + CHAT_ID"
+    ],
+    "brd_ref": "docs/BRD.md#FR6,M5",
+    "srs_ref": "docs/SRS.md#SCR-05,FR-S01",
+    "api_ref": "N/A (env vars check)",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 2
+  },
+  {
+    "id": "US-SET-02",
+    "module": "settings",
+    "title": "Test kết nối services",
+    "role": "user",
+    "story": "Là người dùng, tôi muốn test từng kết nối để đảm bảo hoạt động trước khi sử dụng app.",
+    "acceptance_criteria": [
+      "2 test buttons (grid 2 cột, card style centered): 'Gửi test Telegram', 'Test AI + Telegram'",
+      "Test Telegram: gửi message '🧪 Test từ MyLoveThaiHoc!' → result badge OK/Lỗi",
+      "Test AI: gọi getDailySuggestions() → gửi kết quả qua Telegram → result badge",
+      "Loading: spinner thay icon, disabled state",
+      "Disabled khi chưa có config tương ứng (opacity 40%)",
+      "Result badges (OK/Lỗi/Cần data): scale-in animation, auto-reset sau 5 giây"
+    ],
+    "brd_ref": "docs/BRD.md#FR6",
+    "srs_ref": "docs/SRS.md#SCR-05,FR-S02~FR-S03",
+    "api_ref": "POST /sendMessage (Telegram), POST /chat/completions (OpenRouter)",
+    "depends_on": ["US-SET-01"],
+    "priority": "P1",
+    "story_points": 2
+  },
+  {
+    "id": "US-SET-03",
+    "module": "settings",
+    "title": "Xem hướng dẫn cài đặt và thông tin app",
+    "role": "user",
+    "story": "Là người dùng lần đầu, tôi muốn xem hướng dẫn cài đặt từng bước với link trực tiếp, để setup app nhanh chóng.",
+    "acceptance_criteria": [
+      "Section 'HƯỚNG DẪN THIẾT LẬP' với 3 step cards (numbered circles)",
+      "Step 1: Kết nối Database (Supabase) — link → supabase.com",
+      "Step 2: Cấu hình API OpenRouter — link → openrouter.ai",
+      "Step 3: Tạo Telegram Bot — link → t.me/BotFather",
+      "Mỗi step: số thứ tự trong circle màu, title bold, mô tả, icon ExternalLink",
+      "Footer card: gradient primary bg, Heart icon, 'MyLoveThaiHoc', version + entry count, 'MADE WITH LOVE FOR THÁI HOC'"
+    ],
+    "brd_ref": "docs/BRD.md#FR6,M5",
+    "srs_ref": "docs/SRS.md#SCR-05,FR-S04~FR-S05",
+    "api_ref": "N/A",
+    "depends_on": [],
+    "priority": "P0",
+    "story_points": 2
+  }
+]

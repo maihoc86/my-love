@@ -1,0 +1,61 @@
+{
+  "project": {
+    "name": "cto-ai-assistant",
+    "version": "2.0.0",
+    "description": "CTO AI Assistant - Trợ lý AI cho CTO qua Claude Code",
+    "author": "CTO Office - Tiên Phong CDS"
+  },
+
+  "defaults": {
+    "language": "vi",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "draft_directory": ".claude/drafts",
+    "template_directory": ".claude/templates"
+  },
+
+  "templates": {
+    "emails": {
+      "directory": ".claude/templates/emails",
+      "available": [
+        "meeting-followup",
+        "solution-proposal",
+        "customer-update",
+        "team-announcement"
+      ]
+    },
+    "documents": {
+      "directory": ".claude/templates/documents",
+      "available": [
+        "technical-proposal",
+        "project-plan",
+        "solution-architecture"
+      ]
+    },
+    "reports": {
+      "directory": ".claude/templates/reports",
+      "available": [
+        "weekly-team-summary",
+        "monthly-metrics",
+        "project-status"
+      ]
+    }
+  },
+
+  "skills": [
+    "cto-advisor",
+    "product-manager-toolkit",
+    "internal-comms",
+    "ux-researcher-designer",
+    "ui-design-system"
+  ],
+
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "bash tools/scripts/update-dashboard-bg.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}

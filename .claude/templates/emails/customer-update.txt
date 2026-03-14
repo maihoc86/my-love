@@ -1,0 +1,58 @@
+Subject: Cập Nhật Tiến Độ Dự Án {{projectName}} - {{reportDate}}
+
+Kính gửi {{customerName}},
+
+Chúng tôi xin gửi báo cáo cập nhật tiến độ dự án {{projectName}} tính đến {{reportDate}}.
+
+--- TỔNG QUAN TIẾN ĐỘ ---
+
+Trạng thái tổng thể: {{overallStatus}}
+Tiến độ hoàn thành: {{completionPercentage}}%
+[{{progressBar}}]
+
+--- MILESTONE ĐÃ HOÀN THÀNH ---
+
+{{completedMilestones}}
+
+Thành tựu nổi bật trong giai đoạn này:
+• {{achievement1}}
+• {{achievement2}}
+• {{achievement3}}
+
+--- CHỈ SỐ HIỆU SUẤT ---
+
+| Chỉ số | Mục tiêu | Thực tế | Trạng thái |
+|--------|----------|---------|------------|
+| Tiến độ | {{targetProgress}}% | {{actualProgress}}% | {{progressStatus}} |
+| Chất lượng | {{targetQuality}} | {{actualQuality}} | {{qualityStatus}} |
+| Ngân sách | {{targetBudget}} | {{actualBudget}} | {{budgetStatus}} |
+
+--- THÁCH THỨC & GIẢI PHÁP ---
+
+{{challenges}}
+
+Phương án xử lý đã triển khai:
+{{mitigationActions}}
+
+--- GIAI ĐOẠN TIẾP THEO ---
+
+Kế hoạch cho giai đoạn {{nextPhase}}:
+
+1. {{nextTask1}} - Dự kiến hoàn thành: {{nextDeadline1}}
+2. {{nextTask2}} - Dự kiến hoàn thành: {{nextDeadline2}}
+3. {{nextTask3}} - Dự kiến hoàn thành: {{nextDeadline3}}
+
+Milestone tiếp theo: {{nextMilestone}} - Dự kiến: {{nextMilestoneDate}}
+
+--- YÊU CẦU HỖ TRỢ ---
+
+{{supportRequests}}
+
+Chúng tôi luôn sẵn sàng trao đổi chi tiết hơn. Xin đừng ngần ngại liên hệ nếu cần thêm thông tin.
+
+Trân trọng,
+
+{{senderName}}
+{{senderTitle}}
+{{companyName}}
+{{contactEmail}} | {{contactPhone}}

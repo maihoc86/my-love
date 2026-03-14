@@ -1,0 +1,55 @@
+Subject: {{announcementType}} - {{announcementTitle}}
+
+Xin chào Team {{teamName}},
+
+Tôi muốn chia sẻ một thông tin quan trọng với toàn bộ team.
+
+--- THÔNG BÁO ---
+
+{{announcementTitle}}
+
+{{announcementDetails}}
+
+--- TẠI SAO ĐIỀU NÀY QUAN TRỌNG ---
+
+{{impactDescription}}
+
+Thay đổi này sẽ ảnh hưởng đến:
+• {{impact1}}
+• {{impact2}}
+• {{impact3}}
+
+--- HÀNH ĐỘNG CẦN THỰC HIỆN ---
+
+Mỗi thành viên cần:
+
+1. {{action1}} - Trước {{actionDeadline1}}
+2. {{action2}} - Trước {{actionDeadline2}}
+3. {{action3}} - Trước {{actionDeadline3}}
+
+--- TIMELINE ---
+
+• {{timelineDate1}}: {{timelineEvent1}}
+• {{timelineDate2}}: {{timelineEvent2}}
+• {{timelineDate3}}: {{timelineEvent3}}
+
+--- TÀI NGUYÊN HỖ TRỢ ---
+
+• Tài liệu chi tiết: {{documentLink}}
+• FAQ: {{faqLink}}
+• Channel hỗ trợ: {{supportChannel}}
+
+--- HỎI ĐÁP ---
+
+Nếu có bất kỳ câu hỏi hoặc thắc mắc nào, vui lòng:
+• Đặt câu hỏi trên channel {{slackChannel}}
+• Liên hệ trực tiếp: {{contactPerson}}
+• Tham gia Q&A session: {{qaSessionDate}}
+
+Cảm ơn sự hợp tác và đóng góp của mọi người. Cùng nhau, chúng ta sẽ đạt được những mục tiêu lớn hơn!
+
+Best regards,
+
+{{senderName}}
+{{senderTitle}}
+{{companyName}}
