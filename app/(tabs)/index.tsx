@@ -1,166 +1,140 @@
-import { useState } from "react";
+// ============================================================
+// Dashboard Screen - MyLoveThaiHoc
+// Rebuilt v2.0 — based on stitch/trang_ch_ch_nh_s_a_nh_b_a/code.html
+// + BRD v2.0 + SRS v2.0 + User Stories
+// ============================================================
+
+import React, { memo, useCallback } from "react";
 import {
   View,
   Text,
   ScrollView,
   Pressable,
-  Alert,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { AlertTriangle, Trash2, ChevronRight } from "lucide-react-native";
+import {
+  Heart,
+  Camera,
+  Bot,
+  Map,
+  Timer,
+  Brain,
+  Mic,
+  ImageIcon,
+  Bell,
+  CalendarDays,
+} from "lucide-react-native";
+
+// ─── Constants ───────────────────────────────────────────────
+
+const PRIMARY = "#f43f5e";
+const BG = "#f8f5f6";
+const SURFACE = "#ffffff";
+const TEXT_PRIMARY = "#1f2937";
+const TEXT_SECONDARY = "#6b7280";
+const TEXT_MUTED = "#9ca3af";
+
+const CATEGORY_EMOJIS: Record<string, string> = {
+  food: "🍜",
+  place: "📍",
+  hobby: "🎨",
+  allergy: "⚠️",
+  music: "🎵",
+  movie: "🎬",
+  gift: "🎁",
+  style: "👗",
+  trait: "✨",
+  date: "💑",
+  other: "📝",
+};
+
+// ─── Types ───────────────────────────────────────────────────
+
+interface UpcomingDate {
+  id: string;
+  title: string;
+  date: string;
+  emoji: string;
+}
+
+
+interface AppTile {
+  id: string;
+  label: string;
+  bg: string;
+  icon: React.ReactNode;
+  badge?: string;
+  badgeColor?: string;
+  route: string;
+}
+
+interface RecentEntry {
+  id: string;
+  category: string;
+  categoryLabel: string;
+  title: string;
+  detail?: string;
+  timeAgo: string;
+  iconBg: string;
+}
 
 // ─── Mock Data ───────────────────────────────────────────────
 
-const CATEGORIES: Record<string, { emoji: string; label: string }> = {
-  food_like: { emoji: "🍜", label: "Thich an" },
-  food_dislike: { emoji: "🚫", label: "Khong thich an" },
-  hobby: { emoji: "🎮", label: "So thich" },
-  fashion: { emoji: "👗", label: "Thoi trang" },
-  music: { emoji: "🎵", label: "Am nhac" },
-  movie: { emoji: "🎬", label: "Phim" },
-  place: { emoji: "📍", label: "Dia diem" },
-  gift: { emoji: "🎁", label: "Qua tang" },
-  habit: { emoji: "💫", label: "Thoi quen" },
-  health: { emoji: "💊", label: "Suc khoe" },
-  other: { emoji: "📝", label: "Khac" },
-};
+const MOCK_UPCOMING: UpcomingDate[] = [
+  { id: "d1", title: "Sinh nhật em", date: "2026-03-20", emoji: "🎂" },
+  { id: "d2", title: "Kỷ niệm 1 năm", date: "2026-03-27", emoji: "💕" },
+  { id: "d3", title: "Du lịch Đà Lạt", date: "2026-04-12", emoji: "🎉" },
+];
 
-const mockEntries = [
+
+const MOCK_RECENT: RecentEntry[] = [
   {
     id: "1",
-    category: "food_like",
-    title: "Pho bo tai nam",
-    detail: "Thich an pho bo tai nam o quan Ly Quoc Su",
-    sentiment: "love",
-    date: "2026-03-10",
+    category: "food",
+    categoryLabel: "Món ăn",
+    title: "Phở bò là món em yêu nhất",
+    timeAgo: "2 giờ trước",
+    iconBg: "#fff7ed",
   },
   {
     id: "2",
-    category: "food_like",
-    title: "Tra sua tran chau duong den",
-    detail: "Uong it duong, nhieu tran chau",
-    sentiment: "love",
-    date: "2026-03-09",
+    category: "place",
+    categoryLabel: "Địa điểm",
+    title: "Góc chill của hai đứa",
+    detail: "Quán cafe nhỏ quận 1",
+    timeAgo: "Hôm qua",
+    iconBg: "#eff6ff",
   },
   {
     id: "3",
-    category: "food_dislike",
-    title: "Di ung tom",
-    detail: "Bi noi man do neu an tom",
-    sentiment: "hate",
-    date: "2026-03-08",
+    category: "hobby",
+    categoryLabel: "Sở thích",
+    title: "Em mê vẽ tranh sơn dầu",
+    timeAgo: "2 ngày trước",
+    iconBg: "#fdf4ff",
   },
   {
     id: "4",
-    category: "hobby",
-    title: "Ve tranh mau nuoc",
-    detail: "Thich ve phong canh thien nhien",
-    sentiment: "love",
-    date: "2026-03-07",
+    category: "allergy",
+    categoryLabel: "Dị ứng",
+    title: "Dị ứng tôm",
+    detail: "Ăn tôm bị nổi mề đay",
+    timeAgo: "3 ngày trước",
+    iconBg: "#fef2f2",
   },
   {
     id: "5",
     category: "music",
-    title: "Nghe nhac ballad Han Quoc",
-    detail: "Dac biet la IU va BTS",
-    sentiment: "like",
-    date: "2026-03-06",
-  },
-  {
-    id: "6",
-    category: "fashion",
-    title: "Thich mac vay hoa nhat",
-    detail: "Mau pastel nhe nhang",
-    sentiment: "like",
-    date: "2026-03-05",
-  },
-  {
-    id: "7",
-    category: "movie",
-    title: "Phim hoat hinh Ghibli",
-    detail: "Spirited Away la phim yeu thich nhat",
-    sentiment: "love",
-    date: "2026-03-04",
-  },
-  {
-    id: "8",
-    category: "place",
-    title: "Quan ca phe The Note Coffee",
-    detail: "Thich ngoi tang 3, nhin ra Ho Guom",
-    sentiment: "love",
-    date: "2026-03-03",
-  },
-  {
-    id: "9",
-    category: "gift",
-    title: "Gau bong teddy",
-    detail: "Thich mau hong pastel, co nho",
-    sentiment: "like",
-    date: "2026-03-02",
-  },
-  {
-    id: "10",
-    category: "health",
-    title: "Di ung phan hoa",
-    detail: "Bi hat xi va chay nuoc mui vao mua xuan",
-    sentiment: "dislike",
-    date: "2026-03-01",
-  },
-  {
-    id: "11",
-    category: "habit",
-    title: "Thich doc sach truoc khi ngu",
-    detail: "Thuong doc sach self-help va tieu thuyet",
-    sentiment: "like",
-    date: "2026-02-28",
-  },
-  {
-    id: "12",
-    category: "food_dislike",
-    title: "Ghet mon kho qua",
-    detail: "Khong chiu duoc vi dang",
-    sentiment: "hate",
-    date: "2026-02-27",
+    categoryLabel: "Âm nhạc",
+    title: "Thích nghe Vũ Cát Tường",
+    timeAgo: "1 tuần trước",
+    iconBg: "#eef2ff",
   },
 ];
 
-const mockUpcomingDates = [
-  {
-    id: "d1",
-    title: "Sinh nhat Thai Hoc",
-    date: "2026-03-17",
-    emoji: "🎂",
-    type: "birthday",
-  },
-  {
-    id: "d2",
-    title: "Ky niem 1 nam",
-    date: "2026-03-21",
-    emoji: "💕",
-    type: "anniversary",
-  },
-  {
-    id: "d3",
-    title: "Valentine trang",
-    date: "2026-03-14",
-    emoji: "🎉",
-    type: "holiday",
-  },
-];
-
-const mockWarnings = [
-  { id: "w1", label: "Di ung tom", type: "allergy" },
-  { id: "w2", label: "Ghet kho qua", type: "hate" },
-];
-
-const SENTIMENT_EMOJI: Record<string, string> = {
-  love: "❤️",
-  like: "👍",
-  neutral: "😐",
-  dislike: "👎",
-  hate: "🚫",
-};
+const TOTAL_MEMORIES = 12;
 
 // ─── Helpers ─────────────────────────────────────────────────
 
@@ -169,330 +143,525 @@ function getDaysUntil(dateStr: string): number {
   today.setHours(0, 0, 0, 0);
   const target = new Date(dateStr);
   target.setHours(0, 0, 0, 0);
-  const diff = target.getTime() - today.getTime();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return Math.ceil((target.getTime() - today.getTime()) / 86_400_000);
 }
 
-function getUrgencyColor(days: number): string {
-  if (days === 0) return "#10b981";
+function getCountdownColor(days: number): string {
+  if (days <= 0) return "#10b981";
   if (days <= 3) return "#ef4444";
   if (days <= 7) return "#f97316";
-  return "#f43f5e";
+  return "#ec4899";
 }
 
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  const day = d.getDate();
-  const month = d.getMonth() + 1;
-  return `${day} thang ${month < 10 ? "0" + month : month}`;
+function formatCountdown(days: number): string {
+  if (days === 0) return "Hôm nay!";
+  if (days < 0) return `Đã qua ${Math.abs(days)} ngày`;
+  return `${days} ngày`;
 }
 
-function getCategoryStats() {
-  const counts: Record<string, number> = {};
-  mockEntries.forEach((e) => {
-    counts[e.category] = (counts[e.category] || 0) + 1;
-  });
-  return Object.entries(counts)
-    .map(([cat, count]) => ({
-      category: cat,
-      emoji: CATEGORIES[cat]?.emoji || "📝",
-      label: CATEGORIES[cat]?.label || cat,
-      count,
-    }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 6);
-}
+// ─── Sub-components ───────────────────────────────────────────
 
-// ─── Component ───────────────────────────────────────────────
+
+/** Hero gradient card */
+const HeroCard = memo(function HeroCard() {
+  return (
+    <View
+      style={{
+        marginHorizontal: 16,
+        marginTop: 16,
+        borderRadius: 20,
+        padding: 24,
+        backgroundColor: PRIMARY,
+        overflow: "hidden",
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 16,
+        elevation: 12,
+      }}
+    >
+      {/* Decorative circles */}
+      <View
+        style={{
+          position: "absolute",
+          top: 16,
+          right: 32,
+          width: 64,
+          height: 64,
+          borderRadius: 32,
+          backgroundColor: "rgba(255,255,255,0.1)",
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          bottom: 32,
+          right: 64,
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: "rgba(255,255,255,0.12)",
+        }}
+      />
+      <View
+        style={{
+          position: "absolute",
+          top: 52,
+          left: 8,
+          width: 32,
+          height: 32,
+          borderRadius: 16,
+          backgroundColor: "rgba(255,255,255,0.08)",
+        }}
+      />
+      {/* Large decorative heart */}
+      <View
+        style={{
+          position: "absolute",
+          right: -14,
+          bottom: -14,
+          opacity: 0.15,
+        }}
+      >
+        <Heart size={120} color="#fff" fill="#fff" />
+      </View>
+
+      {/* Camera button */}
+      <Pressable
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          zIndex: 10,
+          width: 34,
+          height: 34,
+          borderRadius: 17,
+          backgroundColor: "rgba(255,255,255,0.2)",
+          borderWidth: 1,
+          borderColor: "rgba(255,255,255,0.3)",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        hitSlop={8}
+      >
+        <Camera size={16} color="#fff" />
+      </Pressable>
+
+      {/* Text content */}
+      <Text
+        style={{
+          fontSize: 11,
+          fontWeight: "700",
+          color: "rgba(255,255,255,0.85)",
+          marginBottom: 4,
+        }}
+      >
+        ♥ Thái Hoc của bạn
+      </Text>
+      <Text style={{ fontSize: 18, fontWeight: "500", color: "#fff", opacity: 0.9 }}>
+        Bạn đã lưu giữ
+      </Text>
+      <Text
+        style={{ fontSize: 42, fontWeight: "800", color: "#fff", lineHeight: 50 }}
+      >
+        {TOTAL_MEMORIES}
+      </Text>
+      <Text style={{ fontSize: 14, fontWeight: "500", color: "rgba(255,255,255,0.8)" }}>
+        kỉ niệm tuyệt vời
+      </Text>
+    </View>
+  );
+});
+
+/** Single upcoming date card in horizontal scroll */
+const UpcomingCard = memo(function UpcomingCard({ item }: { item: UpcomingDate }) {
+  const days = getDaysUntil(item.date);
+  const color = getCountdownColor(days);
+
+  return (
+    <View
+      style={{
+        width: 160,
+        padding: 16,
+        backgroundColor: SURFACE,
+        borderRadius: 16,
+        marginRight: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 3,
+      }}
+    >
+      {/* Countdown badge */}
+      <View
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          backgroundColor: color,
+          paddingHorizontal: 8,
+          paddingVertical: 3,
+          borderRadius: 20,
+        }}
+      >
+        <Text style={{ color: "#fff", fontSize: 10, fontWeight: "700" }}>
+          {formatCountdown(days)}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: "rgba(244,63,94,0.08)",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 10,
+        }}
+      >
+        <Text style={{ fontSize: 22 }}>{item.emoji}</Text>
+      </View>
+      <Text
+        style={{ fontSize: 13, fontWeight: "700", color: TEXT_PRIMARY }}
+        numberOfLines={2}
+      >
+        {item.title}
+      </Text>
+    </View>
+  );
+});
+
+
+/** Single app icon tile in the 4-col utility grid */
+const AppTileItem = memo(function AppTileItem({
+  item,
+  onPress,
+}: {
+  item: AppTile;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{ width: "25%", alignItems: "center", marginBottom: 20 }}
+      hitSlop={4}
+    >
+      <View
+        style={{
+          width: 56,
+          height: 56,
+          borderRadius: 16,
+          backgroundColor: item.bg,
+          alignItems: "center",
+          justifyContent: "center",
+          shadowColor: item.bg,
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 6,
+        }}
+      >
+        {item.icon}
+        {item.badge != null && (
+          <View
+            style={{
+              position: "absolute",
+              top: -4,
+              right: -4,
+              backgroundColor: item.badgeColor ?? "#ef4444",
+              paddingHorizontal: 4,
+              paddingVertical: 1,
+              borderRadius: 4,
+            }}
+          >
+            <Text style={{ color: "#fff", fontSize: 7, fontWeight: "800" }}>
+              {item.badge}
+            </Text>
+          </View>
+        )}
+      </View>
+      <Text
+        style={{
+          fontSize: 10,
+          fontWeight: "700",
+          color: TEXT_SECONDARY,
+          textAlign: "center",
+          marginTop: 6,
+        }}
+        numberOfLines={2}
+      >
+        {item.label}
+      </Text>
+    </Pressable>
+  );
+});
+
+/** Single recent entry row */
+const RecentEntryRow = memo(function RecentEntryRow({
+  item,
+  onPress,
+}: {
+  item: RecentEntry;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 12,
+        paddingHorizontal: 14,
+        backgroundColor: SURFACE,
+        borderRadius: 16,
+        marginBottom: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+        gap: 12,
+      }}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 20,
+          backgroundColor: item.iconBg,
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>
+          {CATEGORY_EMOJIS[item.category] ?? "📝"}
+        </Text>
+      </View>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text
+          style={{ fontSize: 13, fontWeight: "700", color: TEXT_PRIMARY }}
+          numberOfLines={1}
+        >
+          {item.title}
+        </Text>
+        {item.detail != null && (
+          <Text
+            style={{ fontSize: 11, color: TEXT_SECONDARY, marginTop: 1 }}
+            numberOfLines={1}
+          >
+            {item.detail}
+          </Text>
+        )}
+        <Text style={{ fontSize: 10, color: TEXT_MUTED, marginTop: 2 }}>
+          {item.categoryLabel} · {item.timeAgo}
+        </Text>
+      </View>
+      <Text
+        style={{ fontSize: 11, fontWeight: "600", color: "rgba(244,63,94,0.65)" }}
+      >
+        Chi tiết
+      </Text>
+    </Pressable>
+  );
+});
+
+// ─── Main Screen ─────────────────────────────────────────────
 
 export default function DashboardScreen() {
   const router = useRouter();
-  const [entries, setEntries] = useState(mockEntries);
-  const totalCount = entries.length;
-  const categoryStats = getCategoryStats();
-  const recentEntries = entries.slice(0, 5);
 
-  const handleDelete = (id: string) => {
-    Alert.alert("Xoa ghi chu", "Ban co chac muon xoa ghi chu nay?", [
-      { text: "Huy", style: "cancel" },
-      {
-        text: "Xoa",
-        style: "destructive",
-        onPress: () => setEntries((prev) => prev.filter((e) => e.id !== id)),
-      },
-    ]);
-  };
+  const appTiles: AppTile[] = [
+    {
+      id: "chat",
+      label: "AI Chat",
+      bg: "#7c3aed",
+      icon: <Bot size={24} color="#fff" />,
+      badge: "HOT",
+      badgeColor: "#ef4444",
+      route: "/(tabs)/chat",
+    },
+    {
+      id: "map",
+      label: "Bản đồ",
+      bg: "#059669",
+      icon: <Map size={24} color="#fff" />,
+      badge: "MỚI",
+      badgeColor: "#3b82f6",
+      route: "/date-map",
+    },
+    {
+      id: "counter",
+      label: "Đếm ngày",
+      bg: "#f43f5e",
+      icon: <Timer size={24} color="#fff" />,
+      badge: "HOT",
+      badgeColor: "#ef4444",
+      route: "/love-counter",
+    },
+    {
+      id: "insight",
+      label: "Insight 360",
+      bg: "#f59e0b",
+      icon: <Brain size={24} color="#fff" />,
+      badge: "MỚI",
+      badgeColor: "#3b82f6",
+      route: "/insight",
+    },
+    {
+      id: "voice",
+      label: "Ghi âm",
+      bg: "#4f46e5",
+      icon: <Mic size={24} color="#fff" />,
+      badge: "MỚI",
+      badgeColor: "#3b82f6",
+      route: "/voice-note",
+    },
+    {
+      id: "album",
+      label: "Album ảnh",
+      bg: "#0ea5e9",
+      icon: <ImageIcon size={24} color="#fff" />,
+      route: "/album",
+    },
+    {
+      id: "reminder",
+      label: "Nhắc nhở",
+      bg: "#f97316",
+      icon: <Bell size={24} color="#fff" />,
+      route: "/daily-reminder",
+    },
+    {
+      id: "calendar",
+      label: "Ngày đặc biệt",
+      bg: "#ec4899",
+      icon: <CalendarDays size={24} color="#fff" />,
+      route: "/(tabs)/calendar",
+    },
+  ];
+
+  const handleTilePress = useCallback(
+    (route: string) => {
+      router.push(route as any);
+    },
+    [router]
+  );
+
+  const handleEntryPress = useCallback((_id: string) => {
+    // TODO: navigate to entry detail screen
+  }, []);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
+
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 32 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
         {/* ── Hero Card ── */}
-        <View
-          className="mx-4 mt-4 p-6"
-          style={{
-            backgroundColor: "#f43f5e",
-            borderRadius: 20,
-            shadowColor: "#f43f5e",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.3,
-            shadowRadius: 16,
-            elevation: 12,
-          }}
-        >
-          <Text className="text-2xl font-extrabold text-white mb-1">
-            ♥ Thai Hoc cua ban
-          </Text>
-          <Text className="text-white opacity-90 text-base mb-5">
-            Ban da luu giu {totalCount} ki niem tuyet voi
-          </Text>
-          <View className="flex-row gap-3">
-            <Pressable
-              className="flex-1 items-center py-3 active:opacity-80"
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 14,
-              }}
-              onPress={() => router.push("/add")}
-            >
-              <Text className="font-bold" style={{ color: "#f43f5e" }}>
-                Them moi
-              </Text>
-            </Pressable>
-            <Pressable
-              className="flex-1 items-center py-3 active:opacity-80"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.25)",
-                borderRadius: 14,
-              }}
-              onPress={() => router.push("/chat")}
-            >
-              <Text className="font-bold text-white">Chat AI</Text>
-            </Pressable>
-          </View>
-        </View>
+        <HeroCard />
 
-        {/* ── Upcoming Dates ── */}
-        <View className="mt-6 px-4">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text
-              className="text-lg font-bold"
-              style={{ color: "#1e1b2e" }}
-            >
-              Sap toi
+        {/* ── Sắp tới ── */}
+        <View style={{ marginTop: 24 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingHorizontal: 16,
+              marginBottom: 12,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "700", color: TEXT_PRIMARY }}>
+              Sắp tới
             </Text>
             <Pressable
-              className="flex-row items-center active:opacity-80"
-              onPress={() => router.push("/calendar")}
+              onPress={() => router.push("/(tabs)/calendar")}
+              style={{ flexDirection: "row", alignItems: "center" }}
+              hitSlop={8}
             >
               <Text
-                className="text-sm font-semibold mr-1"
-                style={{ color: "#f43f5e" }}
+                style={{
+                  fontSize: 11,
+                  fontWeight: "700",
+                  color: PRIMARY,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
               >
-                Xem tat ca
+                Xem tất cả
               </Text>
-              <ChevronRight size={16} color="#f43f5e" />
             </Pressable>
           </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12 }}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 4 }}
           >
-            {mockUpcomingDates.map((item) => {
-              const days = getDaysUntil(item.date);
-              const urgencyColor = getUrgencyColor(days);
-              return (
-                <View
-                  key={item.id}
-                  className="p-4"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: 20,
-                    width: 160,
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.06,
-                    shadowRadius: 8,
-                    elevation: 3,
-                  }}
-                >
-                  <Text className="text-3xl mb-2">{item.emoji}</Text>
-                  <View
-                    className="self-start px-3 py-1 mb-2"
-                    style={{
-                      backgroundColor: urgencyColor,
-                      borderRadius: 12,
-                    }}
-                  >
-                    <Text className="text-white text-xs font-bold">
-                      {days === 0
-                        ? "Hom nay!"
-                        : days < 0
-                          ? `Da qua ${Math.abs(days)} ngay`
-                          : `Con ${days} ngay`}
-                    </Text>
-                  </View>
-                  <Text
-                    className="font-bold text-sm mb-1"
-                    style={{ color: "#1e1b2e" }}
-                    numberOfLines={2}
-                  >
-                    {item.title}
-                  </Text>
-                  <Text className="text-xs" style={{ color: "#9ca3af" }}>
-                    {formatDate(item.date)}
-                  </Text>
-                </View>
-              );
-            })}
+            {MOCK_UPCOMING.map((item) => (
+              <UpcomingCard key={item.id} item={item} />
+            ))}
           </ScrollView>
         </View>
 
-        {/* ── Warning Section ── */}
-        {mockWarnings.length > 0 && (
-          <View className="mx-4 mt-6">
-            <View
-              className="p-4 flex-row items-start"
-              style={{
-                backgroundColor: "#fef2f2",
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: "#fecaca",
-              }}
-            >
-              <AlertTriangle
-                size={22}
-                color="#ef4444"
-                style={{ marginRight: 12, marginTop: 2 }}
-              />
-              <View className="flex-1">
-                <Text
-                  className="font-bold text-base mb-2"
-                  style={{ color: "#ef4444" }}
-                >
-                  Luu y quan trong
-                </Text>
-                <View className="flex-row flex-wrap gap-2">
-                  {mockWarnings.map((w) => (
-                    <View
-                      key={w.id}
-                      className="px-3 py-1"
-                      style={{
-                        backgroundColor: "#fee2e2",
-                        borderRadius: 12,
-                      }}
-                    >
-                      <Text
-                        className="text-xs font-semibold"
-                        style={{ color: "#dc2626" }}
-                      >
-                        {w.type === "allergy" ? "⚠️" : "🚫"} {w.label}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* ── Category Stats Grid ── */}
-        <View className="mt-6 px-4">
+        {/* ── Tiện ích ── */}
+        <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
           <Text
-            className="text-lg font-bold mb-3"
-            style={{ color: "#1e1b2e" }}
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              color: TEXT_PRIMARY,
+              marginBottom: 16,
+            }}
           >
-            Danh muc
+            Tiện ích
           </Text>
-          <View className="flex-row flex-wrap" style={{ gap: 10 }}>
-            {categoryStats.map((stat) => (
-              <View
-                key={stat.category}
-                className="items-center p-3"
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: 20,
-                  width: "31%",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.04,
-                  shadowRadius: 4,
-                  elevation: 2,
-                }}
-              >
-                <Text className="text-2xl mb-1">{stat.emoji}</Text>
-                <Text
-                  className="text-xs font-semibold mb-0.5"
-                  style={{ color: "#1e1b2e" }}
-                  numberOfLines={1}
-                >
-                  {stat.label}
-                </Text>
-                <Text
-                  className="text-xs font-bold"
-                  style={{ color: "#f43f5e" }}
-                >
-                  {stat.count}
-                </Text>
-              </View>
+          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+            {appTiles.map((tile) => (
+              <AppTileItem
+                key={tile.id}
+                item={tile}
+                onPress={() => handleTilePress(tile.route)}
+              />
             ))}
           </View>
         </View>
 
-        {/* ── Recent Entries ── */}
-        <View className="mt-6 px-4">
-          <Text
-            className="text-lg font-bold mb-3"
-            style={{ color: "#1e1b2e" }}
+        {/* ── Ghi chép gần đây ── */}
+        <View style={{ marginTop: 8, paddingHorizontal: 16 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
           >
-            Gan day
-          </Text>
-          {recentEntries.map((entry) => {
-            const cat = CATEGORIES[entry.category];
-            return (
-              <View
-                key={entry.id}
-                className="flex-row items-center p-4 mb-3"
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: 20,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.04,
-                  shadowRadius: 4,
-                  elevation: 2,
-                }}
+            <Text style={{ fontSize: 16, fontWeight: "700", color: TEXT_PRIMARY }}>
+              Ghi chép gần đây
+            </Text>
+            <Pressable
+              onPress={() => router.push("/entries/all")}
+              hitSlop={8}
+            >
+              <Text
+                style={{ fontSize: 11, fontWeight: "700", color: PRIMARY }}
               >
-                <Text className="text-2xl mr-3">{cat?.emoji || "📝"}</Text>
-                <View className="flex-1">
-                  <Text
-                    className="font-bold text-sm"
-                    style={{ color: "#1e1b2e" }}
-                    numberOfLines={1}
-                  >
-                    {entry.title}
-                  </Text>
-                  <Text className="text-xs mt-0.5" style={{ color: "#9ca3af" }}>
-                    {formatDate(entry.date)}
-                  </Text>
-                </View>
-                <Text className="text-lg mr-3">
-                  {SENTIMENT_EMOJI[entry.sentiment] || "😐"}
-                </Text>
-                <Pressable
-                  className="p-2 active:opacity-80"
-                  onPress={() => handleDelete(entry.id)}
-                  style={{ borderRadius: 10 }}
-                >
-                  <Trash2 size={18} color="#9ca3af" />
-                </Pressable>
-              </View>
-            );
-          })}
+                Xem tất cả {">"}
+              </Text>
+            </Pressable>
+          </View>
+          {MOCK_RECENT.map((entry) => (
+            <RecentEntryRow
+              key={entry.id}
+              item={entry}
+              onPress={() => handleEntryPress(entry.id)}
+            />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -1,314 +1,777 @@
-import React, { useState } from 'react';
+// ============================================================
+// Settings Screen - MyLoveThaiHoc
+// Rebuilt v2.0 — based on stitch/c_i_t_ng_i_d_ng/code.html
+// + BRD v2.0 + SRS v2.0 (FR-SET-001/002/003)
+// ============================================================
+
+import React, { memo, useCallback, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
   Pressable,
-  Linking,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  Switch,
+  Alert,
+  StatusBar,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  Bell,
+  Cake,
+  ChevronRight,
+  CloudUpload,
   Database,
-  Brain,
-  MessageSquare,
-  Send,
-  Zap,
-  ExternalLink,
+  FileText,
+  Globe,
   Heart,
-} from 'lucide-react-native';
+  HelpCircle,
+  Image,
+  Lock,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Pencil,
+  Send,
+  Shield,
+  Sun,
+  Trash2,
+  User,
+} from "lucide-react-native";
+import { useRouter } from "expo-router";
 
-interface ConnectionItem {
-  label: string;
-  service: string;
-  description: string;
+// ─── Constants ───────────────────────────────────────────────
+
+const PRIMARY = "#f43f5e";
+const BG = "#f8f5f6";
+
+// ─── Mock user data ───────────────────────────────────────────
+
+const USER = {
+  name: "Nguyễn Văn A",
+  email: "nguyenvana@gmail.com",
+  phone: "0912 345 678",
+  initial: "N",
+  stats: {
+    notes: 56,
+    specialDates: 4,
+    chats: 12,
+  },
+};
+
+// ─── Reusable row components ──────────────────────────────────
+
+/** Nav row — pressable, arrow on right */
+const NavRow = memo(function NavRow({
+  icon,
+  iconBg,
+  label,
+  onPress,
+  hasBorderTop = true,
+}: {
   icon: React.ReactNode;
   iconBg: string;
-  connected: boolean;
-}
+  label: string;
+  onPress?: () => void;
+  hasBorderTop?: boolean;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={4}
+      style={({ pressed }) => ({
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 13,
+        gap: 14,
+        backgroundColor: pressed ? "#f8fafc" : "transparent",
+        borderTopWidth: hasBorderTop ? 1 : 0,
+        borderTopColor: "#f8fafc",
+      })}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 12,
+          backgroundColor: iconBg,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </View>
+      <Text
+        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
+      >
+        {label}
+      </Text>
+      <ChevronRight size={16} color="#cbd5e1" />
+    </Pressable>
+  );
+});
+
+/** Info row — static value on right */
+const InfoRow = memo(function InfoRow({
+  icon,
+  iconBg,
+  label,
+  value,
+  valueColor = PRIMARY,
+  hasBorderTop = true,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  value: string;
+  valueColor?: string;
+  hasBorderTop?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 13,
+        gap: 14,
+        borderTopWidth: hasBorderTop ? 1 : 0,
+        borderTopColor: "#f8fafc",
+      }}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 12,
+          backgroundColor: iconBg,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </View>
+      <Text
+        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
+      >
+        {label}
+      </Text>
+      <Text style={{ fontSize: 13, fontWeight: "600", color: valueColor }}>
+        {value}
+      </Text>
+    </View>
+  );
+});
+
+/** Toggle row — Switch on right */
+const ToggleRow = memo(function ToggleRow({
+  icon,
+  iconBg,
+  label,
+  value,
+  onValueChange,
+  hasBorderTop = true,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  label: string;
+  value: boolean;
+  onValueChange: (v: boolean) => void;
+  hasBorderTop?: boolean;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 12,
+        paddingVertical: 12,
+        gap: 14,
+        borderTopWidth: hasBorderTop ? 1 : 0,
+        borderTopColor: "#f8fafc",
+      }}
+    >
+      <View
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: 12,
+          backgroundColor: iconBg,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </View>
+      <Text
+        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
+      >
+        {label}
+      </Text>
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        trackColor={{ false: "#e2e8f0", true: "#fda4af" }}
+        thumbColor={value ? PRIMARY : "#f1f5f9"}
+      />
+    </View>
+  );
+});
+
+/** Section wrapper */
+const SettingsSection = memo(function SettingsSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <View style={{ marginBottom: 24 }}>
+      <Text
+        style={{
+          fontSize: 11,
+          fontWeight: "700",
+          color: "#94a3b8",
+          textTransform: "uppercase",
+          letterSpacing: 1.5,
+          marginBottom: 10,
+          paddingHorizontal: 4,
+        }}
+      >
+        {title}
+      </Text>
+      <View
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: "#f1f5f9",
+          overflow: "hidden",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.04,
+          shadowRadius: 6,
+          elevation: 2,
+        }}
+      >
+        {children}
+      </View>
+    </View>
+  );
+});
+
+// ─── Main Screen ─────────────────────────────────────────────
 
 export default function SettingsScreen() {
-  // Mock connection status - in real app, check env vars
-  const [connections] = useState<ConnectionItem[]>([
-    {
-      label: 'Database',
-      service: 'Supabase',
-      description: 'Lưu trữ dữ liệu kỉ niệm',
-      icon: <Database size={20} color="#10b981" />,
-      iconBg: '#ecfdf5',
-      connected: true,
-    },
-    {
-      label: 'AI',
-      service: 'OpenRouter',
-      description: 'Trí tuệ nhân tạo (AI)',
-      icon: <Brain size={20} color="#8b5cf6" />,
-      iconBg: '#f3e8ff',
-      connected: true,
-    },
-    {
-      label: 'Telegram',
-      service: 'Telegram Bot',
-      description: 'Thông báo & tương tác',
-      icon: <MessageSquare size={20} color="#3b82f6" />,
-      iconBg: '#eff6ff',
-      connected: false,
-    },
-  ]);
+  const router = useRouter();
 
-  const setupGuides = [
-    {
-      step: 1,
-      title: 'Kết nối Database',
-      description: 'Tạo project Supabase và cấu hình kết nối',
-      url: 'https://supabase.com',
-      color: '#10b981',
-    },
-    {
-      step: 2,
-      title: 'Cấu hình API OpenRouter',
-      description: 'Đăng ký và lấy API key từ OpenRouter',
-      url: 'https://openrouter.ai',
-      color: '#8b5cf6',
-    },
-    {
-      step: 3,
-      title: 'Tạo Telegram Bot',
-      description: 'Tạo bot qua BotFather để nhận thông báo',
-      url: 'https://t.me/BotFather',
-      color: '#3b82f6',
-    },
-  ];
+  // Notification toggles
+  const [notifySpecialDate, setNotifySpecialDate] = useState(true);
+  const [notifyDailyTip, setNotifyDailyTip] = useState(true);
+  const [notifyTelegram, setNotifyTelegram] = useState(true);
+  const [notifyEmail, setNotifyEmail] = useState(false);
 
-  const handleOpenLink = (url: string) => {
-    Linking.openURL(url);
-  };
+  const handleLogout = useCallback(() => {
+    Alert.alert(
+      "Đăng xuất",
+      "Bạn có chắc muốn đăng xuất không?",
+      [
+        { text: "Huỷ", style: "cancel" },
+        {
+          text: "Đăng xuất",
+          style: "destructive",
+          onPress: () => {
+            // TODO: Supabase signOut + clear session
+            router.replace("/(auth)/login");
+          },
+        },
+      ]
+    );
+  }, [router]);
+
+  const handleClearCache = useCallback(() => {
+    Alert.alert(
+      "Xoá cache",
+      "Xoá toàn bộ dữ liệu cache?",
+      [
+        { text: "Huỷ", style: "cancel" },
+        {
+          text: "Xoá",
+          style: "destructive",
+          onPress: () => {
+            // TODO: clear AsyncStorage cache
+          },
+        },
+      ]
+    );
+  }, []);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#fdf2f8' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
+
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 32 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 48 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View className="px-5 pt-4 pb-2">
-          <Text className="text-2xl font-bold" style={{ color: '#1f2937' }}>
-            Cài đặt
-          </Text>
-          <Text className="text-sm mt-1" style={{ color: '#6b7280' }}>
-            Quản lý kết nối & cấu hình
-          </Text>
-        </View>
-
-        {/* Connection Status Section */}
-        <View className="px-5 mt-5">
-          <Text
-            className="text-xs font-bold mb-3 tracking-wider"
-            style={{ color: '#f43f5e' }}
-          >
-            TRẠNG THÁI KẾT NỐI
-          </Text>
+        {/* ── Profile Card (gradient rose → purple) ── */}
+        <View style={{ paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 }}>
           <View
-            className="rounded-2xl overflow-hidden"
             style={{
-              backgroundColor: '#ffffff',
-              borderRadius: 20,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.05,
-              shadowRadius: 6,
-              elevation: 2,
+              borderRadius: 28,
+              overflow: "hidden",
+              shadowColor: "#f43f5e",
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.25,
+              shadowRadius: 20,
+              elevation: 10,
             }}
           >
-            {connections.map((conn, index) => (
-              <View
-                key={conn.label}
-                className="flex-row items-center px-4 py-3.5"
-                style={
-                  index < connections.length - 1
-                    ? { borderBottomWidth: 1, borderBottomColor: '#f3f4f6' }
-                    : undefined
-                }
-              >
-                <View
-                  className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                  style={{ backgroundColor: conn.iconBg }}
-                >
-                  {conn.icon}
-                </View>
-                <View className="flex-1">
-                  <Text
-                    className="text-sm font-semibold"
-                    style={{ color: '#1f2937' }}
-                  >
-                    {conn.service}
-                  </Text>
-                  <Text className="text-xs" style={{ color: '#9ca3af' }}>
-                    {conn.description}
-                  </Text>
-                </View>
-                <View className="flex-row items-center">
-                  <View
-                    className="w-2.5 h-2.5 rounded-full mr-1.5"
-                    style={{
-                      backgroundColor: conn.connected ? '#10b981' : '#ef4444',
-                    }}
-                  />
-                  <Text
-                    className="text-xs font-medium"
-                    style={{
-                      color: conn.connected ? '#10b981' : '#ef4444',
-                    }}
-                  >
-                    {conn.connected ? 'Đã kết nối' : 'Chưa kết nối'}
-                  </Text>
-                </View>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* Test Buttons */}
-        <View className="px-5 mt-5">
-          <View className="flex-row">
-            <View style={{ flex: 1, marginRight: 6 }}>
-              <Pressable
-                className="items-center py-4 rounded-2xl"
-                style={{
-                  backgroundColor: '#ffffff',
-                  borderRadius: 20,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 6,
-                  elevation: 2,
-                }}
-              >
-                <View
-                  className="w-10 h-10 rounded-full items-center justify-center mb-2"
-                  style={{ backgroundColor: '#eff6ff' }}
-                >
-                  <Send size={18} color="#3b82f6" />
-                </View>
-                <Text
-                  className="text-xs font-semibold text-center"
-                  style={{ color: '#1f2937' }}
-                >
-                  Gửi test Telegram
-                </Text>
-              </Pressable>
-            </View>
-            <View style={{ flex: 1, marginLeft: 6 }}>
-              <Pressable
-                className="items-center py-4 rounded-2xl"
-                style={{
-                  backgroundColor: '#ffffff',
-                  borderRadius: 20,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 6,
-                  elevation: 2,
-                }}
-              >
-                <View
-                  className="w-10 h-10 rounded-full items-center justify-center mb-2"
-                  style={{ backgroundColor: '#f3e8ff' }}
-                >
-                  <Zap size={18} color="#8b5cf6" />
-                </View>
-                <Text
-                  className="text-xs font-semibold text-center"
-                  style={{ color: '#1f2937' }}
-                >
-                  Test AI + Telegram
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-
-        {/* Setup Guide */}
-        <View className="px-5 mt-6">
-          <Text
-            className="text-xs font-bold mb-3 tracking-wider"
-            style={{ color: '#f43f5e' }}
-          >
-            HƯỚNG DẪN THIẾT LẬP
-          </Text>
-          {setupGuides.map((guide) => (
-            <Pressable
-              key={guide.step}
-              onPress={() => handleOpenLink(guide.url)}
-              className="flex-row items-center p-4 mb-3 rounded-2xl"
+            {/* Rose base */}
+            <View
               style={{
-                backgroundColor: '#ffffff',
-                borderRadius: 20,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 1 },
-                shadowOpacity: 0.05,
-                shadowRadius: 6,
-                elevation: 2,
+                backgroundColor: PRIMARY,
+                padding: 24,
               }}
             >
+              {/* Purple overlay (simulate gradient) */}
               <View
-                className="w-8 h-8 rounded-full items-center justify-center mr-3"
-                style={{ backgroundColor: guide.color + '15' }}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  width: "55%",
+                  height: "100%",
+                  backgroundColor: "#9333ea",
+                  opacity: 0.55,
+                }}
+              />
+
+              {/* Top row: avatar + name + edit */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 20,
+                }}
               >
-                <Text
-                  className="text-sm font-bold"
-                  style={{ color: guide.color }}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+                  {/* Avatar */}
+                  <View
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: 32,
+                      backgroundColor: "rgba(255,255,255,0.28)",
+                      borderWidth: 2,
+                      borderColor: "rgba(255,255,255,0.5)",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 24,
+                        fontWeight: "800",
+                        color: "#fff",
+                      }}
+                    >
+                      {USER.initial}
+                    </Text>
+                  </View>
+
+                  {/* Name / contact */}
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "800",
+                        color: "#fff",
+                      }}
+                    >
+                      {USER.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "rgba(255,255,255,0.8)",
+                        marginTop: 2,
+                      }}
+                    >
+                      {USER.email}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "rgba(255,255,255,0.8)",
+                      }}
+                    >
+                      {USER.phone}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Edit button */}
+                <Pressable
+                  onPress={() => router.push("/settings/personal-info")}
+                  hitSlop={8}
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 12,
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                 >
-                  {guide.step}
-                </Text>
+                  <Pencil size={16} color="#fff" />
+                </Pressable>
               </View>
-              <View className="flex-1">
-                <Text
-                  className="text-sm font-bold"
-                  style={{ color: '#1f2937' }}
+
+              {/* Stats row */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  backgroundColor: "rgba(0,0,0,0.12)",
+                  borderRadius: 16,
+                  paddingVertical: 12,
+                  paddingHorizontal: 8,
+                }}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    borderRightWidth: 1,
+                    borderRightColor: "rgba(255,255,255,0.15)",
+                  }}
                 >
-                  {guide.title}
-                </Text>
-                <Text className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>
-                  {guide.description}
-                </Text>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "800",
+                      color: "#fff",
+                      lineHeight: 22,
+                    }}
+                  >
+                    {USER.stats.notes}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontWeight: "700",
+                      color: "rgba(255,255,255,0.75)",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.8,
+                      marginTop: 2,
+                    }}
+                  >
+                    Ghi chú
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: "center",
+                    borderRightWidth: 1,
+                    borderRightColor: "rgba(255,255,255,0.15)",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "800",
+                      color: "#fff",
+                      lineHeight: 22,
+                    }}
+                  >
+                    {USER.stats.specialDates}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontWeight: "700",
+                      color: "rgba(255,255,255,0.75)",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.8,
+                      marginTop: 2,
+                    }}
+                  >
+                    Ngày đặc biệt
+                  </Text>
+                </View>
+                <View style={{ flex: 1, alignItems: "center" }}>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "800",
+                      color: "#fff",
+                      lineHeight: 22,
+                    }}
+                  >
+                    {USER.stats.chats}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontWeight: "700",
+                      color: "rgba(255,255,255,0.75)",
+                      textTransform: "uppercase",
+                      letterSpacing: 0.8,
+                      marginTop: 2,
+                    }}
+                  >
+                    Cuộc chat
+                  </Text>
+                </View>
               </View>
-              <ExternalLink size={16} color="#9ca3af" />
-            </Pressable>
-          ))}
+            </View>
+          </View>
         </View>
 
-        {/* Footer Card */}
-        <View className="px-5 mt-4">
+        {/* ── Sections ── */}
+        <View style={{ paddingHorizontal: 16, paddingTop: 20 }}>
+
+          {/* Thông tin người yêu */}
+          <SettingsSection title="Thông tin người yêu">
+            <InfoRow
+              icon={<User size={18} color="#ec4899" />}
+              iconBg="#fce7f3"
+              label="Tên gọi"
+              value="Thái Học"
+              hasBorderTop={false}
+            />
+            <InfoRow
+              icon={<Cake size={18} color="#a855f7" />}
+              iconBg="#f3e8ff"
+              label="Sinh nhật"
+              value="15 tháng 8"
+            />
+            <InfoRow
+              icon={<Heart size={18} color="#f59e0b" />}
+              iconBg="#fef3c7"
+              label="Biệt danh"
+              value="Em bé"
+            />
+            <InfoRow
+              icon={<Image size={18} color="#3b82f6" />}
+              iconBg="#eff6ff"
+              label="Ảnh đại diện"
+              value="Đã tải lên"
+            />
+            <Pressable
+              onPress={() => router.push("/settings/partner-info")}
+              style={({ pressed }) => ({
+                margin: 8,
+                marginTop: 6,
+                paddingVertical: 13,
+                borderRadius: 14,
+                alignItems: "center",
+                backgroundColor: pressed ? "#fee2e9" : "#fff1f4",
+              })}
+              hitSlop={4}
+            >
+              <Text
+                style={{ fontSize: 13, fontWeight: "700", color: PRIMARY }}
+              >
+                Chỉnh sửa thông tin người yêu
+              </Text>
+            </Pressable>
+          </SettingsSection>
+
+          {/* Tài khoản */}
+          <SettingsSection title="Tài khoản">
+            <NavRow
+              icon={<User size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Thông tin cá nhân"
+              onPress={() => router.push("/settings/personal-info")}
+              hasBorderTop={false}
+            />
+            <NavRow
+              icon={<Lock size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Đổi mật khẩu"
+              onPress={() => router.push("/settings/security")}
+            />
+            <NavRow
+              icon={<Shield size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Bảo mật"
+              onPress={() => router.push("/settings/security")}
+            />
+            <NavRow
+              icon={<CloudUpload size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Sao lưu & đồng bộ"
+              onPress={() => router.push("/settings/backup")}
+            />
+          </SettingsSection>
+
+          {/* Thông báo */}
+          <SettingsSection title="Thông báo">
+            <ToggleRow
+              icon={<Bell size={18} color={PRIMARY} />}
+              iconBg="#fff1f4"
+              label="Nhắc nhở ngày đặc biệt"
+              value={notifySpecialDate}
+              onValueChange={setNotifySpecialDate}
+              hasBorderTop={false}
+            />
+            <ToggleRow
+              icon={<Sun size={18} color={PRIMARY} />}
+              iconBg="#fff1f4"
+              label="Gợi ý hàng ngày"
+              value={notifyDailyTip}
+              onValueChange={setNotifyDailyTip}
+            />
+            <ToggleRow
+              icon={<Send size={18} color={PRIMARY} />}
+              iconBg="#fff1f4"
+              label="Thông báo Telegram"
+              value={notifyTelegram}
+              onValueChange={setNotifyTelegram}
+            />
+            <ToggleRow
+              icon={<Mail size={18} color={PRIMARY} />}
+              iconBg="#fff1f4"
+              label="Thông báo Email"
+              value={notifyEmail}
+              onValueChange={setNotifyEmail}
+            />
+          </SettingsSection>
+
+          {/* Chung */}
+          <SettingsSection title="Chung">
+            <InfoRow
+              icon={<Sun size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Giao diện"
+              value="Sáng"
+              hasBorderTop={false}
+            />
+            <InfoRow
+              icon={<Globe size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Ngôn ngữ"
+              value="Tiếng Việt"
+            />
+            <InfoRow
+              icon={<Database size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Bộ nhớ"
+              value="124 MB"
+              valueColor="#94a3b8"
+            />
+            <NavRow
+              icon={<Trash2 size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Xoá dữ liệu cache"
+              onPress={handleClearCache}
+            />
+          </SettingsSection>
+
+          {/* Hỗ trợ */}
+          <SettingsSection title="Hỗ trợ">
+            <NavRow
+              icon={<HelpCircle size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Trung tâm trợ giúp"
+              hasBorderTop={false}
+            />
+            <NavRow
+              icon={<MessageSquare size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Góp ý & phản hồi"
+            />
+            <NavRow
+              icon={<FileText size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Chính sách bảo mật"
+            />
+            <NavRow
+              icon={<FileText size={18} color="#64748b" />}
+              iconBg="#f1f5f9"
+              label="Điều khoản sử dụng"
+            />
+          </SettingsSection>
+
+          {/* ── Footer brand card ── */}
           <View
-            className="items-center py-6 rounded-2xl"
             style={{
-              backgroundColor: '#f43f5e',
-              borderRadius: 20,
-              shadowColor: '#f43f5e',
+              borderRadius: 24,
+              overflow: "hidden",
+              marginBottom: 20,
+              shadowColor: "#f43f5e",
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
+              shadowOpacity: 0.15,
               shadowRadius: 12,
-              elevation: 6,
+              elevation: 4,
             }}
           >
-            <Heart size={28} color="#ffffff" fill="#ffffff" />
-            <Text
-              className="text-lg font-bold mt-2"
-              style={{ color: '#ffffff' }}
+            <View
+              style={{
+                backgroundColor: "rgba(244,63,94,0.07)",
+                paddingVertical: 32,
+                paddingHorizontal: 24,
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "rgba(244,63,94,0.12)",
+                borderRadius: 24,
+              }}
             >
-              MyLoveThaiHoc
-            </Text>
-            <Text className="text-xs mt-1" style={{ color: '#fecdd3' }}>
-              Phiên bản 2.0 · 12 entries
-            </Text>
-            <Text
-              className="text-xs font-semibold mt-3 tracking-widest"
-              style={{ color: '#ffffff', opacity: 0.8 }}
-            >
-              MADE WITH LOVE FOR THÁI HOC
-            </Text>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "800",
+                  color: PRIMARY,
+                }}
+              >
+                MyLoveThaiHoc
+              </Text>
+              <Text
+                style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}
+              >
+                Phiên bản 2.0.0 (Build 2026)
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "500",
+                  color: "#64748b",
+                  marginTop: 12,
+                  fontStyle: "italic",
+                }}
+              >
+                Made with love for Thái Học 💕
+              </Text>
+            </View>
           </View>
+
+          {/* ── Logout button ── */}
+          <Pressable
+            onPress={handleLogout}
+            hitSlop={4}
+            style={({ pressed }) => ({
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              paddingVertical: 16,
+              borderRadius: 16,
+              borderWidth: 2,
+              borderColor: "rgba(244,63,94,0.25)",
+              backgroundColor: pressed ? "#fff1f4" : "transparent",
+            })}
+          >
+            <LogOut size={18} color={PRIMARY} />
+            <Text style={{ fontSize: 15, fontWeight: "700", color: PRIMARY }}>
+              Đăng xuất
+            </Text>
+          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>

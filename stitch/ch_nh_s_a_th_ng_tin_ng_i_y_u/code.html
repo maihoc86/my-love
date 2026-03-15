@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43e5c",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "1.25rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .rose-gradient {
+            background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100">
+<!-- Header Sticky -->
+<header class="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-primary/10 px-4 py-3 flex items-center justify-between shadow-sm">
+<button class="flex items-center justify-center text-slate-700 dark:text-slate-300">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold flex-1 text-center font-display">Thông tin người yêu</h1>
+<button class="text-primary font-bold text-base px-2">Lưu</button>
+</header>
+<main class="max-w-md mx-auto p-4 pb-12">
+<!-- Avatar Section -->
+<div class="flex flex-col items-center mt-6 mb-8">
+<div class="relative">
+<div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
+<span class="material-symbols-outlined text-primary/40 text-[48px]">person</span>
+<!-- Placeholder image example -->
+<img alt="" class="w-full h-full object-cover hidden" data-alt="Trang cá nhân ảnh người yêu xinh xắn" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzqvkBP6uNaleKzVFk4cr1eQu7UEjR9Psi0I2SYdFE4L9nCM64tfiMm_vcDgXqJqGVKONrc7VloTp-ECclkguSro-5LmjCMgy4BgugLiCREFvVb8LlVyvs_DwPktvgH2CvVGbehJydDZ9DTdbakIBIDDmFqNVN3t7wCGlhCAOzeb9hBK1qWh0xYoOc9stgg4Q-kQiRAsSEMir_brigWkDR9Kd_1glXy86qYVWB6hgXayCHKZbz6Yf9NsolmmzPUo9TXDPMD_qn4Bvz"/>
+</div>
+<button class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400 text-[18px]">photo_camera</span>
+</button>
+</div>
+<p class="text-xs text-slate-400 mt-3 font-medium uppercase tracking-wider">Chạm để thay đổi ảnh</p>
+</div>
+<!-- Form Card -->
+<div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm space-y-5 border border-primary/5">
+<!-- Tên gọi -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-slate-600 dark:text-slate-400 ml-1">Tên gọi</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]">person</span>
+<input class="w-full pl-10 pr-4 py-3 bg-background-light dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 font-medium" placeholder="Thái Học" type="text"/>
+</div>
+</div>
+<!-- Biệt danh -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-slate-600 dark:text-slate-400 ml-1">Biệt danh</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]">favorite</span>
+<input class="w-full pl-10 pr-4 py-3 bg-background-light dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 font-medium" placeholder="Em bé" type="text"/>
+</div>
+</div>
+<!-- Sinh nhật -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-slate-600 dark:text-slate-400 ml-1">Sinh nhật</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-primary text-[20px]">cake</span>
+<input class="w-full pl-10 pr-4 py-3 bg-background-light dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-slate-800 dark:text-slate-100 font-medium cursor-pointer" readonly="" type="text" value="15/08/2000"/>
+<span class="material-symbols-outlined absolute right-3 text-slate-300 text-[18px]">calendar_today</span>
+</div>
+</div>
+<!-- Số điện thoại -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-slate-600 dark:text-slate-400 ml-1">Số điện thoại</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-[20px]">phone</span>
+<input class="w-full pl-10 pr-4 py-3 bg-background-light dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 font-medium" placeholder="Nhập số điện thoại" type="tel"/>
+</div>
+</div>
+<!-- Ghi chú -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-slate-600 dark:text-slate-400 ml-1">Ghi chú</label>
+<textarea class="w-full p-4 bg-background-light dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 font-medium resize-none" placeholder="Thêm ghi chú về em..." rows="3"></textarea>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="mt-8 space-y-4">
+<button class="rose-gradient w-full py-4 rounded-xl text-white font-bold text-base shadow-lg shadow-rose-200 dark:shadow-rose-900/20 active:scale-[0.98] transition-transform">
+                Lưu thay đổi
+            </button>
+<button class="w-full text-red-400 font-medium text-sm py-2 text-center hover:text-red-500 transition-colors">
+                Xoá tài khoản
+            </button>
+</div>
+<!-- App Branding -->
+<div class="mt-12 text-center">
+<p class="text-slate-300 dark:text-slate-700 text-xs font-medium italic">MyLoveThaiHoc v1.0</p>
+</div>
+</main>
+</body></html>

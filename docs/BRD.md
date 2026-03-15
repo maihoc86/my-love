@@ -76,9 +76,14 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 |--------|--------|---------|
 | **M1 - Dashboard** | Tổng quan: hero card, mini-app grid (8 features), quick stats, upcoming dates, warnings, recent entries | P0 |
 | **M2 - Entry Management** | CRUD ghi chú: 11 categories, 5 sentiments, tags, event dates | P0 |
+| **M2.1 - All Notes** | Xem tất cả ghi chú: full-screen list, real-time search, filter chips theo category, sort (mới nhất/cũ nhất/A→Z), FAB thêm mới, empty state | P0 |
 | **M3 - AI Chat** | Chat NLP: text + voice input → AI parse → batch save. Lịch sử chat, gợi ý AI | P0 |
 | **M4 - Calendar** | CRUD ngày đặc biệt: countdown ring, recurring, reminder, color-coded urgency | P0 |
 | **M5 - Settings** | Profile, thông tin người yêu, tài khoản, thông báo (toggles), chung, hỗ trợ | P0 |
+| **M5.1 - Partner Info** | Chỉnh sửa thông tin người yêu: tên gọi, biệt danh, sinh nhật, SĐT, ghi chú, ảnh đại diện | P0 |
+| **M5.2 - Personal Info** | Thông tin cá nhân: họ tên, email, SĐT, ngày tham gia. Toggle readonly/editable | P0 |
+| **M5.3 - Security** | Bảo mật: sinh trắc học, OTP 2 bước, đổi mật khẩu, phiên đăng nhập, xoá tài khoản | P0 |
+| **M5.4 - Backup** | Sao lưu & Đồng bộ: auto backup, Wi-Fi only, tần suất, dung lượng, lịch sử, xoá cache | P0 |
 | **M6 - Authentication** | Login (email/phone + password), Google OAuth, OTP verification, đăng ký, quên mật khẩu | P0 |
 | **M7 - Date Map** | Bản đồ hẹn hò eKMap: gợi ý quán ăn, cafe, homestay, khu vui chơi, TTTM. AI suggest dựa trên sở thích | P1 |
 | **M8 - Navigation** | Dẫn đường turn-by-turn đến địa điểm hẹn hò, chọn phương tiện (ô tô/xe máy/đi bộ) | P1 |
@@ -121,6 +126,17 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 - Lọc và tìm kiếm theo category, sentiment, keyword
 - Hiển thị ghi chú gần đây trên dashboard
 
+### FR1.1: Xem Tất Cả Ghi Chú (M2.1)
+- Màn hình full-screen, mở từ "Xem tất cả >" trên Dashboard
+- **Search bar** sticky dưới header: real-time filter theo title và detail, nút clear (×)
+- **Filter chips** horizontal scroll: Tất cả (default) + 11 category chips có icon + count badge
+- **Sort**: dropdown/picker — Mới nhất / Cũ nhất / A→Z
+- **Results counter**: hiển thị "X ghi chú" kết quả sau khi lọc
+- **Entry list**: mỗi card có icon circle 44px + title + detail (optional) + category·time + nút "Chi tiết"
+- **FAB** (+) bottom-right → navigate đến Add Entry screen
+- **Empty state** khi không có kết quả: icon 🔍 + message + nút "Xoá bộ lọc"
+- **Swipe-to-delete** trên mỗi card (Android: trailing action, iOS: swipe left)
+
 ### FR2: AI Chat (Natural Language Processing)
 - Nhập văn bản tự nhiên bằng tiếng Việt
 - AI phân tích và extract nhiều entries từ 1 câu
@@ -144,10 +160,38 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 - Cảnh báo dị ứng / điều ghét
 - Quick actions (thêm mới, chat AI)
 
-### FR6: Settings
-- Hiển thị trạng thái kết nối (Supabase, OpenRouter, Telegram)
-- Test connection buttons
-- Hướng dẫn cài đặt ban đầu
+### FR6: Settings (User-Facing)
+- Profile card gradient: avatar, tên, email, phone, edit button, stats row
+- Thông tin người yêu: tên gọi, biệt danh, sinh nhật, ảnh. Nút Chỉnh sửa → M5.1
+- Tài khoản: thông tin cá nhân (M5.2), đổi mật khẩu, bảo mật (M5.3), sao lưu (M5.4)
+- Thông báo: 4 toggles (ngày đặc biệt, gợi ý ngày, Telegram, email)
+- Chung: giao diện, ngôn ngữ, bộ nhớ, xoá cache
+- Hỗ trợ: trung tâm, góp ý, chính sách, điều khoản
+- Đăng xuất với alert confirm
+
+### FR6.1: Chỉnh sửa thông tin người yêu (M5.1)
+- Avatar 96px với camera overlay để đổi ảnh (expo-image-picker)
+- Form: tên gọi, biệt danh, sinh nhật (date picker), số điện thoại, ghi chú (textarea)
+- Nút "Lưu thay đổi" rose gradient — TODO: PUT Supabase users table
+- Nút "Xoá tài khoản" red text — Alert confirm 2 bước
+
+### FR6.2: Thông tin cá nhân (M5.2)
+- Profile hero card gradient rose→purple với avatar, tên, email
+- Form readonly mặc định: họ tên, email, SĐT, ngày tham gia
+- Toggle "Chỉnh sửa"/"Hủy" header → fields chuyển sang editable
+- Nút "Lưu thay đổi" slide-up từ bottom khi ở edit mode
+- TODO: PATCH Supabase auth.updateUser
+
+### FR6.3: Bảo mật (M5.3)
+- Section Xác thực: toggle sinh trắc học (Face ID/vân tay), toggle OTP 2 bước, nav row đổi mật khẩu
+- Section Phiên đăng nhập: thiết bị hiện tại + badge "Thiết bị này", nút "Đăng xuất tất cả thiết bị khác" (orange)
+- Section Nguy hiểm: xoá tài khoản (red, Alert confirm)
+
+### FR6.4: Sao lưu & Đồng bộ (M5.4)
+- Status hero card rose gradient: trạng thái đồng bộ, timestamp lần cuối, nút "Đồng bộ ngay"
+- Cài đặt: toggle tự động sao lưu, toggle Wi-Fi only, nav row tần suất, info row dung lượng + progress bar
+- Lịch sử sao lưu: 3 items với timestamp, dung lượng, badge Tự động/Thủ công
+- Nút "Xoá tất cả bản sao lưu" (red, Alert confirm)
 
 ### FR7: Authentication & Account
 - Đăng nhập bằng email/phone + mật khẩu
@@ -308,3 +352,6 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 |-----------|------|---------|----------|
 | 1.0.0 | 2026-03-14 | CTO | Initial version: 8 modules (Dashboard, Entry, AI Chat, Calendar, Settings, Telegram, Push, Offline) |
 | 2.0.0 | 2026-03-14 | CTO | Added: Auth (M6), Date Map (M7), Navigation (M8), Photo Album (M9), Love Counter (M10), Insight 360° (M11), Voice Note (M12), Daily Reminder (M13), Chat History (M17). Updated: Dashboard mini-app grid, Settings user-facing, AI Chat voice input. Total 17 modules. |
+| 2.1.0 | 2026-03-15 | CTO | Added Settings sub-screens: M5.1 Partner Info, M5.2 Personal Info, M5.3 Security, M5.4 Backup & Sync. Updated FR6 requirements. |
+| 2.2.0 | 2026-03-15 | CTO | Phase 4 implementation: M7 Date Map, M9 Photo Album, M11 Insight 360°. Refined FR8 (Map), FR9 (Album), FR11 (Insight) với chi tiết UI/UX từ Stitch designs. Thêm user stories. Các màn hình được redesign theo stitch: map 55% height + bottom sheet overlay, neuron map SVG với floating animation, album stats single card + mixed photo grid. |
+| 2.3.0 | 2026-03-15 | CTO | Added M2.1 - All Notes screen: full-screen list với real-time search, filter chips (11 categories), sort, empty state, FAB. Thêm FR1.1. Xoá "Lưu ý quan trọng" khỏi Dashboard. Splash screen với expo-splash-screen. |

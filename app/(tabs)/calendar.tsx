@@ -1,15 +1,26 @@
-import { useState, useRef } from "react";
+// ============================================================
+// Calendar / Special Dates Screen - MyLoveThaiHoc
+// Rebuilt v2.0 — based on stitch/l_ch_s_ki_n_c_p_nh_t/code.html
+// + BRD v2.0 + SRS v2.0 (FR-CAL-001/002/003)
+// ============================================================
+
+import React, { memo, useCallback, useRef, useState } from "react";
 import {
   View,
   Text,
   ScrollView,
-  TextInput,
   Pressable,
-  Switch,
-  Animated,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Plus, X, Bell, Trash2, Calendar, ChevronDown } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { Bell, Plus, Trash2, Calendar } from "lucide-react-native";
+import Svg, { Circle } from "react-native-svg";
+
+// ─── Constants ───────────────────────────────────────────────
+
+const PRIMARY = "#f43f5e";
+const BG = "#f8f5f6";
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -23,52 +34,60 @@ interface SpecialDate {
   remindDaysBefore: number;
 }
 
+type CategoryId = "birthday" | "anniversary" | "holiday" | "other";
+
+// ─── Category Config ──────────────────────────────────────────
+
+const CATEGORIES: { id: CategoryId; label: string; emoji: string }[] = [
+  { id: "birthday", label: "Sinh nhật", emoji: "🎂" },
+  { id: "anniversary", label: "Kỷ niệm", emoji: "💕" },
+  { id: "holiday", label: "Ngày lễ", emoji: "🎉" },
+  { id: "other", label: "Khác", emoji: "📌" },
+];
+
+function getCategoryInfo(catId: string) {
+  return CATEGORIES.find((c) => c.id === catId) ?? CATEGORIES[3];
+}
+
 // ─── Mock Data ───────────────────────────────────────────────
 
-const initialDates: SpecialDate[] = [
+const INITIAL_DATES: SpecialDate[] = [
   {
     id: "sd1",
-    title: "Sinh nhat Thai Hoc",
+    title: "Sinh nhật Thái Học",
     category: "birthday",
     date: "2026-03-17",
-    note: "Chuan bi qua va banh kem dau tay",
+    note: "Chuẩn bị quà và bánh kem dâu tây",
     isRecurring: true,
     remindDaysBefore: 7,
   },
   {
     id: "sd2",
-    title: "Ky niem 1 nam yeu nhau",
+    title: "Kỷ niệm 1 năm yêu nhau",
     category: "anniversary",
     date: "2026-03-21",
-    note: "Dat nha hang va mua hoa",
+    note: "Đặt nhà hàng và mua hoa",
     isRecurring: true,
     remindDaysBefore: 5,
   },
   {
     id: "sd3",
-    title: "Valentine trang",
+    title: "Valentine trắng",
     category: "holiday",
     date: "2026-03-14",
-    note: "Tang keo va thiep tu lam",
+    note: "Tặng kẹo và thiệp tự làm",
     isRecurring: true,
     remindDaysBefore: 3,
   },
   {
     id: "sd4",
-    title: "Ngay tot nghiep",
+    title: "Ngày tốt nghiệp",
     category: "other",
     date: "2026-06-15",
-    note: "Chup anh cung tai truong",
+    note: "Chụp ảnh cùng tại trường",
     isRecurring: false,
     remindDaysBefore: 14,
   },
-];
-
-const CATEGORY_OPTIONS = [
-  { id: "birthday", label: "Sinh nhat", emoji: "🎂" },
-  { id: "anniversary", label: "Ky niem", emoji: "💕" },
-  { id: "holiday", label: "Ngay le", emoji: "🎉" },
-  { id: "other", label: "Khac", emoji: "📌" },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -78,523 +97,379 @@ function getDaysUntil(dateStr: string): number {
   today.setHours(0, 0, 0, 0);
   const target = new Date(dateStr);
   target.setHours(0, 0, 0, 0);
-  const diff = target.getTime() - today.getTime();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return Math.ceil((target.getTime() - today.getTime()) / 86400000);
 }
 
 function getUrgencyColor(days: number): string {
-  if (days === 0) return "#10b981";
-  if (days <= 3) return "#ef4444";
-  if (days <= 7) return "#f97316";
-  return "#f43f5e";
+  if (days <= 0) return "#10b981"; // today or past
+  if (days <= 7) return "#ef4444"; // red — very soon
+  if (days <= 30) return "#f97316"; // orange — within a month
+  return PRIMARY; // pink — far away
 }
 
-function formatDateVN(dateStr: string): string {
+/** Stroke-dashoffset for the SVG ring (out of 100) */
+function getRingOffset(days: number): number {
+  if (days <= 0) return 0; // full ring
+  const fill = Math.min((days / 60) * 100, 95); // cap at ~95% for visual clarity
+  return Math.round(100 - fill);
+}
+
+const DOW_VI = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+const MONTH_VI = [
+  "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4",
+  "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
+  "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12",
+];
+
+function formatDateLong(dateStr: string): string {
   const d = new Date(dateStr);
+  const dow = DOW_VI[d.getDay()];
   const day = d.getDate();
-  const month = d.getMonth() + 1;
+  const month = MONTH_VI[d.getMonth()];
   const year = d.getFullYear();
-  return `${day < 10 ? "0" + day : day}/${month < 10 ? "0" + month : month}/${year}`;
+  return `${dow}, ${day} ${month}, ${year}`;
 }
 
-function getCategoryInfo(catId: string) {
-  return CATEGORY_OPTIONS.find((c) => c.id === catId) || CATEGORY_OPTIONS[3];
-}
+// ─── CountdownRing ────────────────────────────────────────────
 
-// ─── Component ───────────────────────────────────────────────
+const CountdownRing = memo(function CountdownRing({
+  days,
+  color,
+}: {
+  days: number;
+  color: string;
+}) {
+  const offset = getRingOffset(days);
+  const label = days < 0 ? "QUÁ" : "NGÀY";
+  const display = Math.abs(days);
+
+  return (
+    <View style={{ width: 64, height: 64 }}>
+      <Svg
+        width={64}
+        height={64}
+        viewBox="0 0 36 36"
+        style={{ transform: [{ rotate: "-90deg" }] }}
+      >
+        {/* Track */}
+        <Circle
+          cx={18}
+          cy={18}
+          r={16}
+          fill="none"
+          stroke="#f1f5f9"
+          strokeWidth={3}
+        />
+        {/* Progress */}
+        <Circle
+          cx={18}
+          cy={18}
+          r={16}
+          fill="none"
+          stroke={color}
+          strokeWidth={3}
+          strokeDasharray="100"
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </Svg>
+      {/* Center label */}
+      <View
+        style={{
+          position: "absolute",
+          inset: 0,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{ color, fontSize: 14, fontWeight: "800", lineHeight: 17 }}
+        >
+          {display}
+        </Text>
+        <Text style={{ color, fontSize: 8, fontWeight: "700" }}>{label}</Text>
+      </View>
+    </View>
+  );
+});
+
+// ─── EventCard ────────────────────────────────────────────────
+
+const EventCard = memo(function EventCard({
+  item,
+  onDelete,
+  isConfirmingDelete,
+}: {
+  item: SpecialDate;
+  onDelete: (id: string) => void;
+  isConfirmingDelete: boolean;
+}) {
+  const days = getDaysUntil(item.date);
+  const color = getUrgencyColor(days);
+  const isUrgent = days >= 0 && days <= 7;
+  const catInfo = getCategoryInfo(item.category);
+
+  return (
+    <View
+      style={{
+        backgroundColor: "#fff",
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 14,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 14,
+        borderWidth: isUrgent ? 1.5 : 1,
+        borderColor: isUrgent ? `${color}50` : "#f1f5f9",
+        shadowColor: isUrgent ? color : "#000",
+        shadowOffset: { width: 0, height: isUrgent ? 4 : 1 },
+        shadowOpacity: isUrgent ? 0.12 : 0.04,
+        shadowRadius: isUrgent ? 12 : 4,
+        elevation: isUrgent ? 6 : 2,
+      }}
+    >
+      {/* Countdown Ring */}
+      <CountdownRing days={days} color={color} />
+
+      {/* Content */}
+      <View style={{ flex: 1 }}>
+        {/* Badges row */}
+        <View
+          style={{ flexDirection: "row", gap: 6, marginBottom: 5, flexWrap: "wrap" }}
+        >
+          {item.isRecurring && (
+            <View
+              style={{
+                backgroundColor: "rgba(244,63,94,0.1)",
+                borderRadius: 6,
+                paddingHorizontal: 7,
+                paddingVertical: 2,
+              }}
+            >
+              <Text
+                style={{ fontSize: 9, fontWeight: "700", color: PRIMARY }}
+              >
+                Hàng năm
+              </Text>
+            </View>
+          )}
+          {!item.isRecurring && (
+            <View
+              style={{
+                backgroundColor: "#f3f4f6",
+                borderRadius: 6,
+                paddingHorizontal: 7,
+                paddingVertical: 2,
+              }}
+            >
+              <Text
+                style={{ fontSize: 9, fontWeight: "700", color: "#6b7280" }}
+              >
+                {catInfo.emoji} {catInfo.label}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        <Text
+          style={{
+            fontSize: 15,
+            fontWeight: "800",
+            color: "#0f172a",
+            marginBottom: 3,
+          }}
+          numberOfLines={1}
+        >
+          {item.title}
+        </Text>
+        <Text style={{ fontSize: 11, color: "#94a3b8" }}>
+          {formatDateLong(item.date)}
+        </Text>
+        {!!item.note && (
+          <Text
+            style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}
+            numberOfLines={1}
+          >
+            {item.note}
+          </Text>
+        )}
+      </View>
+
+      {/* Action buttons */}
+      <View style={{ gap: 8 }}>
+        <Pressable
+          hitSlop={6}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: "#eff6ff",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {/* TODO: wire up notification */}
+          <Bell size={15} color="#3b82f6" />
+        </Pressable>
+        <Pressable
+          hitSlop={6}
+          onPress={() => onDelete(item.id)}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: isConfirmingDelete ? "#fef2f2" : "#f9fafb",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Trash2 size={15} color={isConfirmingDelete ? "#ef4444" : "#9ca3af"} />
+        </Pressable>
+      </View>
+    </View>
+  );
+});
+
+// ─── Main Screen ─────────────────────────────────────────────
 
 export default function CalendarScreen() {
-  const [dates, setDates] = useState<SpecialDate[]>(initialDates);
-  const [showForm, setShowForm] = useState(false);
+  const router = useRouter();
+  const [dates, setDates] = useState<SpecialDate[]>(INITIAL_DATES);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const deleteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Form state
-  const [formTitle, setFormTitle] = useState("");
-  const [formCategory, setFormCategory] = useState("birthday");
-  const [formDate, setFormDate] = useState("");
-  const [formNote, setFormNote] = useState("");
-  const [formRecurring, setFormRecurring] = useState(true);
-  const [formRemindDays, setFormRemindDays] = useState("7");
-  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
-
-  // Sort dates by countdown
+  // Sort by days until (ascending)
   const sortedDates = [...dates].sort(
     (a, b) => getDaysUntil(a.date) - getDaysUntil(b.date)
   );
 
-  const resetForm = () => {
-    setFormTitle("");
-    setFormCategory("birthday");
-    setFormDate("");
-    setFormNote("");
-    setFormRecurring(true);
-    setFormRemindDays("7");
-    setShowCategoryPicker(false);
-  };
+  const upcomingCount = dates.filter((d) => getDaysUntil(d.date) >= 0).length;
 
-  const handleAdd = () => {
-    if (!formTitle.trim()) return;
-    // Parse dd/mm/yyyy to yyyy-mm-dd
-    let isoDate = formDate;
-    const parts = formDate.split("/");
-    if (parts.length === 3) {
-      isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-    }
-    const newDate: SpecialDate = {
-      id: `sd-${Date.now()}`,
-      title: formTitle.trim(),
-      category: formCategory,
-      date: isoDate || new Date().toISOString().split("T")[0],
-      note: formNote.trim(),
-      isRecurring: formRecurring,
-      remindDaysBefore: parseInt(formRemindDays) || 7,
-    };
-    setDates((prev) => [...prev, newDate]);
-    resetForm();
-    setShowForm(false);
-  };
-
-  const handleDeleteTap = (id: string) => {
-    if (deleteConfirm === id) {
-      // Second tap -> delete
-      setDates((prev) => prev.filter((d) => d.id !== id));
-      setDeleteConfirm(null);
-      if (deleteTimer.current) clearTimeout(deleteTimer.current);
-    } else {
-      // First tap -> confirm state
-      setDeleteConfirm(id);
-      if (deleteTimer.current) clearTimeout(deleteTimer.current);
-      deleteTimer.current = setTimeout(() => {
+  const handleDelete = useCallback(
+    (id: string) => {
+      if (deleteConfirm === id) {
+        // Second tap → confirm delete
+        if (deleteTimer.current) clearTimeout(deleteTimer.current);
+        setDates((prev) => prev.filter((d) => d.id !== id));
         setDeleteConfirm(null);
-      }, 3000);
-    }
-  };
+      } else {
+        // First tap → enter confirm state
+        setDeleteConfirm(id);
+        if (deleteTimer.current) clearTimeout(deleteTimer.current);
+        deleteTimer.current = setTimeout(() => setDeleteConfirm(null), 3000);
+      }
+    },
+    [deleteConfirm]
+  );
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
+
+      {/* ── Sticky Header ── */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingHorizontal: 20,
+          paddingVertical: 14,
+          backgroundColor: "rgba(248,245,246,0.95)",
+          borderBottomWidth: 1,
+          borderBottomColor: "rgba(244,63,94,0.08)",
+        }}
+      >
+        <View>
+          <Text
+            style={{ fontSize: 24, fontWeight: "800", color: "#0f172a" }}
+          >
+            Ngày đặc biệt
+          </Text>
+          <Text style={{ fontSize: 13, color: "#94a3b8", marginTop: 2 }}>
+            {upcomingCount} sự kiện sắp tới
+          </Text>
+        </View>
+        <Pressable
+          onPress={() => router.push("/(tabs)/add")}
+          hitSlop={8}
+          style={{
+            width: 46,
+            height: 46,
+            borderRadius: 23,
+            backgroundColor: PRIMARY,
+            alignItems: "center",
+            justifyContent: "center",
+            shadowColor: PRIMARY,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.35,
+            shadowRadius: 10,
+            elevation: 8,
+          }}
+        >
+          <Plus size={22} color="#fff" />
+        </Pressable>
+      </View>
+
       <ScrollView
-        className="flex-1"
-        contentContainerStyle={{ paddingBottom: 40 }}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 48 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* ── Header ── */}
-        <View className="flex-row items-center justify-between px-5 pt-4 pb-2">
-          <View>
-            <Text
-              className="text-2xl font-extrabold"
-              style={{ color: "#1e1b2e" }}
-            >
-              Ngay dac biet
-            </Text>
-            <Text className="text-sm mt-1" style={{ color: "#6b7280" }}>
-              {dates.length} su kien
-            </Text>
-          </View>
-          <Pressable
-            className="items-center justify-center active:opacity-80"
+        {sortedDates.length === 0 ? (
+          /* ── Empty State ── */
+          <View
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 24,
-              backgroundColor: "#f43f5e",
-              shadowColor: "#f43f5e",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 6,
-            }}
-            onPress={() => {
-              resetForm();
-              setShowForm(!showForm);
+              alignItems: "center",
+              justifyContent: "center",
+              paddingTop: 80,
             }}
           >
-            {showForm ? (
-              <X size={24} color="#ffffff" />
-            ) : (
-              <Plus size={24} color="#ffffff" />
-            )}
-          </Pressable>
-        </View>
-
-        {/* ── Add Form ── */}
-        {showForm && (
-          <View className="mx-4 mt-3">
-            <View
+            <Calendar size={64} color="#e2e8f0" />
+            <Text
               style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 20,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.08,
-                shadowRadius: 16,
-                elevation: 8,
+                fontSize: 18,
+                fontWeight: "700",
+                color: "#64748b",
+                marginTop: 20,
+                marginBottom: 8,
               }}
             >
-              {/* Handle bar */}
-              <View className="items-center pt-3 pb-1">
-                <View
-                  style={{
-                    width: 36,
-                    height: 4,
-                    borderRadius: 2,
-                    backgroundColor: "#e5e7eb",
-                  }}
-                />
-              </View>
-
-              <View className="px-5 pb-5 pt-2">
-                {/* Ten su kien */}
-                <Text
-                  className="text-[10px] font-bold uppercase mb-2"
-                  style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                >
-                  Ten su kien *
-                </Text>
-                <TextInput
-                  className="px-4 py-3 text-base mb-4"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                    color: "#1e1b2e",
-                  }}
-                  placeholder="VD: Sinh nhat Thai Hoc"
-                  placeholderTextColor="#9ca3af"
-                  value={formTitle}
-                  onChangeText={setFormTitle}
-                />
-
-                {/* Danh muc */}
-                <Text
-                  className="text-[10px] font-bold uppercase mb-2"
-                  style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                >
-                  Danh muc
-                </Text>
-                <Pressable
-                  className="flex-row items-center justify-between px-4 py-3 mb-1 active:opacity-80"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                  }}
-                  onPress={() => setShowCategoryPicker(!showCategoryPicker)}
-                >
-                  <Text style={{ color: "#1e1b2e" }}>
-                    {getCategoryInfo(formCategory).emoji}{" "}
-                    {getCategoryInfo(formCategory).label}
-                  </Text>
-                  <ChevronDown size={18} color="#9ca3af" />
-                </Pressable>
-                {showCategoryPicker && (
-                  <View
-                    className="mb-3"
-                    style={{
-                      backgroundColor: "#f9fafb",
-                      borderRadius: 14,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {CATEGORY_OPTIONS.map((opt) => (
-                      <Pressable
-                        key={opt.id}
-                        className="flex-row items-center px-4 py-3 active:opacity-80"
-                        style={{
-                          backgroundColor:
-                            formCategory === opt.id ? "#fff1f2" : "transparent",
-                        }}
-                        onPress={() => {
-                          setFormCategory(opt.id);
-                          setShowCategoryPicker(false);
-                        }}
-                      >
-                        <Text className="mr-2">{opt.emoji}</Text>
-                        <Text
-                          className="font-semibold"
-                          style={{
-                            color:
-                              formCategory === opt.id ? "#f43f5e" : "#1e1b2e",
-                          }}
-                        >
-                          {opt.label}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-                {!showCategoryPicker && <View className="mb-3" />}
-
-                {/* Ngay */}
-                <Text
-                  className="text-[10px] font-bold uppercase mb-2"
-                  style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                >
-                  Ngay (dd/mm/yyyy)
-                </Text>
-                <TextInput
-                  className="px-4 py-3 text-base mb-4"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                    color: "#1e1b2e",
-                  }}
-                  placeholder="14/03/2026"
-                  placeholderTextColor="#9ca3af"
-                  value={formDate}
-                  onChangeText={setFormDate}
-                  keyboardType="numbers-and-punctuation"
-                />
-
-                {/* Ghi chu */}
-                <Text
-                  className="text-[10px] font-bold uppercase mb-2"
-                  style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                >
-                  Ghi chu
-                </Text>
-                <TextInput
-                  className="px-4 py-3 text-base mb-4"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                    color: "#1e1b2e",
-                    minHeight: 70,
-                    textAlignVertical: "top",
-                  }}
-                  placeholder="Ghi chu them..."
-                  placeholderTextColor="#9ca3af"
-                  value={formNote}
-                  onChangeText={setFormNote}
-                  multiline
-                  numberOfLines={3}
-                />
-
-                {/* Lap lai hang nam */}
-                <View className="flex-row items-center justify-between mb-4">
-                  <Text
-                    className="text-[10px] font-bold uppercase"
-                    style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                  >
-                    Lap lai hang nam
-                  </Text>
-                  <Switch
-                    value={formRecurring}
-                    onValueChange={setFormRecurring}
-                    trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                    thumbColor={formRecurring ? "#f43f5e" : "#f4f3f4"}
-                  />
-                </View>
-
-                {/* Nhac truoc N ngay */}
-                <Text
-                  className="text-[10px] font-bold uppercase mb-2"
-                  style={{ color: "#fb7185", letterSpacing: 1.5 }}
-                >
-                  Nhac truoc (ngay)
-                </Text>
-                <TextInput
-                  className="px-4 py-3 text-base mb-5"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                    color: "#1e1b2e",
-                    width: 100,
-                  }}
-                  value={formRemindDays}
-                  onChangeText={setFormRemindDays}
-                  keyboardType="number-pad"
-                />
-
-                {/* Submit */}
-                <Pressable
-                  className="items-center py-4 active:opacity-80"
-                  style={{
-                    backgroundColor: formTitle.trim() ? "#f43f5e" : "#fda4af",
-                    borderRadius: 14,
-                  }}
-                  disabled={!formTitle.trim()}
-                  onPress={handleAdd}
-                >
-                  <Text className="text-white text-base font-bold">
-                    Luu su kien
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* ── Date Cards ── */}
-        {sortedDates.length === 0 ? (
-          /* Empty State */
-          <View className="items-center justify-center px-6 mt-20">
-            <Calendar size={64} color="#d1d5db" />
-            <Text
-              className="text-lg font-bold mt-4 mb-2"
-              style={{ color: "#6b7280" }}
-            >
-              Chua co ngay dac biet
+              Chưa có ngày đặc biệt
             </Text>
             <Text
-              className="text-center text-sm"
-              style={{ color: "#9ca3af" }}
+              style={{ fontSize: 14, color: "#94a3b8", textAlign: "center" }}
             >
-              Them sinh nhat, ky niem cua em!
+              Thêm sinh nhật, kỷ niệm của em!
             </Text>
+            <Pressable
+              onPress={() => router.push("/(tabs)/add")}
+              style={{
+                marginTop: 24,
+                paddingHorizontal: 28,
+                paddingVertical: 14,
+                borderRadius: 14,
+                backgroundColor: PRIMARY,
+              }}
+            >
+              <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>
+                Thêm sự kiện đầu tiên
+              </Text>
+            </Pressable>
           </View>
         ) : (
-          <View className="px-4 mt-5">
-            {sortedDates.map((item) => {
-              const days = getDaysUntil(item.date);
-              const urgencyColor = getUrgencyColor(days);
-              const isUrgent = days >= 0 && days <= 7;
-              const catInfo = getCategoryInfo(item.category);
-
-              return (
-                <View
-                  key={item.id}
-                  className="flex-row items-center p-4 mb-3"
-                  style={{
-                    backgroundColor: "#ffffff",
-                    borderRadius: 20,
-                    borderWidth: isUrgent ? 1.5 : 0,
-                    borderColor: isUrgent ? "#f43f5e" : "transparent",
-                    shadowColor: isUrgent ? "#f43f5e" : "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: isUrgent ? 4 : 1,
-                    },
-                    shadowOpacity: isUrgent ? 0.12 : 0.04,
-                    shadowRadius: isUrgent ? 12 : 4,
-                    elevation: isUrgent ? 8 : 2,
-                  }}
-                >
-                  {/* Countdown Circle */}
-                  <View
-                    className="items-center justify-center mr-4"
-                    style={{
-                      width: 60,
-                      height: 60,
-                      borderRadius: 30,
-                      borderWidth: 3,
-                      borderColor: urgencyColor,
-                      backgroundColor: `${urgencyColor}10`,
-                    }}
-                  >
-                    <Text
-                      className="text-lg font-extrabold"
-                      style={{ color: urgencyColor, lineHeight: 22 }}
-                    >
-                      {days < 0 ? Math.abs(days) : days}
-                    </Text>
-                    <Text
-                      className="text-[8px] font-bold uppercase"
-                      style={{ color: urgencyColor }}
-                    >
-                      {days < 0 ? "QUA" : "NGAY"}
-                    </Text>
-                  </View>
-
-                  {/* Content */}
-                  <View className="flex-1">
-                    <Text
-                      className="text-base font-extrabold mb-1"
-                      style={{ color: "#1e1b2e" }}
-                      numberOfLines={1}
-                    >
-                      {item.title}
-                    </Text>
-                    <View className="flex-row items-center mb-1">
-                      {/* Category badge */}
-                      <View
-                        className="px-2 py-0.5 mr-2"
-                        style={{
-                          backgroundColor: "#f3f4f6",
-                          borderRadius: 8,
-                        }}
-                      >
-                        <Text className="text-[10px] font-semibold" style={{ color: "#6b7280" }}>
-                          {catInfo.emoji} {catInfo.label}
-                        </Text>
-                      </View>
-                      {item.isRecurring && (
-                        <View
-                          className="px-2 py-0.5"
-                          style={{
-                            backgroundColor: "#ede9fe",
-                            borderRadius: 8,
-                          }}
-                        >
-                          <Text
-                            className="text-[10px] font-semibold"
-                            style={{ color: "#8b5cf6" }}
-                          >
-                            🔁 Hang nam
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-                    <Text
-                      className="text-xs"
-                      style={{ color: "#9ca3af" }}
-                    >
-                      {formatDateVN(item.date)}
-                    </Text>
-                    {item.note ? (
-                      <Text
-                        className="text-xs mt-1"
-                        style={{ color: "#6b7280" }}
-                        numberOfLines={2}
-                      >
-                        {item.note}
-                      </Text>
-                    ) : null}
-                  </View>
-
-                  {/* Action Buttons */}
-                  <View className="items-center ml-2" style={{ gap: 8 }}>
-                    <Pressable
-                      className="p-2 active:opacity-80"
-                      style={{
-                        backgroundColor: "#eff6ff",
-                        borderRadius: 10,
-                      }}
-                    >
-                      <Bell size={16} color="#3b82f6" />
-                    </Pressable>
-                    <Pressable
-                      className="p-2 active:opacity-80"
-                      style={{
-                        backgroundColor:
-                          deleteConfirm === item.id ? "#fef2f2" : "#f9fafb",
-                        borderRadius: 10,
-                      }}
-                      onPress={() => handleDeleteTap(item.id)}
-                    >
-                      <Trash2
-                        size={16}
-                        color={
-                          deleteConfirm === item.id ? "#ef4444" : "#9ca3af"
-                        }
-                      />
-                    </Pressable>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
+          /* ── Event Cards ── */
+          sortedDates.map((item) => (
+            <EventCard
+              key={item.id}
+              item={item}
+              onDelete={handleDelete}
+              isConfirmingDelete={deleteConfirm === item.id}
+            />
+          ))
         )}
       </ScrollView>
+
     </SafeAreaView>
   );
 }

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43f5e",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "1.25rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 border-b border-slate-100 dark:border-slate-800">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</button>
+<h1 class="flex-1 text-center text-lg font-bold leading-tight pr-10">Bảo mật</h1>
+</header>
+<main class="flex flex-col gap-6 p-4">
+<!-- XÁC THỰC Section -->
+<section>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1 mb-3">Xác thực</h3>
+<div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800">
+<!-- Row: Sinh trắc học -->
+<div class="flex items-center gap-4 px-4 py-4 border-b border-slate-50 dark:border-slate-800">
+<div class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">fingerprint</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold">Xác thực sinh trắc học</p>
+<p class="text-xs text-slate-500">Face ID / Vân tay</p>
+</div>
+<label class="relative flex h-7 w-12 cursor-pointer items-center rounded-full bg-primary p-0.5 transition-colors">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="h-6 w-6 rounded-full bg-white shadow-md transition-transform translate-x-5"></div>
+</label>
+</div>
+<!-- Row: OTP -->
+<div class="flex items-center gap-4 px-4 py-4 border-b border-slate-50 dark:border-slate-800">
+<div class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">shield_lock</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold">Xác thực 2 bước (OTP)</p>
+<p class="text-xs text-slate-500">Bảo mật qua tin nhắn</p>
+</div>
+<label class="relative flex h-7 w-12 cursor-pointer items-center rounded-full bg-slate-200 dark:bg-slate-700 p-0.5 transition-colors">
+<input class="sr-only peer" type="checkbox"/>
+<div class="h-6 w-6 rounded-full bg-white shadow-md transition-transform translate-x-0"></div>
+</label>
+</div>
+<!-- Row: Đổi mật khẩu -->
+<button class="w-full flex items-center gap-4 px-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<div class="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">lock_reset</span>
+</div>
+<p class="flex-1 text-left text-sm font-semibold">Đổi mật khẩu</p>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- PHIÊN ĐĂNG NHẬP Section -->
+<section>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1 mb-3">Phiên đăng nhập</h3>
+<div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex items-start gap-4 mb-6">
+<div class="flex size-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">smartphone</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2">
+<p class="text-sm font-semibold">iPhone 15 Pro</p>
+<span class="px-2 py-0.5 text-[10px] font-bold bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 rounded-full">Thiết bị này</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Hà Nội, Việt Nam · Đang hoạt động</p>
+</div>
+</div>
+<button class="w-full py-3 px-4 rounded-xl border border-orange-200 dark:border-orange-900/50 bg-orange-50/50 dark:bg-orange-900/10 text-orange-600 dark:text-orange-400 text-sm font-bold transition-all active:scale-[0.98]">
+                        Đăng xuất tất cả thiết bị khác
+                    </button>
+</div>
+</section>
+<!-- NGUY HIỂM Section -->
+<section>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1 mb-3">Nguy hiểm</h3>
+<div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-red-100 dark:border-red-900/30">
+<button class="w-full flex items-center gap-4 px-4 py-4 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors group">
+<div class="flex size-10 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/30 text-red-600">
+<span class="material-symbols-outlined">delete_forever</span>
+</div>
+<div class="flex-1 text-left">
+<p class="text-sm font-semibold text-red-600">Xoá tài khoản</p>
+<p class="text-xs text-slate-500">Tất cả dữ liệu sẽ không thể khôi phục</p>
+</div>
+<span class="material-symbols-outlined text-red-300 group-hover:text-red-500 transition-colors">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Footer Branding -->
+<footer class="mt-auto p-8 text-center">
+<p class="text-slate-400 text-xs font-medium">MyLoveThaiHoc Security</p>
+<div class="mt-2 flex justify-center gap-2">
+<div class="size-1.5 rounded-full bg-primary/40"></div>
+<div class="size-1.5 rounded-full bg-primary/20"></div>
+<div class="size-1.5 rounded-full bg-primary/10"></div>
+</div>
+</footer>
+</div>
+</body></html>

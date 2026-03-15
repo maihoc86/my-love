@@ -81,6 +81,14 @@ Phần body của SKILL.md chứa:
 | `figma:code-connect-components` | Connect Figma components to code |
 | `figma:create-design-system-rules` | Design system rules |
 
+## User Stories
+
+Khi cần liên kết hoặc tham chiếu đến User Story, **bắt buộc dùng file JSON**:
+
+- **File**: `docs/user-stories.json`
+- **Không dùng** file `.md` (đã xóa)
+- **ID format**: `US-DASH-01`, `US-ENTRY-01`, `US-CHAT-01`, `US-CAL-01`, `US-SET-01~03` (stories cũ) và `US-1.5`, `US-1.6`, `US-5.1~5.5`, `US-6.1~6.5`, `US-7.1~7.4`, `US-8.1~8.2`, `US-9.1`, `US-10.1~10.2`, `US-11.1~11.2`, `US-12.1~12.3`, `US-13.1` (stories mới)
+
 ## Conventions
 
 - Ngôn ngữ giao tiếp: Tiếng Việt

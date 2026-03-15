@@ -1,7 +1,14 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, ScrollView, TextInput } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  TextInput,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   ChevronLeft,
   Search,
@@ -9,154 +16,290 @@ import {
   Sparkles,
   Mic,
   ChevronRight,
-} from "lucide-react-native";
+} from 'lucide-react-native';
 
-const FILTERS = ["Tất cả", "Có ghi chú", "Giọng nói", "Gợi ý AI"];
+// ─── Types ─────────────────────────────────────────────────────────────────────
 
-const CHAT_HISTORY = [
+type ChatType = 'text' | 'suggestion' | 'voice';
+
+interface ChatItem {
+  id: string;
+  type: ChatType;
+  preview: string;
+  entries: number;
+  time: string;
+}
+
+interface ChatGroup {
+  date: string;
+  items: ChatItem[];
+}
+
+// ─── Mock data ─────────────────────────────────────────────────────────────────
+
+const CHAT_HISTORY: ChatGroup[] = [
   {
-    date: "Hôm nay",
+    date: 'HÔM NAY',
     items: [
       {
-        id: "1",
-        type: "text" as const,
-        preview: "Em thích ăn phở bò, ghét ăn hành...",
+        id: '1',
+        type: 'text',
+        preview: 'Em thích ăn bún bò, ghét mắm tôm...',
         entries: 3,
-        time: "14:30",
+        time: '14:30',
       },
       {
-        id: "2",
-        type: "suggestion" as const,
-        preview: "Gợi ý hẹn hò cuối tuần",
+        id: '2',
+        type: 'suggestion',
+        preview: 'Gợi ý hôm nay: Mua hoa hồng trắng...',
         entries: 0,
-        time: "10:15",
+        time: '09:15',
       },
     ],
   },
   {
-    date: "Hôm qua",
+    date: 'HÔM QUA',
     items: [
       {
-        id: "3",
-        type: "voice" as const,
-        preview: "Ghi âm về sở thích âm nhạc",
-        entries: 2,
-        time: "20:45",
-      },
-      {
-        id: "4",
-        type: "text" as const,
-        preview: "Em thích mặc đồ tối giản, pastel...",
+        id: '3',
+        type: 'text',
+        preview: 'Em mê phim Ghibli, thích vẽ trann...',
         entries: 5,
-        time: "16:20",
+        time: '20:45',
+      },
+      {
+        id: '4',
+        type: 'voice',
+        preview: 'Ghi âm: Em kể về quán cafe mới...',
+        entries: 2,
+        time: '18:20',
       },
     ],
   },
   {
-    date: "12 Tháng 3",
+    date: '12 THÁNG 3',
     items: [
       {
-        id: "5",
-        type: "text" as const,
-        preview: "Sinh nhật em 27 tháng 5, thích hoa hồng...",
+        id: '5',
+        type: 'text',
+        preview: 'Dị ứng tôm, phấn hoa. Sinh nhật...',
         entries: 4,
-        time: "09:30",
+        time: '10:00',
       },
     ],
   },
 ];
 
-const TYPE_CONFIG = {
-  text: { icon: MessageCircle, color: "#f43f5e", bg: "#fff1f2" },
-  suggestion: { icon: Sparkles, color: "#8b5cf6", bg: "#f5f3ff" },
-  voice: { icon: Mic, color: "#f97316", bg: "#fff7ed" },
+const FILTERS = ['Tất cả', 'Có ghi chú', 'Giọng nói', 'Gợi ý AI'];
+
+// ─── Type config ───────────────────────────────────────────────────────────────
+
+const TYPE_CONFIG: Record<
+  ChatType,
+  { Icon: typeof MessageCircle; color: string; bg: string; label: string }
+> = {
+  text: { Icon: MessageCircle, color: '#f43f5e', bg: '#fff1f2', label: 'Chat' },
+  suggestion: { Icon: Sparkles, color: '#8b5cf6', bg: '#f5f3ff', label: 'Gợi ý AI' },
+  voice: { Icon: Mic, color: '#f97316', bg: '#fff7ed', label: 'Voice' },
 };
+
+// ─── Chat History Screen ────────────────────────────────────────────────────────
 
 export default function ChatHistoryScreen() {
   const router = useRouter();
-  const [activeFilter, setActiveFilter] = useState("Tất cả");
-  const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] = useState('Tất cả');
+  const [search, setSearch] = useState('');
 
-  const totalChats = CHAT_HISTORY.reduce((sum, g) => sum + g.items.length, 0);
+  const totalChats = CHAT_HISTORY.reduce((s, g) => s + g.items.length, 0);
   const totalEntries = CHAT_HISTORY.reduce(
-    (sum, g) => sum + g.items.reduce((s, i) => s + i.entries, 0),
+    (s, g) => s + g.items.reduce((a, i) => a + i.entries, 0),
     0
   );
-  const voiceChats = CHAT_HISTORY.reduce(
-    (sum, g) => sum + g.items.filter((i) => i.type === "voice").length,
+  const voiceCount = CHAT_HISTORY.reduce(
+    (s, g) => s + g.items.filter((i) => i.type === 'voice').length,
     0
   );
+
+  // Filter logic
+  const filterMap: Record<string, ChatType | null> = {
+    'Tất cả': null,
+    'Có ghi chú': 'text',
+    'Giọng nói': 'voice',
+    'Gợi ý AI': 'suggestion',
+  };
+
+  const filteredHistory = CHAT_HISTORY.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => {
+      const typeFilter = filterMap[activeFilter];
+      const matchesType = !typeFilter || item.type === typeFilter;
+      const matchesSearch =
+        !search || item.preview.toLowerCase().includes(search.toLowerCase());
+      return matchesType && matchesSearch;
+    }),
+  })).filter((group) => group.items.length > 0);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
-      {/* Header */}
-      <View className="flex-row items-center px-4 py-3">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f5f6' }}>
+      {/* ── Header ── */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 16,
+          paddingVertical: 14,
+          backgroundColor: '#f8f5f6',
+        }}
+      >
         <Pressable
           onPress={() => router.back()}
-          className="w-10 h-10 rounded-full items-center justify-center bg-white"
-          style={{ shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+          hitSlop={10}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          accessibilityLabel="Quay lại"
         >
-          <ChevronLeft size={20} color="#1e1b2e" />
+          <ChevronLeft size={26} color="#1f2937" />
         </Pressable>
-        <Text className="flex-1 text-lg font-bold text-center" style={{ color: "#1e1b2e" }}>
-          Lịch sử chat
+
+        <Text style={{ fontSize: 20, fontWeight: '700', color: '#1f2937' }}>
+          Lịch sử Chat
         </Text>
-        <View className="w-10" />
+
+        <Pressable
+          hitSlop={10}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          accessibilityLabel="Tìm kiếm"
+        >
+          <Search size={22} color="#1f2937" />
+        </Pressable>
       </View>
 
-      <ScrollView className="flex-1">
-        {/* Summary Card */}
-        <View
-          className="mx-4 mb-4 p-4 rounded-2xl flex-row justify-around"
-          style={{ backgroundColor: "#f43f5e" }}
-        >
-          {[
-            { value: totalChats, label: "Cuộc chat" },
-            { value: totalEntries, label: "Ghi chú" },
-            { value: voiceChats, label: "Voice" },
-          ].map((stat, idx) => (
-            <View key={idx} className="items-center">
-              <Text className="text-white text-xl font-extrabold">
-                {stat.value}
-              </Text>
-              <Text className="text-white/70 text-xs">{stat.label}</Text>
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 32 }}
+      >
+        {/* ── Summary card (gradient) ── */}
+        <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
+          <LinearGradient
+            colors={['#7c3aed', '#f43f5e', '#fb923c']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              borderRadius: 20,
+              padding: 20,
+              shadowColor: '#f43f5e',
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.25,
+              shadowRadius: 16,
+              elevation: 8,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 13,
+                color: 'rgba(255,255,255,0.8)',
+                fontWeight: '500',
+                marginBottom: 14,
+              }}
+            >
+              Tổng quan hoạt động
+            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              {[
+                { value: totalChats, label: 'Cuộc chat' },
+                { value: totalEntries, label: 'Ghi chú' },
+                { value: voiceCount, label: 'Voice' },
+              ].map((stat, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && (
+                    <View
+                      style={{
+                        width: 1,
+                        backgroundColor: 'rgba(255,255,255,0.25)',
+                        marginHorizontal: 16,
+                      }}
+                    />
+                  )}
+                  <View style={{ flex: 1, alignItems: 'center' }}>
+                    <Text
+                      style={{ fontSize: 28, fontWeight: '800', color: '#ffffff' }}
+                    >
+                      {stat.value}
+                    </Text>
+                    <Text
+                      style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}
+                    >
+                      {stat.label}
+                    </Text>
+                  </View>
+                </React.Fragment>
+              ))}
             </View>
-          ))}
+          </LinearGradient>
         </View>
 
-        {/* Search */}
-        <View className="mx-4 mb-3 flex-row items-center bg-white rounded-xl px-3">
+        {/* ── Search bar ── */}
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 12,
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#ffffff',
+            borderRadius: 14,
+            paddingHorizontal: 14,
+            borderWidth: 1,
+            borderColor: '#f3f4f6',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.05,
+            shadowRadius: 4,
+            elevation: 2,
+          }}
+        >
           <Search size={16} color="#9ca3af" />
           <TextInput
-            className="flex-1 py-3 px-2 text-sm"
-            placeholder="Tìm kiếm cuộc trò chuyện..."
+            style={{
+              flex: 1,
+              paddingVertical: 13,
+              paddingHorizontal: 10,
+              fontSize: 14,
+              color: '#1f2937',
+            }}
+            placeholder="Tìm kiếm lịch sử..."
             placeholderTextColor="#9ca3af"
             value={search}
             onChangeText={setSearch}
           />
         </View>
 
-        {/* Filter Pills */}
+        {/* ── Filter pills ── */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="px-4 mb-4"
+          style={{ marginBottom: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, gap: 8 }}
         >
           {FILTERS.map((f) => (
             <Pressable
               key={f}
               onPress={() => setActiveFilter(f)}
-              className="mr-2 px-4 py-2 rounded-full"
-              style={{
-                backgroundColor: activeFilter === f ? "#f43f5e" : "#fff",
+              style={({ pressed }) => ({
+                paddingHorizontal: 18,
+                paddingVertical: 9,
+                borderRadius: 24,
+                backgroundColor: activeFilter === f ? '#f43f5e' : '#ffffff',
                 borderWidth: activeFilter === f ? 0 : 1,
-                borderColor: "#e5e7eb",
-              }}
+                borderColor: '#e5e7eb',
+                opacity: pressed ? 0.8 : 1,
+              })}
             >
               <Text
-                className="text-xs font-semibold"
                 style={{
-                  color: activeFilter === f ? "#fff" : "#6b7280",
+                  fontSize: 13,
+                  fontWeight: activeFilter === f ? '700' : '500',
+                  color: activeFilter === f ? '#ffffff' : '#6b7280',
                 }}
               >
                 {f}
@@ -165,65 +308,139 @@ export default function ChatHistoryScreen() {
           ))}
         </ScrollView>
 
-        {/* Chat Groups */}
-        {CHAT_HISTORY.map((group) => (
-          <View key={group.date} className="mb-4">
-            <Text className="px-4 text-xs font-bold mb-2 uppercase" style={{ color: "#9ca3af" }}>
-              {group.date}
+        {/* ── Chat groups ── */}
+        {filteredHistory.length === 0 ? (
+          <View style={{ alignItems: 'center', paddingTop: 48 }}>
+            <Text style={{ fontSize: 40, marginBottom: 12 }}>💬</Text>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: '#6b7280' }}>
+              Chưa có cuộc chat nào
             </Text>
-            <View className="mx-4 bg-white rounded-2xl overflow-hidden">
-              {group.items.map((item, idx) => {
-                const config = TYPE_CONFIG[item.type];
-                const Icon = config.icon;
-                return (
-                  <Pressable
-                    key={item.id}
-                    className="flex-row items-center p-4"
-                    style={{
-                      borderTopWidth: idx > 0 ? 1 : 0,
-                      borderTopColor: "#f3f4f6",
-                    }}
-                  >
-                    <View
-                      className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                      style={{ backgroundColor: config.bg }}
-                    >
-                      <Icon size={18} color={config.color} />
-                    </View>
-                    <View className="flex-1">
-                      <Text
-                        className="text-sm font-medium"
-                        style={{ color: "#1e1b2e" }}
-                        numberOfLines={1}
-                      >
-                        {item.preview}
-                      </Text>
-                      <View className="flex-row items-center mt-1">
-                        <Text className="text-xs" style={{ color: "#9ca3af" }}>
-                          {item.time}
-                        </Text>
-                        {item.entries > 0 && (
-                          <View
-                            className="ml-2 px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: config.bg }}
-                          >
-                            <Text
-                              className="text-xs font-bold"
-                              style={{ color: config.color }}
-                            >
-                              {item.entries}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                    <ChevronRight size={16} color="#d1d5db" />
-                  </Pressable>
-                );
-              })}
-            </View>
           </View>
-        ))}
+        ) : (
+          filteredHistory.map((group) => (
+            <View key={group.date} style={{ marginBottom: 24 }}>
+              {/* Date label */}
+              <Text
+                style={{
+                  paddingHorizontal: 16,
+                  fontSize: 11,
+                  fontWeight: '700',
+                  color: '#9ca3af',
+                  letterSpacing: 0.8,
+                  marginBottom: 8,
+                }}
+              >
+                {group.date}
+              </Text>
+
+              {/* Card container */}
+              <View
+                style={{
+                  marginHorizontal: 16,
+                  backgroundColor: '#ffffff',
+                  borderRadius: 18,
+                  overflow: 'hidden',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.06,
+                  shadowRadius: 8,
+                  elevation: 3,
+                }}
+              >
+                {group.items.map((item, idx) => {
+                  const cfg = TYPE_CONFIG[item.type];
+                  const Icon = cfg.Icon;
+                  const subtitle =
+                    item.type === 'suggestion'
+                      ? `Gợi ý AI · ${item.time}`
+                      : item.type === 'voice'
+                      ? `Voice · ${item.entries > 0 ? `${item.entries} entries · ` : ''}${item.time}`
+                      : `${item.entries > 0 ? `${item.entries} entries đã lưu · ` : ''}${item.time}`;
+
+                  return (
+                    <Pressable
+                      key={item.id}
+                      style={({ pressed }) => ({
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: 16,
+                        paddingVertical: 14,
+                        borderTopWidth: idx > 0 ? 1 : 0,
+                        borderTopColor: '#f3f4f6',
+                        backgroundColor: pressed ? '#fafafa' : 'transparent',
+                      })}
+                    >
+                      {/* Icon circle */}
+                      <View
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 22,
+                          backgroundColor: cfg.bg,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginRight: 12,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon size={20} color={cfg.color} />
+                      </View>
+
+                      {/* Content */}
+                      <View style={{ flex: 1, marginRight: 10 }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: '600',
+                            color: '#1f2937',
+                            marginBottom: 4,
+                          }}
+                          numberOfLines={1}
+                        >
+                          {item.preview}
+                        </Text>
+                        <Text
+                          style={{ fontSize: 12, color: '#9ca3af' }}
+                          numberOfLines={1}
+                        >
+                          {subtitle}
+                        </Text>
+                      </View>
+
+                      {/* Entry count badge */}
+                      {item.entries > 0 && (
+                        <View
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 12,
+                            backgroundColor: '#f43f5e',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 8,
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: '700',
+                              color: '#ffffff',
+                            }}
+                          >
+                            {item.entries}
+                          </Text>
+                        </View>
+                      )}
+
+                      <ChevronRight size={16} color="#d1d5db" />
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

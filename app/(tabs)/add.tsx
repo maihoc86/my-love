@@ -1,4 +1,10 @@
-import { useState } from "react";
+// ============================================================
+// Add Entry Screen - MyLoveThaiHoc
+// Rebuilt v2.0 — based on stitch/th_m_ghi_ch_c_p_nh_t/code.html
+// + BRD v2.0 + SRS v2.0 + User Stories (US-003, US-004, US-005)
+// ============================================================
+
+import React, { memo, useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -8,335 +14,488 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { CATEGORIES, SENTIMENTS, type Category, type Sentiment } from "../../src/types";
 
-// ─── Categories ──────────────────────────────────────────────
+// ─── Constants ───────────────────────────────────────────────
 
-const CATEGORIES = [
-  { id: "food_like", emoji: "🍜", label: "Thich an", placeholder: "🍜 Thai Hoc thich..." },
-  { id: "food_dislike", emoji: "🚫", label: "Khong thich an", placeholder: "🚫 Thai Hoc khong thich..." },
-  { id: "hobby", emoji: "🎮", label: "So thich", placeholder: "🎮 Thai Hoc thich choi..." },
-  { id: "fashion", emoji: "👗", label: "Thoi trang", placeholder: "👗 Thai Hoc thich mac..." },
-  { id: "music", emoji: "🎵", label: "Am nhac", placeholder: "🎵 Thai Hoc thich nghe..." },
-  { id: "movie", emoji: "🎬", label: "Phim", placeholder: "🎬 Thai Hoc thich xem..." },
-  { id: "place", emoji: "📍", label: "Dia diem", placeholder: "📍 Thai Hoc thich den..." },
-  { id: "gift", emoji: "🎁", label: "Qua tang", placeholder: "🎁 Thai Hoc thich nhan..." },
-  { id: "habit", emoji: "💫", label: "Thoi quen", placeholder: "💫 Thai Hoc thuong..." },
-  { id: "health", emoji: "💊", label: "Suc khoe", placeholder: "💊 Thai Hoc can luu y..." },
-  { id: "other", emoji: "📝", label: "Khac", placeholder: "📝 Ghi chu ve Thai Hoc..." },
-];
+const PRIMARY = "#f43f5e";
+const BG = "#f8f5f6";
+const SURFACE = "#ffffff";
+const TEXT_PRIMARY = "#1f2937";
+const TEXT_SECONDARY = "#6b7280";
+const TEXT_MUTED = "#9ca3af";
+const BORDER = "#e5e7eb";
 
-const SENTIMENTS = [
-  { id: "love", emoji: "❤️", label: "YEU THICH" },
-  { id: "like", emoji: "👍", label: "THICH" },
-  { id: "neutral", emoji: "😐", label: "BINH THUONG" },
-  { id: "dislike", emoji: "👎", label: "KHONG THICH" },
-  { id: "hate", emoji: "🚫", label: "GHET" },
-];
+/** Smart placeholder per category */
+const CATEGORY_PLACEHOLDERS: Record<Category, string> = {
+  food: "Thái Học thích ăn món gì...",
+  place: "Địa điểm Thái Học yêu thích...",
+  hobby: "Sở thích của Thái Học...",
+  date: "Tên ngày đặc biệt...",
+  gift: "Quà tặng Thái Học thích...",
+  trait: "Tính cách của Thái Học...",
+  allergy: "Thứ Thái Học bị dị ứng...",
+  style: "Phong cách thời trang của Thái Học...",
+  music: "Bài hát / nghệ sĩ Thái Học thích...",
+  movie: "Phim Thái Học yêu thích...",
+  other: "Ghi chú về Thái Học...",
+};
 
-// ─── Component ───────────────────────────────────────────────
+// ─── Sub-components ───────────────────────────────────────────
+
+/** Centered header */
+const AddHeader = memo(function AddHeader({ onBack }: { onBack?: () => void }) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 16,
+        paddingVertical: 13,
+        backgroundColor: "rgba(248,245,246,0.95)",
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(244,63,94,0.08)",
+      }}
+    >
+      {/* Left spacer balances the title center */}
+      <View style={{ width: 40 }} />
+      <Text
+        style={{
+          flex: 1,
+          textAlign: "center",
+          fontSize: 17,
+          fontWeight: "700",
+          color: TEXT_PRIMARY,
+        }}
+      >
+        Ghi chú mới
+      </Text>
+      <View style={{ width: 40 }} />
+    </View>
+  );
+});
+
+/** 3-col category grid */
+const CategoryGrid = memo(function CategoryGrid({
+  selected,
+  onSelect,
+}: {
+  selected: Category | null;
+  onSelect: (cat: Category) => void;
+}) {
+  return (
+    <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+      <Text
+        style={{
+          fontSize: 11,
+          fontWeight: "700",
+          color: PRIMARY,
+          textTransform: "uppercase",
+          letterSpacing: 0.8,
+          marginBottom: 12,
+        }}
+      >
+        Danh mục
+      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 10,
+        }}
+      >
+        {CATEGORIES.map((cat) => {
+          const isActive = selected === cat.key;
+          return (
+            <Pressable
+              key={cat.key}
+              onPress={() => onSelect(cat.key)}
+              style={{
+                width: "31%",
+                paddingVertical: 12,
+                alignItems: "center",
+                gap: 4,
+                backgroundColor: isActive ? "rgba(244,63,94,0.05)" : SURFACE,
+                borderRadius: 14,
+                borderWidth: isActive ? 2 : 1,
+                borderColor: isActive ? PRIMARY : BORDER,
+                shadowColor: isActive ? PRIMARY : "#000",
+                shadowOffset: { width: 0, height: isActive ? 4 : 1 },
+                shadowOpacity: isActive ? 0.15 : 0.04,
+                shadowRadius: isActive ? 8 : 3,
+                elevation: isActive ? 5 : 2,
+              }}
+            >
+              <Text style={{ fontSize: 22 }}>{cat.icon}</Text>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "700",
+                  color: isActive ? PRIMARY : TEXT_SECONDARY,
+                  textAlign: "center",
+                }}
+                numberOfLines={1}
+              >
+                {cat.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+});
+
+/** Sentiment 5-button row */
+const SentimentPicker = memo(function SentimentPicker({
+  selected,
+  onSelect,
+}: {
+  selected: Sentiment | null;
+  onSelect: (s: Sentiment) => void;
+}) {
+  return (
+    <View style={{ paddingHorizontal: 16, marginTop: 24 }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: "600",
+          color: TEXT_PRIMARY,
+          marginBottom: 14,
+        }}
+      >
+        Cảm xúc của Thái Học về điều này
+      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        {SENTIMENTS.map((s) => {
+          const isActive = selected === s.key;
+          return (
+            <Pressable
+              key={s.key}
+              onPress={() => onSelect(s.key)}
+              style={{ alignItems: "center", gap: 6 }}
+            >
+              <View
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 28,
+                  backgroundColor: isActive ? "rgba(244,63,94,0.06)" : SURFACE,
+                  borderWidth: isActive ? 2 : 1.5,
+                  borderColor: isActive ? PRIMARY : BORDER,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: isActive ? PRIMARY : "transparent",
+                  shadowOffset: { width: 0, height: 3 },
+                  shadowOpacity: isActive ? 0.2 : 0,
+                  shadowRadius: 6,
+                  elevation: isActive ? 4 : 0,
+                  transform: [{ scale: isActive ? 1.08 : 1 }],
+                }}
+              >
+                <Text style={{ fontSize: 24 }}>{s.emoji}</Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 9,
+                  fontWeight: "700",
+                  color: isActive ? PRIMARY : TEXT_MUTED,
+                  textAlign: "center",
+                }}
+              >
+                {s.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+});
+
+// ─── Main Screen ─────────────────────────────────────────────
 
 export default function AddEntryScreen() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const router = useRouter();
+
+  const [category, setCategory] = useState<Category | null>(null);
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
-  const [selectedSentiment, setSelectedSentiment] = useState<string | null>(null);
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [dateText, setDateText] = useState("");
+  const [sentiment, setSentiment] = useState<Sentiment | null>(null);
+  const [eventDate, setEventDate] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
 
-  const currentCategory = CATEGORIES.find((c) => c.id === selectedCategory);
-  const placeholder = currentCategory?.placeholder || "Nhap tieu de ghi chu...";
   const canSubmit = title.trim().length > 0;
+  const activeCat = CATEGORIES.find((c) => c.key === category);
+  const titlePlaceholder = category
+    ? CATEGORY_PLACEHOLDERS[category]
+    : "Thái Học thích...";
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
+    if (!canSubmit) return;
+
     const entry = {
-      category: selectedCategory,
+      category: category ?? "other",
       title: title.trim(),
-      detail: detail.trim(),
-      sentiment: selectedSentiment,
-      date: dateText || new Date().toISOString().split("T")[0],
-      isRecurring,
+      detail: detail.trim() || undefined,
+      sentiment: sentiment ?? "neutral",
+      event_date: eventDate || new Date().toISOString().split("T")[0],
+      is_recurring: isRecurring,
     };
-    console.log("Submit entry:", entry);
 
-    // Reset form
-    setSelectedCategory(null);
-    setTitle("");
-    setDetail("");
-    setSelectedSentiment(null);
-    setShowAdvanced(false);
-    setDateText("");
-    setIsRecurring(false);
-  };
+    // TODO: persist to Supabase via useEntries hook
+    console.log("[AddEntry] submit:", entry);
+
+    Alert.alert("Đã lưu!", `Ghi chú "${entry.title}" đã được lưu.`, [
+      {
+        text: "Thêm nữa",
+        onPress: () => {
+          setCategory(null);
+          setTitle("");
+          setDetail("");
+          setSentiment(null);
+          setEventDate("");
+          setIsRecurring(false);
+        },
+      },
+      {
+        text: "Về trang chủ",
+        style: "default",
+        onPress: () => router.push("/(tabs)"),
+      },
+    ]);
+  }, [canSubmit, category, title, detail, sentiment, eventDate, isRecurring, router]);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
+
+      {/* ── Header ── */}
+      <AddHeader />
+
       <KeyboardAvoidingView
-        className="flex-1"
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingBottom: 40 }}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingBottom: 48 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {/* ── Header ── */}
-          <View className="px-5 pt-4 pb-2">
+          {/* ── Intro title ── */}
+          <View style={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 4 }}>
             <Text
-              className="text-2xl font-extrabold"
-              style={{ color: "#1e1b2e" }}
+              style={{ fontSize: 22, fontWeight: "700", color: TEXT_PRIMARY, lineHeight: 30 }}
             >
-              Ghi chu moi
+              Thêm một điều về{"\n"}Thái Học 💕
             </Text>
-            <Text
-              className="text-sm mt-1"
-              style={{ color: "#f43f5e" }}
-            >
-              Them mot dieu ve Thai Hoc
+            <Text style={{ fontSize: 13, color: PRIMARY, marginTop: 6, opacity: 0.8 }}>
+              Ghi lại những điều quan trọng cần nhớ
             </Text>
           </View>
 
           {/* ── Category Grid ── */}
-          <View className="px-4 mt-4">
-            <Text
-              className="text-xs font-bold uppercase tracking-wider mb-3 px-1"
-              style={{ color: "#9ca3af" }}
-            >
-              Danh muc
-            </Text>
-            <View className="flex-row flex-wrap" style={{ gap: 10 }}>
-              {CATEGORIES.map((cat) => {
-                const isSelected = selectedCategory === cat.id;
-                return (
-                  <Pressable
-                    key={cat.id}
-                    className="items-center py-3 active:opacity-80"
-                    style={{
-                      width: "31%",
-                      backgroundColor: isSelected ? "#fff1f2" : "#ffffff",
-                      borderRadius: 20,
-                      borderWidth: 2,
-                      borderColor: isSelected ? "#f43f5e" : "transparent",
-                      shadowColor: isSelected ? "#f43f5e" : "#000",
-                      shadowOffset: { width: 0, height: isSelected ? 4 : 1 },
-                      shadowOpacity: isSelected ? 0.15 : 0.04,
-                      shadowRadius: isSelected ? 8 : 4,
-                      elevation: isSelected ? 6 : 2,
-                    }}
-                    onPress={() => setSelectedCategory(cat.id)}
-                  >
-                    <Text className="text-3xl mb-1">{cat.emoji}</Text>
-                    <Text
-                      className="text-xs font-semibold"
-                      style={{ color: isSelected ? "#f43f5e" : "#6b7280" }}
-                      numberOfLines={1}
-                    >
-                      {cat.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </View>
+          <CategoryGrid selected={category} onSelect={setCategory} />
 
-          {/* ── Title Input ── */}
-          <View className="px-4 mt-6">
-            <Text
-              className="text-xs font-bold uppercase tracking-wider mb-2 px-1"
-              style={{ color: "#9ca3af" }}
-            >
-              Tieu de *
-            </Text>
-            <View
-              className="flex-row items-center px-4"
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 14,
-                borderWidth: 1,
-                borderColor: title.trim() ? "#f43f5e" : "#e5e7eb",
-              }}
-            >
-              {currentCategory && (
-                <Text className="text-lg mr-2">{currentCategory.emoji}</Text>
-              )}
+          {/* ── Form Fields ── */}
+          <View style={{ paddingHorizontal: 16, marginTop: 24, gap: 16 }}>
+            {/* Title */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "600",
+                  color: TEXT_PRIMARY,
+                  marginBottom: 8,
+                }}
+              >
+                Tiêu đề ghi chú{" "}
+                <Text style={{ color: PRIMARY }}>*</Text>
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  backgroundColor: SURFACE,
+                  borderRadius: 14,
+                  borderWidth: 1.5,
+                  borderColor: title.trim() ? PRIMARY : "rgba(244,63,94,0.2)",
+                  paddingHorizontal: 14,
+                }}
+              >
+                {activeCat != null && (
+                  <Text style={{ fontSize: 18, marginRight: 8 }}>
+                    {activeCat.icon}
+                  </Text>
+                )}
+                <TextInput
+                  style={{
+                    flex: 1,
+                    paddingVertical: 14,
+                    fontSize: 15,
+                    color: TEXT_PRIMARY,
+                  }}
+                  placeholder={titlePlaceholder}
+                  placeholderTextColor={TEXT_MUTED}
+                  value={title}
+                  onChangeText={setTitle}
+                  returnKeyType="next"
+                />
+              </View>
+            </View>
+
+            {/* Detail */}
+            <View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "600",
+                  color: TEXT_PRIMARY,
+                  marginBottom: 8,
+                }}
+              >
+                Chi tiết
+              </Text>
               <TextInput
-                className="flex-1 py-4 text-base"
-                style={{ color: "#1e1b2e" }}
-                placeholder={placeholder}
-                placeholderTextColor="#9ca3af"
-                value={title}
-                onChangeText={setTitle}
+                style={{
+                  backgroundColor: SURFACE,
+                  borderRadius: 14,
+                  borderWidth: 1.5,
+                  borderColor: "rgba(244,63,94,0.2)",
+                  paddingHorizontal: 14,
+                  paddingVertical: 12,
+                  fontSize: 15,
+                  color: TEXT_PRIMARY,
+                  minHeight: 100,
+                  textAlignVertical: "top",
+                }}
+                placeholder="Nhập thêm thông tin chi tiết tại đây..."
+                placeholderTextColor={TEXT_MUTED}
+                value={detail}
+                onChangeText={setDetail}
+                multiline
               />
             </View>
           </View>
 
-          {/* ── Detail Textarea ── */}
-          <View className="px-4 mt-4">
-            <Text
-              className="text-xs font-bold uppercase tracking-wider mb-2 px-1"
-              style={{ color: "#9ca3af" }}
-            >
-              Chi tiet
-            </Text>
-            <TextInput
-              className="px-4 py-3 text-base"
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 14,
-                borderWidth: 1,
-                borderColor: "#e5e7eb",
-                color: "#1e1b2e",
-                minHeight: 80,
-                textAlignVertical: "top",
-              }}
-              placeholder="Viet them chi tiet o day..."
-              placeholderTextColor="#9ca3af"
-              value={detail}
-              onChangeText={setDetail}
-              multiline
-              numberOfLines={3}
-            />
-          </View>
-
           {/* ── Sentiment Picker ── */}
-          <View className="px-4 mt-6">
-            <Text
-              className="text-xs font-bold uppercase tracking-wider mb-3 px-1"
-              style={{ color: "#9ca3af" }}
+          <SentimentPicker selected={sentiment} onSelect={setSentiment} />
+
+          {/* ── Advanced Options ── */}
+          <View style={{ paddingHorizontal: 16, marginTop: 28 }}>
+            {/* Section divider */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                marginBottom: 16,
+              }}
             >
-              Muc do yeu thich
-            </Text>
-            <View className="flex-row justify-between">
-              {SENTIMENTS.map((s) => {
-                const isSelected = selectedSentiment === s.id;
-                return (
-                  <Pressable
-                    key={s.id}
-                    className="items-center active:opacity-80"
-                    onPress={() => setSelectedSentiment(s.id)}
-                  >
-                    <View
-                      className="items-center justify-center"
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 28,
-                        backgroundColor: isSelected ? "#fff1f2" : "#ffffff",
-                        borderWidth: 2,
-                        borderColor: isSelected ? "#f43f5e" : "#e5e7eb",
-                        shadowColor: isSelected ? "#f43f5e" : "transparent",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: isSelected ? 0.2 : 0,
-                        shadowRadius: 8,
-                        elevation: isSelected ? 6 : 0,
-                        transform: [{ scale: isSelected ? 1.1 : 1 }],
-                      }}
-                    >
-                      <Text className="text-2xl">{s.emoji}</Text>
-                    </View>
-                    <Text
-                      className="text-[9px] font-bold mt-1.5"
-                      style={{ color: isSelected ? "#f43f5e" : "#9ca3af" }}
-                    >
-                      {s.label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+              <Text
+                style={{ fontSize: 13, fontWeight: "600", color: TEXT_PRIMARY }}
+              >
+                Tùy chọn nâng cao
+              </Text>
+              <View style={{ flex: 1, height: 1, backgroundColor: BORDER }} />
+            </View>
+
+            {/* Event date input */}
+            <View style={{ marginBottom: 16 }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "600",
+                  color: TEXT_PRIMARY,
+                  marginBottom: 8,
+                }}
+              >
+                Ngày sự kiện
+              </Text>
+              <TextInput
+                style={{
+                  backgroundColor: SURFACE,
+                  borderRadius: 14,
+                  borderWidth: 1.5,
+                  borderColor: "rgba(244,63,94,0.2)",
+                  paddingHorizontal: 14,
+                  paddingVertical: 13,
+                  fontSize: 15,
+                  color: TEXT_PRIMARY,
+                }}
+                placeholder="15/03/2026"
+                placeholderTextColor={TEXT_MUTED}
+                value={eventDate}
+                onChangeText={setEventDate}
+                keyboardType="numbers-and-punctuation"
+              />
+            </View>
+
+            {/* Recurring toggle */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingVertical: 4,
+              }}
+            >
+              <Text style={{ fontSize: 14, fontWeight: "500", color: TEXT_PRIMARY }}>
+                Lặp lại hàng năm
+              </Text>
+              <Switch
+                value={isRecurring}
+                onValueChange={setIsRecurring}
+                trackColor={{ false: BORDER, true: "#fda4af" }}
+                thumbColor={isRecurring ? PRIMARY : "#f4f3f4"}
+              />
             </View>
           </View>
 
-          {/* ── Advanced Options ── */}
-          <View className="px-4 mt-6">
-            <Pressable
-              className="flex-row items-center justify-between py-3 px-4 active:opacity-80"
-              style={{
-                backgroundColor: "#ffffff",
-                borderRadius: 14,
-              }}
-              onPress={() => setShowAdvanced(!showAdvanced)}
-            >
-              <Text className="font-semibold" style={{ color: "#6b7280" }}>
-                Tuy chon nang cao
-              </Text>
-              {showAdvanced ? (
-                <ChevronUp size={20} color="#6b7280" />
-              ) : (
-                <ChevronDown size={20} color="#6b7280" />
-              )}
-            </Pressable>
-            {showAdvanced && (
-              <View
-                className="mt-2 p-4"
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: 14,
-                }}
-              >
-                {/* Date Input */}
-                <Text
-                  className="text-xs font-bold uppercase tracking-wider mb-2"
-                  style={{ color: "#9ca3af" }}
-                >
-                  Ngay (dd/mm/yyyy)
-                </Text>
-                <TextInput
-                  className="px-4 py-3 text-base mb-4"
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    borderRadius: 14,
-                    borderWidth: 1,
-                    borderColor: "#e5e7eb",
-                    color: "#1e1b2e",
-                  }}
-                  placeholder="14/03/2026"
-                  placeholderTextColor="#9ca3af"
-                  value={dateText}
-                  onChangeText={setDateText}
-                  keyboardType="numbers-and-punctuation"
-                />
-
-                {/* Recurring Toggle */}
-                <View className="flex-row items-center justify-between">
-                  <Text
-                    className="text-sm font-semibold"
-                    style={{ color: "#1e1b2e" }}
-                  >
-                    Lap lai hang nam
-                  </Text>
-                  <Switch
-                    value={isRecurring}
-                    onValueChange={setIsRecurring}
-                    trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                    thumbColor={isRecurring ? "#f43f5e" : "#f4f3f4"}
-                  />
-                </View>
-              </View>
-            )}
-          </View>
-
           {/* ── Submit Button ── */}
-          <View className="px-4 mt-8">
+          <View style={{ paddingHorizontal: 16, marginTop: 32 }}>
             <Pressable
-              className="items-center py-4 active:opacity-80"
+              onPress={handleSubmit}
+              disabled={!canSubmit}
               style={{
-                backgroundColor: canSubmit ? "#f43f5e" : "#fda4af",
+                paddingVertical: 16,
                 borderRadius: 14,
-                shadowColor: "#f43f5e",
-                shadowOffset: { width: 0, height: 6 },
+                alignItems: "center",
+                backgroundColor: canSubmit ? PRIMARY : "#fda4af",
+                shadowColor: PRIMARY,
+                shadowOffset: { width: 0, height: canSubmit ? 6 : 0 },
                 shadowOpacity: canSubmit ? 0.3 : 0,
                 shadowRadius: 12,
                 elevation: canSubmit ? 8 : 0,
               }}
-              disabled={!canSubmit}
-              onPress={handleSubmit}
             >
-              <Text className="text-white text-base font-bold">
-                Luu ghi chu
+              <Text
+                style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}
+              >
+                Lưu ghi chú
+              </Text>
+            </Pressable>
+
+            {/* Quick AI Chat shortcut */}
+            <Pressable
+              onPress={() => router.push("/(tabs)/chat")}
+              style={{ alignItems: "center", marginTop: 14, paddingVertical: 8 }}
+            >
+              <Text
+                style={{ fontSize: 13, color: TEXT_SECONDARY, fontWeight: "500" }}
+              >
+                Hoặc{" "}
+                <Text style={{ color: PRIMARY, fontWeight: "700" }}>
+                  dùng AI Chat
+                </Text>{" "}
+                để ghi nhanh bằng giọng nói
               </Text>
             </Pressable>
           </View>

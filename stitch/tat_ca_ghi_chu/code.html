@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MyLoveThaiHoc - Tất cả ghi chú</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f43e5c",
+                        "background-light": "#f8f5f6",
+                        "background-dark": "#221013",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "1rem", /* Mapping request's 16px to 1rem based on theme config constraints */
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="max-w-md mx-auto min-h-screen relative flex flex-col pb-24">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pt-6 pb-2">
+<div class="flex items-center justify-between h-12">
+<button class="w-10 h-10 flex items-center justify-start text-slate-900 dark:text-white">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-[17px] font-bold tracking-tight">Tất cả ghi chú</h1>
+<button class="w-10 h-10 flex items-center justify-end text-slate-500">
+<span class="material-symbols-outlined text-2xl">sort</span>
+</button>
+</div>
+<!-- Sticky Search Bar -->
+<div class="mt-4 mb-2">
+<div class="relative flex items-center bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-4 h-12 shadow-sm">
+<span class="material-symbols-outlined text-slate-400 mr-2 text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-slate-900 dark:text-white placeholder:text-slate-400 text-[15px] p-0" placeholder="Tìm kiếm ghi chú..." type="text"/>
+<button class="text-slate-300">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Filter Chips -->
+<div class="flex gap-2 px-4 py-3 overflow-x-auto hide-scrollbar whitespace-nowrap">
+<button class="px-4 py-2 bg-primary text-white rounded-full text-sm font-semibold shadow-sm">Tất cả 56</button>
+<button class="px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-sm font-medium border border-slate-100 dark:border-slate-700">🍜 Món ăn</button>
+<button class="px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-sm font-medium border border-slate-100 dark:border-slate-700">📍 Địa điểm</button>
+<button class="px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-sm font-medium border border-slate-100 dark:border-slate-700">🎨 Sở thích</button>
+<button class="px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-sm font-medium border border-slate-100 dark:border-slate-700">⚠️ Dị ứng</button>
+<button class="px-4 py-2 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full text-sm font-medium border border-slate-100 dark:border-slate-700">🎵 Âm nhạc</button>
+</div>
+<!-- Stats Section -->
+<div class="px-5 py-2 flex justify-between items-center">
+<span class="text-slate-500 text-sm font-medium">56 ghi chú</span>
+<button class="text-primary text-sm font-semibold flex items-center">
+                Mới nhất
+                <span class="material-symbols-outlined text-sm ml-0.5">expand_more</span>
+</button>
+</div>
+<!-- Notes List -->
+<div class="space-y-3 mt-2 px-4">
+<!-- Sample 1 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-orange-100 flex items-center justify-center shrink-0 text-xl">
+                    🍜
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Phở bò là món em yêu nhất</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Chi tiết món phở</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Món ăn · 2 giờ trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 2 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-xl">
+                    📍
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Góc chill của hai đứa</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Quán cafe nhỏ quận 1</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Địa điểm · Hôm qua</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 3 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-pink-100 flex items-center justify-center shrink-0 text-xl">
+                    🎨
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Em mê vẽ tranh sơn dầu</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Dụng cụ vẽ tranh mới mua</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Sở thích · 2 ngày trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 4 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-red-100 flex items-center justify-center shrink-0 text-xl">
+                    ⚠️
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Dị ứng tôm</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Ăn tôm bị nổi mề đay</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Dị ứng · 3 ngày trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 5 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 text-xl">
+                    🎵
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Thích nghe Vũ Cát Tường</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">List nhạc buổi tối</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Âm nhạc · 1 tuần trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 6 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-purple-100 flex items-center justify-center shrink-0 text-xl">
+                    🎬
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Mê phim Studio Ghibli</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Xem đi xem lại nhiều lần</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Phim · 1 tuần trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+<!-- Sample 7 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm flex items-center gap-4 border border-white/50 dark:border-slate-700 transition-transform active:scale-[0.98]">
+<div class="w-11 h-11 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 text-xl">
+                    🎁
+                </div>
+<div class="flex-1 min-w-0">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Thích hoa hướng dương</h3>
+<p class="text-slate-500 dark:text-slate-400 text-[13px] truncate">Màu vàng là màu em thích</p>
+<p class="text-slate-400 dark:text-slate-500 text-[12px] mt-0.5">Quà · 2 tuần trước</p>
+</div>
+<button class="text-primary text-sm font-bold shrink-0">Chi tiết</button>
+</div>
+</div>
+<!-- FAB -->
+<button class="fixed bottom-8 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center z-50 hover:bg-rose-600 transition-colors">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</body></html>

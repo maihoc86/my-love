@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+// ============================================================
+// Login Screen - MyLoveThaiHoc
+// Rebuilt v2.0 — based on stitch/ng_nh_p_mylovethaihoc/code.html
+// + BRD v2.0 Epic 4 + SRS FR-AUTH-001/002/003
+// ============================================================
+
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,185 +13,421 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Dimensions,
+  StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Heart, Phone, Lock, Eye, EyeOff, Mail } from "lucide-react-native";
+import { Heart, Phone, Lock, Eye, EyeOff, MessageSquare } from "lucide-react-native";
+
+// ─── Constants ───────────────────────────────────────────────
+
+const PRIMARY = "#f43f5e";
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const HERO_HEIGHT = SCREEN_HEIGHT * 0.38;
+
+// ─── Google SVG Icon (inline) ────────────────────────────────
+
+function GoogleIcon() {
+  // Rendered as colored text circles — no SVG dep needed
+  return (
+    <View
+      style={{
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        backgroundColor: "#4285F4",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Text style={{ color: "#fff", fontSize: 11, fontWeight: "800" }}>G</Text>
+    </View>
+  );
+}
+
+// ─── Input Field ─────────────────────────────────────────────
+
+function AuthInput({
+  icon,
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry,
+  rightElement,
+  keyboardType,
+  autoCapitalize,
+}: {
+  icon: React.ReactNode;
+  placeholder: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  secureTextEntry?: boolean;
+  rightElement?: React.ReactNode;
+  keyboardType?: "default" | "email-address" | "phone-pad";
+  autoCapitalize?: "none" | "sentences";
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#f8fafc",
+        borderWidth: 1.5,
+        borderColor: "#e2e8f0",
+        borderRadius: 16,
+        paddingHorizontal: 14,
+        gap: 10,
+      }}
+    >
+      {icon}
+      <TextInput
+        style={{
+          flex: 1,
+          paddingVertical: 14,
+          fontSize: 15,
+          color: "#1e293b",
+        }}
+        placeholder={placeholder}
+        placeholderTextColor="#94a3b8"
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={secureTextEntry}
+        keyboardType={keyboardType ?? "default"}
+        autoCapitalize={autoCapitalize ?? "sentences"}
+      />
+      {rightElement}
+    </View>
+  );
+}
+
+// ─── Main Screen ─────────────────────────────────────────────
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [phoneOrEmail, setPhoneOrEmail] = useState("");
+  const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const canLogin = identity.trim().length > 0 && password.length >= 6;
+
+  const handleLogin = useCallback(async () => {
+    if (!canLogin || loading) return;
     setLoading(true);
-    // TODO: Implement Supabase auth
+    // TODO: Supabase signIn (email/phone + password)
     setTimeout(() => {
       setLoading(false);
       router.replace("/(tabs)");
     }, 1000);
-  };
+  }, [canLogin, loading, router]);
 
   return (
     <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: PRIMARY }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1"
     >
+      <StatusBar barStyle="light-content" />
       <ScrollView
-        className="flex-1"
+        style={{ flex: 1 }}
         bounces={false}
+        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Gradient Header */}
+        {/* ── Hero Section ── */}
         <View
-          className="items-center pt-16 pb-12 rounded-b-3xl"
           style={{
-            backgroundColor: "#f43f5e",
-            borderBottomLeftRadius: 32,
-            borderBottomRightRadius: 32,
+            height: HERO_HEIGHT,
+            backgroundColor: PRIMARY,
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
           }}
         >
+          {/* Decorative circles */}
           <View
-            className="w-20 h-20 rounded-full items-center justify-center mb-4"
-            style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+            style={{
+              position: "absolute",
+              top: 30,
+              left: -40,
+              width: 128,
+              height: 128,
+              borderRadius: 64,
+              backgroundColor: "rgba(255,255,255,0.1)",
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              top: 60,
+              right: -20,
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: "rgba(255,255,255,0.1)",
+            }}
+          />
+          <View
+            style={{
+              position: "absolute",
+              bottom: 60,
+              left: "30%",
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: "rgba(255,255,255,0.06)",
+            }}
+          />
+
+          {/* Brand */}
+          <View
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: 36,
+              backgroundColor: "rgba(255,255,255,0.2)",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 14,
+            }}
           >
-            <Heart size={40} color="#fff" fill="#fff" />
+            <Heart size={36} color="#fff" fill="#fff" />
           </View>
-          <Text className="text-white text-2xl font-extrabold">
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 26,
+              fontWeight: "800",
+              letterSpacing: -0.5,
+            }}
+          >
             MyLoveThaiHoc
           </Text>
-          <Text className="text-white/80 text-sm mt-1">
+          <Text
+            style={{
+              color: "rgba(255,255,255,0.8)",
+              fontSize: 14,
+              fontWeight: "500",
+              marginTop: 4,
+            }}
+          >
             Ghi nhớ mọi điều về em 💕
           </Text>
         </View>
 
-        {/* Form Card */}
-        <View className="px-6 -mt-6">
-          <View className="bg-white rounded-3xl p-6 shadow-lg">
-            <Text className="text-xl font-bold mb-1" style={{ color: "#1e1b2e" }}>
-              Đăng nhập
-            </Text>
-            <Text className="text-sm mb-6" style={{ color: "#6b7280" }}>
-              Chào mừng bạn quay trở lại!
-            </Text>
+        {/* ── Form Card (lifted over hero) ── */}
+        <View
+          style={{
+            marginHorizontal: 16,
+            marginTop: -28,
+            backgroundColor: "#fff",
+            borderRadius: 28,
+            padding: 28,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.12,
+            shadowRadius: 24,
+            elevation: 16,
+            marginBottom: 32,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: "700",
+              color: "#0f172a",
+              marginBottom: 4,
+            }}
+          >
+            Đăng nhập
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              color: "#64748b",
+              marginBottom: 24,
+            }}
+          >
+            Chào mừng bạn quay lại
+          </Text>
 
-            {/* Phone/Email Input */}
-            <Text
-              className="text-xs font-semibold uppercase tracking-wider mb-2"
-              style={{ color: "#f43f5e" }}
-            >
-              Số điện thoại hoặc Email
-            </Text>
-            <View className="flex-row items-center bg-gray-50 rounded-xl px-4 mb-4">
-              <Phone size={18} color="#9ca3af" />
-              <TextInput
-                className="flex-1 py-4 px-3 text-sm"
-                placeholder="Nhập số điện thoại hoặc email"
-                placeholderTextColor="#9ca3af"
-                value={phoneOrEmail}
-                onChangeText={setPhoneOrEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
-            </View>
+          {/* Phone / Email */}
+          <Text
+            style={{
+              fontSize: 11,
+              fontWeight: "700",
+              color: "#64748b",
+              textTransform: "uppercase",
+              letterSpacing: 0.6,
+              marginBottom: 8,
+            }}
+          >
+            Số điện thoại / Email
+          </Text>
+          <AuthInput
+            icon={<Phone size={18} color="#94a3b8" />}
+            placeholder="0912 345 678"
+            value={identity}
+            onChangeText={setIdentity}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-            {/* Password Input */}
-            <Text
-              className="text-xs font-semibold uppercase tracking-wider mb-2"
-              style={{ color: "#f43f5e" }}
-            >
-              Mật khẩu
-            </Text>
-            <View className="flex-row items-center bg-gray-50 rounded-xl px-4 mb-2">
-              <Lock size={18} color="#9ca3af" />
-              <TextInput
-                className="flex-1 py-4 px-3 text-sm"
-                placeholder="Nhập mật khẩu"
-                placeholderTextColor="#9ca3af"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-              />
-              <Pressable onPress={() => setShowPassword(!showPassword)}>
-                {showPassword ? (
-                  <EyeOff size={18} color="#9ca3af" />
+          {/* Password */}
+          <Text
+            style={{
+              fontSize: 11,
+              fontWeight: "700",
+              color: "#64748b",
+              textTransform: "uppercase",
+              letterSpacing: 0.6,
+              marginTop: 16,
+              marginBottom: 8,
+            }}
+          >
+            Mật khẩu
+          </Text>
+          <AuthInput
+            icon={<Lock size={18} color="#94a3b8" />}
+            placeholder="••••••••"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPwd}
+            rightElement={
+              <Pressable
+                onPress={() => setShowPwd((p) => !p)}
+                hitSlop={8}
+              >
+                {showPwd ? (
+                  <EyeOff size={18} color="#94a3b8" />
                 ) : (
-                  <Eye size={18} color="#9ca3af" />
+                  <Eye size={18} color="#94a3b8" />
                 )}
               </Pressable>
-            </View>
+            }
+          />
 
-            {/* Forgot Password */}
-            <Pressable
-              className="self-end mb-6"
-              onPress={() => router.push("/(auth)/forgot-password")}
+          {/* Forgot Password */}
+          <Pressable
+            onPress={() => router.push("/(auth)/forgot-password")}
+            style={{ alignSelf: "flex-end", marginTop: 10, marginBottom: 24 }}
+            hitSlop={8}
+          >
+            <Text
+              style={{ fontSize: 13, fontWeight: "600", color: PRIMARY }}
             >
-              <Text className="text-xs font-medium" style={{ color: "#f43f5e" }}>
-                Quên mật khẩu?
-              </Text>
-            </Pressable>
+              Quên mật khẩu?
+            </Text>
+          </Pressable>
 
-            {/* Login Button */}
-            <Pressable
-              className="py-4 rounded-xl items-center mb-4"
+          {/* Login Button */}
+          <Pressable
+            onPress={handleLogin}
+            disabled={!canLogin || loading}
+            style={{
+              paddingVertical: 16,
+              borderRadius: 16,
+              alignItems: "center",
+              backgroundColor: canLogin && !loading ? PRIMARY : "#fda4af",
+              shadowColor: PRIMARY,
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: canLogin ? 0.3 : 0,
+              shadowRadius: 12,
+              elevation: canLogin ? 8 : 0,
+            }}
+          >
+            <Text
+              style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}
+            >
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+            </Text>
+          </Pressable>
+
+          {/* Divider */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginVertical: 24,
+            }}
+          >
+            <View style={{ flex: 1, height: 1, backgroundColor: "#f1f5f9" }} />
+            <Text
               style={{
-                backgroundColor: loading ? "#fda4af" : "#f43f5e",
-                opacity: !phoneOrEmail || !password ? 0.5 : 1,
+                marginHorizontal: 14,
+                fontSize: 11,
+                fontWeight: "600",
+                color: "#94a3b8",
+                textTransform: "uppercase",
+                letterSpacing: 1,
               }}
-              disabled={!phoneOrEmail || !password || loading}
-              onPress={handleLogin}
             >
-              <Text className="text-white font-bold text-base">
-                {loading ? "Đang đăng nhập..." : "Đăng nhập"}
-              </Text>
-            </Pressable>
-
-            {/* Divider */}
-            <View className="flex-row items-center my-4">
-              <View className="flex-1 h-px bg-gray-200" />
-              <Text className="mx-4 text-xs text-gray-400">HOẶC</Text>
-              <View className="flex-1 h-px bg-gray-200" />
-            </View>
-
-            {/* OTP Button */}
-            <Pressable
-              className="py-3.5 rounded-xl items-center border mb-3"
-              style={{ borderColor: "#f43f5e" }}
-              onPress={() => {}}
-            >
-              <View className="flex-row items-center">
-                <Mail size={18} color="#f43f5e" />
-                <Text
-                  className="font-semibold text-sm ml-2"
-                  style={{ color: "#f43f5e" }}
-                >
-                  Đăng nhập bằng mã OTP
-                </Text>
-              </View>
-            </Pressable>
-
-            {/* Google Button */}
-            <Pressable
-              className="py-3.5 rounded-xl items-center border border-gray-200 bg-gray-50"
-              onPress={() => {}}
-            >
-              <View className="flex-row items-center">
-                <Text className="text-lg mr-2">G</Text>
-                <Text className="font-semibold text-sm" style={{ color: "#1e1b2e" }}>
-                  Tiếp tục với Google
-                </Text>
-              </View>
-            </Pressable>
+              hoặc
+            </Text>
+            <View style={{ flex: 1, height: 1, backgroundColor: "#f1f5f9" }} />
           </View>
 
-          {/* Register Link */}
-          <View className="flex-row justify-center mt-6 mb-8">
-            <Text className="text-sm" style={{ color: "#6b7280" }}>
-              Chưa có tài khoản?{" "}
+          {/* OTP Login */}
+          <Pressable
+            onPress={() => {}}
+            style={{
+              paddingVertical: 14,
+              borderRadius: 16,
+              borderWidth: 2,
+              borderColor: PRIMARY,
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            <MessageSquare size={18} color={PRIMARY} />
+            <Text
+              style={{ fontSize: 14, fontWeight: "700", color: PRIMARY }}
+            >
+              Đăng nhập bằng mã OTP
             </Text>
-            <Pressable onPress={() => router.push("/(auth)/register")}>
-              <Text className="text-sm font-bold" style={{ color: "#f43f5e" }}>
+          </Pressable>
+
+          {/* Google Login */}
+          <Pressable
+            onPress={() => {}}
+            style={{
+              paddingVertical: 14,
+              borderRadius: 16,
+              borderWidth: 1.5,
+              borderColor: "#e2e8f0",
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: 10,
+              backgroundColor: "#fafafa",
+            }}
+          >
+            <GoogleIcon />
+            <Text
+              style={{ fontSize: 14, fontWeight: "600", color: "#334155" }}
+            >
+              Tiếp tục với Google
+            </Text>
+          </Pressable>
+
+          {/* Register Link */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 24,
+              gap: 4,
+            }}
+          >
+            <Text style={{ fontSize: 14, color: "#64748b" }}>
+              Chưa có tài khoản?
+            </Text>
+            <Pressable onPress={() => router.push("/(auth)/register")} hitSlop={6}>
+              <Text
+                style={{ fontSize: 14, fontWeight: "700", color: PRIMARY }}
+              >
                 Đăng ký
               </Text>
             </Pressable>

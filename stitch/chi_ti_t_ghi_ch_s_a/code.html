@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chỉnh sửa ghi chú - MyLoveThaiHoc</title>
+<!-- Google Font: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#f43e5c', // Custom rose from prompt
+            surface: '#ffffff',
+            background: '#f8f5f6',
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          borderRadius: {
+            'custom': '12px', // ROUND_TWELVE
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    body {
+      background-color: #f8f5f6;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    /* Custom scrollbar for textarea */
+    textarea::-webkit-scrollbar {
+      width: 4px;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background-color: #f43e5c33;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-900 overflow-x-hidden">
+<!-- BEGIN: Sticky Header -->
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-rose-100 px-4 h-16 flex items-center justify-between" data-purpose="navigation-header">
+<div class="flex items-center gap-3">
+<button aria-label="Back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors">
+<svg class="h-6 w-6 text-slate-700" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<h1 class="text-lg font-bold text-slate-800">Chỉnh sửa ghi chú</h1>
+</div>
+<button class="text-slate-500 font-medium px-2 py-1 hover:text-slate-800 transition-colors">
+      Huỷ
+    </button>
+</header>
+<!-- END: Sticky Header -->
+<main class="p-4 space-y-6 pb-32" data-purpose="edit-form-content">
+<!-- BEGIN: Hero Block -->
+<section class="flex flex-col items-center gap-4 py-4" data-purpose="hero-section">
+<div class="w-24 h-24 bg-white rounded-custom shadow-sm border border-rose-100 flex items-center justify-center text-5xl relative group">
+<span>🍜</span>
+<button class="absolute -bottom-2 -right-2 bg-white border border-rose-200 p-1.5 rounded-full shadow-md text-rose-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<div class="w-full">
+<label class="block text-xs font-semibold text-rose-500 uppercase tracking-wider mb-1.5 ml-1" for="note-title">Tiêu đề ghi chú</label>
+<input class="w-full bg-white border-2 border-primary rounded-custom px-4 py-3 text-lg font-bold text-slate-800 focus:ring-4 focus:ring-rose-500/10 focus:border-primary outline-none transition-all shadow-sm" id="note-title" type="text" value="Phở bò là món em yêu nhất"/>
+</div>
+</section>
+<!-- END: Hero Block -->
+<!-- BEGIN: Sentiment Selection -->
+<section class="space-y-3" data-purpose="sentiment-selector">
+<h2 class="text-sm font-bold text-slate-700 ml-1">Cảm xúc của em</h2>
+<div class="grid grid-cols-4 gap-2">
+<!-- Option: Love (Active) -->
+<button class="flex flex-col items-center gap-1.5 p-3 rounded-custom bg-rose-50 border-2 border-primary shadow-sm">
+<span class="text-2xl">🥰</span>
+<span class="text-[10px] font-bold text-primary uppercase">Rất thích</span>
+</button>
+<!-- Option: Happy -->
+<button class="flex flex-col items-center gap-1.5 p-3 rounded-custom bg-white border border-slate-100 hover:border-rose-200 transition-colors">
+<span class="text-2xl">😊</span>
+<span class="text-[10px] font-semibold text-slate-400 uppercase">Vui vẻ</span>
+</button>
+<!-- Option: Neutral -->
+<button class="flex flex-col items-center gap-1.5 p-3 rounded-custom bg-white border border-slate-100 hover:border-rose-200 transition-colors">
+<span class="text-2xl">😐</span>
+<span class="text-[10px] font-semibold text-slate-400 uppercase">Bình thường</span>
+</button>
+<!-- Option: Sad -->
+<button class="flex flex-col items-center gap-1.5 p-3 rounded-custom bg-white border border-slate-100 hover:border-rose-200 transition-colors">
+<span class="text-2xl">😢</span>
+<span class="text-[10px] font-semibold text-slate-400 uppercase">Hơi buồn</span>
+</button>
+</div>
+</section>
+<!-- END: Sentiment Selection -->
+<!-- BEGIN: Detail Content -->
+<section class="bg-white rounded-custom p-4 shadow-sm border border-slate-100 space-y-3" data-purpose="detail-content-editor">
+<label class="flex items-center gap-2 text-sm font-bold text-slate-700" for="detail-content">
+<svg class="h-4 w-4 text-rose-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6h16M4 12h16M4 18h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+        Nội dung chi tiết
+      </label>
+<textarea class="w-full bg-rose-50/30 border-2 border-rose-200 rounded-custom p-3 text-slate-700 leading-relaxed focus:ring-4 focus:ring-rose-500/10 focus:border-primary outline-none transition-all resize-none" id="detail-content" rows="5">Hôm nay anh dắt em đi ăn phở Lý Quốc Sư, em đã rất hạnh phúc. Nước dùng đậm đà, thịt bò mềm và quan trọng nhất là được ăn cùng anh. Lần sau mình lại đi nữa nhé!</textarea>
+</section>
+<!-- END: Detail Content -->
+<!-- BEGIN: Info Rows -->
+<section class="bg-white rounded-custom overflow-hidden shadow-sm border border-slate-100" data-purpose="metadata-editor">
+<!-- Row: Category -->
+<div class="flex items-center justify-between p-4 border-b border-slate-50 active:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-slate-600">Danh mục</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-slate-800">Ẩm thực</span>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Row: Date -->
+<div class="flex items-center justify-between p-4 border-b border-slate-50 active:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-slate-600">Ngày tạo</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-slate-800">24/05/2024</span>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Row: Location -->
+<div class="flex items-center justify-between p-4 active:bg-slate-50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-slate-600">Địa điểm</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-slate-800">Lý Quốc Sư, Hà Nội</span>
+<svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</section>
+<!-- END: Info Rows -->
+</main>
+<!-- BEGIN: Bottom Action Button -->
+<footer class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-rose-100 safe-bottom" data-purpose="sticky-footer-action">
+<button class="w-full bg-primary hover:bg-rose-600 text-white font-bold py-4 rounded-custom shadow-lg shadow-rose-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<svg class="h-5 w-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+      Lưu thay đổi
+    </button>
+</footer>
+<!-- END: Bottom Action Button -->
+</body></html>
