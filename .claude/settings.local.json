@@ -324,7 +324,19 @@
       "Bash(rm -rf node_modules/.cache .expo/web/cache)",
       "Bash(watchman watch-del-all:*)",
       "Bash(kill 88259)",
-      "Bash(xargs kill:*)"
+      "Bash(xargs kill:*)",
+      "WebFetch(domain:skills.sh)",
+      "Bash(npx skillsadd:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npx skills:*)",
+      "Bash(node -e \"try { console.log\\(require\\(''expo/package.json''\\).version\\) } catch\\(e\\) { console.log\\(''not installed''\\) }\")",
+      "WebFetch(domain:exp.host)",
+      "Bash(npx expo-doctor:*)",
+      "Bash(rm -rf node_modules .expo)",
+      "Bash(npm cache:*)",
+      "Bash(sudo chown:*)",
+      "Bash(node -e \"console.log\\(''Expo:'', require\\(''expo/package.json''\\).version\\); console.log\\(''RN:'', require\\(''react-native/package.json''\\).version\\); console.log\\(''React:'', require\\(''react/package.json''\\).version\\)\")",
+      "Bash(kill 82924)"
     ],
     "additionalDirectories": [
       "/Users/mac/Documents/Work/Projects/TIEN PHONG CDS/MyLoveThaiHoc-Mobile/docs"
