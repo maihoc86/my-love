@@ -99,9 +99,9 @@ const TYPE_CONFIG: Record<
   ChatType,
   { Icon: typeof MessageCircle; color: string; bg: string; label: string }
 > = {
-  text: { Icon: MessageCircle, color: Colors.primary, bg: '#fff1f2', label: 'Chat' },
-  suggestion: { Icon: Sparkles, color: '#8b5cf6', bg: '#f5f3ff', label: 'Gợi ý AI' },
-  voice: { Icon: Mic, color: '#f97316', bg: '#fff7ed', label: 'Voice' },
+  text: { Icon: MessageCircle, color: Colors.primary, bg: Colors.primaryAlpha08, label: 'Chat' },
+  suggestion: { Icon: Sparkles, color: Colors.aiPurple, bg: Colors.aiPurpleAlpha10, label: 'Gợi ý AI' },
+  voice: { Icon: Mic, color: Colors.sentimentLike, bg: Colors.warningAlpha15, label: 'Voice' },
 };
 
 // ─── Chat History Screen ────────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ export default function ChatHistoryScreen() {
   })).filter((group) => group.items.length > 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       {/* ── Header ── */}
       <View
         style={{
@@ -155,11 +155,12 @@ export default function ChatHistoryScreen() {
       >
         <Pressable
           onPress={() => router.back()}
-          hitSlop={10}
-          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          hitSlop={12}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, minWidth: 48, minHeight: 48, justifyContent: "center" as const })}
           accessibilityLabel="Quay lại"
+          accessibilityRole="button"
         >
-          <ChevronLeft size={26} color="#1f2937" />
+          <ChevronLeft size={26} color={Colors.textPrimary} />
         </Pressable>
 
         <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.textPrimary }}>
@@ -167,11 +168,12 @@ export default function ChatHistoryScreen() {
         </Text>
 
         <Pressable
-          hitSlop={10}
-          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+          hitSlop={12}
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, minWidth: 48, minHeight: 48, alignItems: "flex-end" as const, justifyContent: "center" as const })}
           accessibilityLabel="Tìm kiếm"
+          accessibilityRole="button"
         >
-          <Search size={22} color="#1f2937" />
+          <Search size={22} color={Colors.textPrimary} />
         </Pressable>
       </View>
 
@@ -183,7 +185,7 @@ export default function ChatHistoryScreen() {
         {/* ── Summary card (gradient) ── */}
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
           <LinearGradient
-            colors={['#7c3aed', Colors.primary, '#fb923c']}
+            colors={[Colors.aiPurpleDark, Colors.primary, '#fb923c']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -252,14 +254,14 @@ export default function ChatHistoryScreen() {
             paddingHorizontal: 14,
             borderWidth: 1,
             borderColor: Colors.borderLight,
-            shadowColor: '#000',
+            shadowColor: Colors.textPrimary,
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.05,
             shadowRadius: 4,
             elevation: 2,
           }}
         >
-          <Search size={16} color="#9ca3af" />
+          <Search size={16} color={Colors.textTertiary} />
           <TextInput
             style={{
               flex: 1,
@@ -269,7 +271,7 @@ export default function ChatHistoryScreen() {
               color: Colors.textPrimary,
             }}
             placeholder="Tìm kiếm lịch sử..."
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor={Colors.textTertiary}
             value={search}
             onChangeText={setSearch}
           />
@@ -346,7 +348,7 @@ export default function ChatHistoryScreen() {
                   backgroundColor: Colors.surface,
                   borderRadius: 18,
                   overflow: 'hidden',
-                  shadowColor: '#000',
+                  shadowColor: Colors.textPrimary,
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.06,
                   shadowRadius: 8,
@@ -374,7 +376,7 @@ export default function ChatHistoryScreen() {
                             paddingVertical: 14,
                             borderTopWidth: idx > 0 ? 1 : 0,
                             borderTopColor: Colors.borderLight,
-                            backgroundColor: pressed ? '#fafafa' : 'transparent',
+                            backgroundColor: pressed ? Colors.surfaceSecondary : 'transparent',
                           }}
                         >
                           {/* Icon circle */}
@@ -440,7 +442,7 @@ export default function ChatHistoryScreen() {
                             </View>
                           )}
 
-                          <ChevronRight size={16} color="#d1d5db" />
+                          <ChevronRight size={16} color={Colors.border} />
                         </View>
                       )}
                     </Pressable>

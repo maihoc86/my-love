@@ -274,7 +274,7 @@ const FilterChip = memo(function FilterChip({
   onPress: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} hitSlop={4}>
+    <Pressable onPress={onPress} hitSlop={12}>
       {({ pressed }) => (
         <View
           style={{
@@ -283,7 +283,7 @@ const FilterChip = memo(function FilterChip({
             borderRadius: 999,
             backgroundColor: active ? Colors.primary : Colors.surface,
             borderWidth: 1,
-            borderColor: active ? Colors.primary : "#e2e8f0",
+            borderColor: active ? Colors.primary : Colors.border,
             opacity: pressed ? 0.85 : 1,
           }}
         >
@@ -291,7 +291,7 @@ const FilterChip = memo(function FilterChip({
             style={{
               fontSize: 13,
               fontWeight: active ? "700" : "500",
-              color: active ? Colors.textOnPrimary : "#475569",
+              color: active ? Colors.textOnPrimary : Colors.textSecondary,
             }}
           >
             {label}
@@ -352,7 +352,7 @@ const SortSheet = memo(function SortSheet({
                   width: 40,
                   height: 4,
                   borderRadius: 2,
-                  backgroundColor: "#cbd5e1",
+                  backgroundColor: Colors.textMuted,
                   alignSelf: "center",
                   marginBottom: 16,
                 }}
@@ -382,14 +382,14 @@ const SortSheet = memo(function SortSheet({
                         justifyContent: "space-between",
                         paddingHorizontal: 24,
                         paddingVertical: 16,
-                        backgroundColor: pressed ? "#f8fafc" : "transparent",
+                        backgroundColor: pressed ? Colors.surfaceSecondary : "transparent",
                       }}
                     >
                       <Text
                         style={{
                           fontSize: 15,
                           fontWeight: current === opt.key ? "700" : "500",
-                          color: current === opt.key ? Colors.primary : "#374151",
+                          color: current === opt.key ? Colors.primary : Colors.textPrimary,
                         }}
                       >
                         {opt.label}
@@ -513,7 +513,7 @@ export default function AllNotesScreen() {
           style={{
             fontSize: 16,
             fontWeight: "700",
-            color: "#374151",
+            color: Colors.textPrimary,
             textAlign: "center",
             marginBottom: 8,
           }}
@@ -533,7 +533,7 @@ export default function AllNotesScreen() {
         </Text>
         <Pressable
           onPress={handleClearFilter}
-          hitSlop={8}
+          hitSlop={12}
           style={({ pressed }) => ({
             paddingHorizontal: 20,
             paddingVertical: 10,
@@ -567,7 +567,7 @@ export default function AllNotesScreen() {
         </Text>
         <Pressable
           onPress={() => setSortVisible(true)}
-          hitSlop={8}
+          hitSlop={12}
           style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
         >
           <Text style={{ fontSize: 13, fontWeight: "700", color: Colors.primary }}>
@@ -602,7 +602,7 @@ export default function AllNotesScreen() {
             paddingVertical: 13,
           }}
         >
-          <Pressable onPress={() => router.back()} hitSlop={10} style={{ width: 40 }}>
+          <Pressable onPress={() => router.back()} hitSlop={12} style={{ width: 48, minHeight: 48, justifyContent: "center" }} accessibilityLabel="Quay lại" accessibilityRole="button">
             <ArrowLeft size={22} color={Colors.textPrimary} />
           </Pressable>
           <Text
@@ -618,8 +618,10 @@ export default function AllNotesScreen() {
           </Text>
           <Pressable
             onPress={() => setSortVisible(true)}
-            hitSlop={10}
-            style={{ width: 40, alignItems: "flex-end" }}
+            hitSlop={12}
+            style={{ width: 48, minHeight: 48, alignItems: "flex-end", justifyContent: "center" }}
+            accessibilityLabel="Bộ lọc"
+            accessibilityRole="button"
           >
             <SlidersHorizontal size={20} color={Colors.textSecondary} />
           </Pressable>
@@ -634,7 +636,7 @@ export default function AllNotesScreen() {
               backgroundColor: Colors.surface,
               borderRadius: 14,
               borderWidth: 1,
-              borderColor: "#e2e8f0",
+              borderColor: Colors.border,
               paddingHorizontal: 14,
               height: 46,
               gap: 10,
@@ -663,7 +665,7 @@ export default function AllNotesScreen() {
               autoCapitalize="none"
             />
             {searchQuery.length > 0 && (
-              <Pressable onPress={handleClearSearch} hitSlop={8}>
+              <Pressable onPress={handleClearSearch} hitSlop={12} accessibilityLabel="Xoá tìm kiếm" accessibilityRole="button">
                 <X size={16} color={Colors.textMuted} />
               </Pressable>
             )}
@@ -714,7 +716,9 @@ export default function AllNotesScreen() {
       {/* ── FAB ── */}
       <Pressable
         onPress={() => router.push("/(tabs)/add")}
-        hitSlop={4}
+        hitSlop={12}
+        accessibilityLabel="Thêm ghi chú"
+        accessibilityRole="button"
         style={({ pressed }) => ({
           position: "absolute",
           bottom: 28,

@@ -54,7 +54,7 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'AI Chat',
     description: 'Trò chuyện với AI về người yêu',
     icon: <Bot size={22} color="#fff" />,
-    iconBg: '#7c3aed',
+    iconBg: Colors.aiPurpleDark,
     badge: 'HOT',
     badgeColor: Colors.primary,
     route: '/(tabs)/chat',
@@ -64,9 +64,9 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Bản đồ hẹn hò',
     description: 'Khám phá địa điểm hẹn hò',
     icon: <Map size={22} color="#fff" />,
-    iconBg: '#059669',
+    iconBg: Colors.success,
     badge: 'MỚI',
-    badgeColor: '#059669',
+    badgeColor: Colors.success,
     route: '/date-map',
   },
   {
@@ -84,9 +84,9 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Insight 360',
     description: 'Phân tích sâu về người yêu',
     icon: <Brain size={22} color="#fff" />,
-    iconBg: '#f59e0b',
+    iconBg: Colors.warning,
     badge: 'MỚI',
-    badgeColor: '#059669',
+    badgeColor: Colors.success,
     route: '/insight',
   },
   {
@@ -94,9 +94,9 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Ghi âm tình yêu',
     description: 'Lưu giữ giọng nói yêu thương',
     icon: <Mic size={22} color="#fff" />,
-    iconBg: '#4f46e5',
+    iconBg: Colors.info,
     badge: 'MỚI',
-    badgeColor: '#059669',
+    badgeColor: Colors.success,
     route: '/voice-note',
   },
   {
@@ -104,7 +104,7 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Album ảnh',
     description: 'Bộ sưu tập khoảnh khắc',
     icon: <ImageIcon size={22} color="#fff" />,
-    iconBg: '#0ea5e9',
+    iconBg: Colors.infoLight,
     route: '/album',
   },
   {
@@ -112,7 +112,7 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Nhắc nhở',
     description: 'Không quên ngày quan trọng',
     icon: <Bell size={22} color="#fff" />,
-    iconBg: '#f97316',
+    iconBg: Colors.sentimentLike,
     route: '/daily-reminder',
   },
   {
@@ -120,7 +120,7 @@ const MAIN_UTILITIES: UtilityItem[] = [
     label: 'Ngày đặc biệt',
     description: 'Quản lý sự kiện hai đứa',
     icon: <CalendarDays size={22} color="#fff" />,
-    iconBg: '#ec4899',
+    iconBg: Colors.primaryGradientEnd,
     route: '/(tabs)/calendar',
   },
 ];
@@ -131,7 +131,7 @@ const COMING_SOON: UtilityItem[] = [
     label: 'Nhật ký tình yêu',
     description: '',
     icon: <BookOpen size={22} color="#fff" />,
-    iconBg: '#14b8a6',
+    iconBg: Colors.success,
     comingSoon: true,
   },
   {
@@ -139,7 +139,7 @@ const COMING_SOON: UtilityItem[] = [
     label: 'Quiz tình yêu',
     description: '',
     icon: <HelpCircle size={22} color="#fff" />,
-    iconBg: '#8b5cf6',
+    iconBg: Colors.aiPurple,
     comingSoon: true,
   },
   {
@@ -226,7 +226,7 @@ export default function AllUtilitiesScreen() {
           hitSlop={10}
           style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <ChevronLeft size={22} color="#374151" />
+          <ChevronLeft size={22} color={Colors.textPrimary} />
         </Pressable>
 
         <Text style={styles.headerTitle}>Tất cả tiện ích</Text>
@@ -235,7 +235,7 @@ export default function AllUtilitiesScreen() {
           hitSlop={10}
           style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.7 : 1 }]}
         >
-          <Search size={20} color="#374151" />
+          <Search size={20} color={Colors.textPrimary} />
         </Pressable>
       </View>
 
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: 'rgba(255,255,255,0.8)',
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    borderBottomColor: Colors.surfaceSecondary,
   },
   headerBtn: {
     width: 40,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f1f5f9',
+    backgroundColor: Colors.surfaceSecondary,
     borderRadius: 14,
     paddingHorizontal: 14,
     height: 48,
@@ -364,13 +364,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#f1f5f9',
+    borderColor: Colors.surfaceSecondary,
     position: 'relative',
     overflow: 'hidden',
     marginBottom: CARD_GAP,

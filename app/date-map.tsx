@@ -119,7 +119,7 @@ const CATEGORY_EMOJI: Record<string, string> = {
 
 const CATEGORY_COLOR: Record<string, string> = {
   restaurant: Colors.primary,
-  cafe: '#8b5cf6',
+  cafe: Colors.aiPurple,
   cinema: Colors.info,
   date_spot: Colors.primaryGradientEnd,
 };
@@ -342,7 +342,7 @@ export default function DateMapScreen() {
             style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.7 : 1 }]}
             accessibilityLabel="Quay lại"
           >
-            <ChevronLeft size={22} color="#1f2937" />
+            <ChevronLeft size={22} color={Colors.textPrimary} />
           </Pressable>
 
           <Text style={styles.headerTitle}>Bản đồ hẹn hò</Text>
@@ -352,7 +352,7 @@ export default function DateMapScreen() {
             style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.7 : 1 }]}
             accessibilityLabel="Bộ lọc"
           >
-            <SlidersHorizontal size={20} color="#1f2937" />
+            <SlidersHorizontal size={20} color={Colors.textPrimary} />
           </Pressable>
         </View>
 
@@ -374,7 +374,7 @@ export default function DateMapScreen() {
             <Text
               style={[
                 styles.filterPillText,
-                { color: activeCategory === 'all' ? '#fff' : '#374151' },
+                { color: activeCategory === 'all' ? Colors.textOnPrimary : Colors.textPrimary },
               ]}
             >
               Tất cả
@@ -397,7 +397,7 @@ export default function DateMapScreen() {
               <Text
                 style={[
                   styles.filterPillText,
-                  { color: activeCategory === cfg.key ? '#fff' : '#374151' },
+                  { color: activeCategory === cfg.key ? Colors.textOnPrimary : Colors.textPrimary },
                 ]}
               >
                 {cfg.label}
@@ -413,7 +413,7 @@ export default function DateMapScreen() {
             style={styles.mapControlBtn}
             accessibilityLabel="Vị trí của tôi"
           >
-            <LocateFixed size={18} color="#3b82f6" />
+            <LocateFixed size={18} color={Colors.info} />
           </Pressable>
           <View style={[styles.mapControlBtn, styles.zoomGroup]}>
             <Pressable
@@ -421,7 +421,7 @@ export default function DateMapScreen() {
               onPress={() => sendToMap({ type: 'zoomIn' })}
               accessibilityLabel="Phóng to"
             >
-              <Plus size={18} color="#374151" />
+              <Plus size={18} color={Colors.textPrimary} />
             </Pressable>
             <View style={styles.zoomDivider} />
             <Pressable
@@ -429,7 +429,7 @@ export default function DateMapScreen() {
               onPress={() => sendToMap({ type: 'zoomOut' })}
               accessibilityLabel="Thu nhỏ"
             >
-              <Minus size={18} color="#374151" />
+              <Minus size={18} color={Colors.textPrimary} />
             </Pressable>
           </View>
         </View>
@@ -459,7 +459,7 @@ export default function DateMapScreen() {
             <View style={{ paddingHorizontal: 20, paddingBottom: 32 }}>
               {/* AI Insight badge */}
               <View style={styles.aiBadge}>
-                <Sparkles size={15} color="#8b5cf6" />
+                <Sparkles size={15} color={Colors.aiPurple} />
                 <Text style={styles.aiBadgeText}>
                   AI gợi ý:{' '}
                   <Text style={{ fontWeight: '700', color: Colors.textPrimary }}>Thái Hoc</Text>{' '}
@@ -525,7 +525,7 @@ function SelectedSpotCard({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             {poi.rating !== undefined && (
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                <Star size={13} color="#f59e0b" fill="#f59e0b" />
+                <Star size={13} color={Colors.warning} fill={Colors.warning} />
                 <Text style={styles.ratingText}>{poi.rating}</Text>
               </View>
             )}
@@ -564,7 +564,7 @@ function SelectedSpotCard({
         contentContainerStyle={{ gap: 8 }}
       >
         {poi.isPartnerFavorite && (
-          <View style={[styles.tag, { backgroundColor: '#fff1f2', borderColor: '#fecdd3' }]}>
+          <View style={[styles.tag, { backgroundColor: Colors.primaryAlpha08, borderColor: Colors.primaryLight }]}>
             <Heart size={11} color={Colors.primary} fill={Colors.primary} />
             <Text style={[styles.tagText, { color: Colors.primary }]}>Em thích</Text>
           </View>
@@ -606,7 +606,7 @@ function SelectedSpotCard({
           style={({ pressed }) => [styles.actionSecondary, { opacity: pressed ? 0.75 : 1 }]}
           accessibilityLabel="Chia sẻ"
         >
-          <Share2 size={18} color="#6b7280" />
+          <Share2 size={18} color={Colors.textSecondary} />
         </Pressable>
       </View>
     </View>
@@ -659,7 +659,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 24,
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
@@ -706,7 +706,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 6,
@@ -771,7 +771,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    shadowColor: '#000',
+    shadowColor: Colors.textPrimary,
     shadowOffset: { width: 0, height: -6 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
@@ -792,12 +792,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 10,
-    backgroundColor: '#f5f3ff',
+    backgroundColor: Colors.aiPurpleAlpha10,
     borderRadius: 16,
     padding: 14,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#ede9fe',
+    borderColor: Colors.aiPurpleAlpha15,
   },
   aiBadgeText: {
     fontSize: 12,
@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   userBadge: {
-    backgroundColor: '#ede9fe',
+    backgroundColor: Colors.aiPurpleAlpha15,
     borderRadius: 8,
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
   userBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#7c3aed',
+    color: Colors.aiPurpleDark,
   },
   ratingText: {
     fontSize: 13,
@@ -832,7 +832,7 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
   metaDot: {
-    color: '#d1d5db',
+    color: Colors.border,
     fontSize: 13,
   },
   metaText: {
@@ -856,7 +856,7 @@ const styles = StyleSheet.create({
   },
   noteText: {
     fontSize: 12,
-    color: '#be185d',
+    color: Colors.primaryDark,
     lineHeight: 18,
   },
 
@@ -875,7 +875,7 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.textPrimary,
   },
 
   // Actions

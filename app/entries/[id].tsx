@@ -302,11 +302,11 @@ export default function EntryDetailScreen() {
       <SafeAreaView style={styles.container} edges={["top"]}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.headerBackBtn} onPress={handleGoBack} activeOpacity={0.7}>
-            <ChevronLeft size={24} color="#1e293b" strokeWidth={2} />
+          <TouchableOpacity style={styles.headerBackBtn} onPress={handleGoBack} activeOpacity={0.7} hitSlop={12} accessibilityLabel="Quay lại" accessibilityRole="button">
+            <ChevronLeft size={24} color={Colors.textPrimary} strokeWidth={2} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Chi tiết ghi chú</Text>
-          <TouchableOpacity onPress={handleStartEdit} activeOpacity={0.7} style={styles.headerEditBtn}>
+          <TouchableOpacity onPress={handleStartEdit} activeOpacity={0.7} style={styles.headerEditBtn} accessibilityLabel="Sửa ghi chú" accessibilityRole="button">
             <Text style={styles.headerEditText}>Sửa</Text>
           </TouchableOpacity>
         </View>
@@ -334,6 +334,8 @@ export default function EntryDetailScreen() {
               style={styles.btnPrimary}
               onPress={handleStartEdit}
               activeOpacity={0.85}
+              accessibilityLabel="Chỉnh sửa ghi chú"
+              accessibilityRole="button"
             >
               <Text style={styles.btnPrimaryText}>Chỉnh sửa</Text>
             </TouchableOpacity>
@@ -341,6 +343,8 @@ export default function EntryDetailScreen() {
               style={styles.btnDanger}
               onPress={handleDelete}
               activeOpacity={0.85}
+              accessibilityLabel="Xoá ghi chú"
+              accessibilityRole="button"
             >
               <Text style={styles.btnDangerText}>Xoá ghi chú</Text>
             </TouchableOpacity>
@@ -356,11 +360,11 @@ export default function EntryDetailScreen() {
     <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerBackBtn} onPress={handleCancelEdit} activeOpacity={0.7}>
-          <ChevronLeft size={24} color="#1e293b" strokeWidth={2} />
+        <TouchableOpacity style={styles.headerBackBtn} onPress={handleCancelEdit} activeOpacity={0.7} hitSlop={12} accessibilityLabel="Huỷ chỉnh sửa" accessibilityRole="button">
+          <ChevronLeft size={24} color={Colors.textPrimary} strokeWidth={2} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Chỉnh sửa ghi chú</Text>
-        <TouchableOpacity onPress={handleCancelEdit} activeOpacity={0.7} style={styles.headerEditBtn}>
+        <TouchableOpacity onPress={handleCancelEdit} activeOpacity={0.7} style={styles.headerEditBtn} accessibilityLabel="Huỷ" accessibilityRole="button">
           <Text style={styles.headerCancelText}>Huỷ</Text>
         </TouchableOpacity>
       </View>
@@ -442,7 +446,7 @@ export default function EntryDetailScreen() {
 
       {/* Fixed Footer */}
       <View style={styles.editFooter}>
-        <TouchableOpacity style={styles.btnSave} onPress={handleSave} activeOpacity={0.85}>
+        <TouchableOpacity style={styles.btnSave} onPress={handleSave} activeOpacity={0.85} accessibilityLabel="Lưu thay đổi" accessibilityRole="button">
           <Check size={20} color={Colors.surface} strokeWidth={2.5} />
           <Text style={styles.btnSaveText}>Lưu thay đổi</Text>
         </TouchableOpacity>
@@ -471,15 +475,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   headerBackBtn: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     alignItems: "flex-start",
     justifyContent: "center",
   },
   headerTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#1e293b",
+    color: Colors.textPrimary,
   },
   headerEditBtn: {
     paddingHorizontal: 8,
@@ -493,7 +497,7 @@ const styles = StyleSheet.create({
   headerCancelText: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#64748b",
+    color: Colors.textSecondary,
   },
 
   // Scroll
@@ -520,7 +524,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   categoryBadge: {
-    backgroundColor: "#ffe4e6",
+    backgroundColor: Colors.backgroundSecondary,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -535,7 +539,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 22,
     fontWeight: "800",
-    color: "#1e293b",
+    color: Colors.textPrimary,
     textAlign: "center",
     lineHeight: 30,
   },
@@ -570,7 +574,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: "#f8fafc",
+    backgroundColor: Colors.surfaceSecondary,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -590,7 +594,7 @@ const styles = StyleSheet.create({
   // Detail Text
   detailText: {
     fontSize: 15,
-    color: "#475569",
+    color: Colors.textSecondary,
     lineHeight: 24,
   },
 
@@ -603,16 +607,16 @@ const styles = StyleSheet.create({
   },
   metaRowBorder: {
     borderTopWidth: 1,
-    borderTopColor: "#f8fafc",
+    borderTopColor: Colors.surfaceSecondary,
   },
   metaLabel: {
     fontSize: 14,
-    color: "#64748b",
+    color: Colors.textSecondary,
   },
   metaValue: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1e293b",
+    color: Colors.textPrimary,
   },
 
   // Actions Section
@@ -642,7 +646,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#e2e8f0",
+    borderColor: Colors.border,
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
@@ -668,7 +672,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#ffe4e6",
+    borderColor: Colors.backgroundSecondary,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -689,7 +693,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: "#fecdd3",
+    borderColor: Colors.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -717,7 +721,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 18,
     fontWeight: "700",
-    color: "#1e293b",
+    color: Colors.textPrimary,
     width: "100%",
   },
 
@@ -734,7 +738,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: "#f1f5f9",
+    borderColor: Colors.borderLight,
     gap: 4,
   },
   sentimentGridBtnActive: {
@@ -762,11 +766,11 @@ const styles = StyleSheet.create({
   detailTextarea: {
     backgroundColor: "rgba(255,241,242,0.3)",
     borderWidth: 2,
-    borderColor: "#fecdd3",
+    borderColor: Colors.primaryLight,
     borderRadius: 12,
     padding: 12,
     fontSize: 15,
-    color: "#475569",
+    color: Colors.textSecondary,
     lineHeight: 22,
     minHeight: 120,
   },
@@ -780,7 +784,7 @@ const styles = StyleSheet.create({
   },
   metaEditRowBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: "#f8fafc",
+    borderBottomColor: Colors.surfaceSecondary,
   },
   metaEditLeft: {
     flexDirection: "row",
@@ -797,7 +801,7 @@ const styles = StyleSheet.create({
   metaEditLabel: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#475569",
+    color: Colors.textSecondary,
   },
   metaEditRight: {
     flexDirection: "row",
@@ -807,7 +811,7 @@ const styles = StyleSheet.create({
   metaEditValue: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#1e293b",
+    color: Colors.textPrimary,
   },
 
   // Footer Save
@@ -818,7 +822,7 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: "rgba(255,255,255,0.95)",
     borderTopWidth: 1,
-    borderTopColor: "#ffe4e6",
+    borderTopColor: Colors.backgroundSecondary,
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: Platform.OS === "ios" ? 32 : 16,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Colors } from "@/theme";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ChevronLeft, Sparkles } from "lucide-react-native";
@@ -18,7 +18,7 @@ const CATEGORIES_DATA = [
 const SENTIMENTS = [
   { key: "love", label: "Yêu thích", pct: 50, color: Colors.primary },
   { key: "like", label: "Thích", pct: 25, color: Colors.primaryLight },
-  { key: "neutral", label: "Bình thường", pct: 11, color: "#fda4af" },
+  { key: "neutral", label: "Bình thường", pct: 11, color: Colors.primaryLight },
   { key: "hate", label: "Ghét / Dị ứng", pct: 14, color: Colors.error },
 ];
 
@@ -31,51 +31,105 @@ export default function InsightScreen() {
   const radius = 100;
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
       <ScrollView bounces={false}>
         {/* Header */}
-        <View className="flex-row items-center px-4 py-3">
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+          }}
+        >
           <Pressable
             onPress={() => router.back()}
-            className="w-10 h-10 rounded-full items-center justify-center bg-white"
-            style={{ shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+            accessibilityLabel="Quay lại"
+            accessibilityRole="button"
+            hitSlop={12}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: Colors.surface,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            }}
           >
-            <ChevronLeft size={20} color="#1e1b2e" />
+            <ChevronLeft size={20} color={Colors.textPrimary} />
           </Pressable>
-          <Text className="flex-1 text-lg font-bold text-center" style={{ color: "#1e1b2e" }}>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: "700",
+              textAlign: "center",
+              color: Colors.textPrimary,
+            }}
+          >
             Insight 360°
           </Text>
-          <View className="w-10" />
+          <View style={{ width: 48 }} />
         </View>
 
         {/* Summary Bar */}
         <View
-          className="mx-4 mb-4 px-4 py-3 rounded-xl flex-row justify-around"
-          style={{ backgroundColor: "#fff" }}
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 16,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            borderRadius: 12,
+            flexDirection: "row",
+            justifyContent: "space-around",
+            backgroundColor: Colors.surface,
+          }}
         >
-          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
-            <Text style={{ color: Colors.primary, fontWeight: "800" }}>{TOTAL_ENTRIES}</Text> ghi chú
+          <Text style={{ fontSize: 12, fontWeight: "600", color: Colors.textSecondary }}>
+            <Text style={{ color: Colors.primary, fontWeight: "800" }}>{TOTAL_ENTRIES}</Text>{" "}
+            ghi chú
           </Text>
-          <Text className="text-xs" style={{ color: "#d1d5db" }}>·</Text>
-          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
-            <Text style={{ color: "#8b5cf6", fontWeight: "800" }}>11</Text> danh mục
+          <Text style={{ fontSize: 12, color: Colors.border }}>·</Text>
+          <Text style={{ fontSize: 12, fontWeight: "600", color: Colors.textSecondary }}>
+            <Text style={{ color: Colors.aiPurple, fontWeight: "800" }}>11</Text> danh mục
           </Text>
-          <Text className="text-xs" style={{ color: "#d1d5db" }}>·</Text>
-          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
+          <Text style={{ fontSize: 12, color: Colors.border }}>·</Text>
+          <Text style={{ fontSize: 12, fontWeight: "600", color: Colors.textSecondary }}>
             <Text style={{ color: Colors.success, fontWeight: "800" }}>5</Text> cảm xúc
           </Text>
         </View>
 
         {/* Neuron Map */}
         <View
-          className="mx-4 mb-4 bg-white rounded-2xl p-4 items-center"
-          style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 16,
+            backgroundColor: Colors.surface,
+            borderRadius: 16,
+            padding: 16,
+            alignItems: "center",
+            shadowColor: Colors.textPrimary,
+            shadowOpacity: 0.04,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
         >
-          <Text className="text-sm font-bold mb-2" style={{ color: "#1e1b2e" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "700",
+              marginBottom: 8,
+              color: Colors.textPrimary,
+            }}
+          >
             Bản đồ thông tin
           </Text>
           <Svg width={320} height={280}>
-            {/* Connection lines */}
             {CATEGORIES_DATA.map((cat) => {
               const rad = (cat.angle * Math.PI) / 180;
               const x = cx + radius * Math.cos(rad);
@@ -87,19 +141,17 @@ export default function InsightScreen() {
                   y1={cy}
                   x2={x}
                   y2={y}
-                  stroke="#fecdd3"
+                  stroke={Colors.primaryLight}
                   strokeWidth={1.5}
                   strokeDasharray="4,4"
                 />
               );
             })}
-
-            {/* Center node */}
             <Circle cx={cx} cy={cy} r={32} fill={Colors.primary} />
             <SvgText
               x={cx}
               y={cy - 4}
-              fill="#fff"
+              fill={Colors.textOnPrimary}
               fontSize={10}
               fontWeight="800"
               textAnchor="middle"
@@ -109,14 +161,12 @@ export default function InsightScreen() {
             <SvgText
               x={cx}
               y={cy + 10}
-              fill="rgba(255,255,255,0.8)"
+              fill={Colors.whiteAlpha80}
               fontSize={8}
               textAnchor="middle"
             >
               ♥
             </SvgText>
-
-            {/* Category nodes */}
             {CATEGORIES_DATA.map((cat) => {
               const rad = (cat.angle * Math.PI) / 180;
               const x = cx + radius * Math.cos(rad);
@@ -128,22 +178,17 @@ export default function InsightScreen() {
                     cx={x}
                     cy={y}
                     r={size}
-                    fill={cat.key === "allergy" ? "#fef2f2" : "#fff1f2"}
-                    stroke={cat.key === "allergy" ? Colors.error : "#fda4af"}
+                    fill={cat.key === "allergy" ? Colors.errorLight : Colors.primaryAlpha05}
+                    stroke={cat.key === "allergy" ? Colors.error : Colors.primaryLight}
                     strokeWidth={2}
                   />
-                  <SvgText
-                    x={x}
-                    y={y - 4}
-                    fontSize={14}
-                    textAnchor="middle"
-                  >
+                  <SvgText x={x} y={y - 4} fontSize={14} textAnchor="middle">
                     {cat.emoji}
                   </SvgText>
                   <SvgText
                     x={x}
                     y={y + 12}
-                    fill="#1e1b2e"
+                    fill={Colors.textPrimary}
                     fontSize={8}
                     fontWeight="700"
                     textAnchor="middle"
@@ -153,7 +198,7 @@ export default function InsightScreen() {
                   <SvgText
                     x={x}
                     y={y + size + 14}
-                    fill="#6b7280"
+                    fill={Colors.textSecondary}
                     fontSize={8}
                     textAnchor="middle"
                   >
@@ -167,26 +212,55 @@ export default function InsightScreen() {
 
         {/* Sentiment Analysis */}
         <View
-          className="mx-4 mb-4 bg-white rounded-2xl p-4"
-          style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 16,
+            backgroundColor: Colors.surface,
+            borderRadius: 16,
+            padding: 16,
+            shadowColor: Colors.textPrimary,
+            shadowOpacity: 0.04,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
         >
-          <Text className="text-sm font-bold mb-4" style={{ color: "#1e1b2e" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "700",
+              marginBottom: 16,
+              color: Colors.textPrimary,
+            }}
+          >
             Phân tích cảm xúc
           </Text>
           {SENTIMENTS.map((s) => (
-            <View key={s.key} className="mb-3">
-              <View className="flex-row justify-between mb-1">
-                <Text className="text-xs font-medium" style={{ color: "#1e1b2e" }}>
+            <View key={s.key} style={{ marginBottom: 12 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={{ fontSize: 12, fontWeight: "500", color: Colors.textPrimary }}>
                   {s.label}
                 </Text>
-                <Text className="text-xs font-bold" style={{ color: s.color }}>
+                <Text style={{ fontSize: 12, fontWeight: "700", color: s.color }}>
                   {s.pct}%
                 </Text>
               </View>
-              <View className="h-2 rounded-full bg-gray-100">
+              <View
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  backgroundColor: Colors.borderLight,
+                }}
+              >
                 <View
-                  className="h-2 rounded-full"
                   style={{
+                    height: 8,
+                    borderRadius: 999,
                     width: `${s.pct}%`,
                     backgroundColor: s.color,
                   }}
@@ -198,25 +272,55 @@ export default function InsightScreen() {
 
         {/* AI Overview */}
         <View
-          className="mx-4 mb-8 rounded-2xl p-4"
-          style={{ backgroundColor: "#f5f3ff" }}
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 32,
+            borderRadius: 16,
+            padding: 16,
+            backgroundColor: Colors.aiPurpleAlpha10,
+          }}
         >
-          <View className="flex-row items-center mb-3">
-            <Sparkles size={18} color="#8b5cf6" />
-            <Text className="text-sm font-bold ml-2" style={{ color: "#8b5cf6" }}>
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}
+          >
+            <Sparkles size={18} color={Colors.aiPurple} />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "700",
+                marginLeft: 8,
+                color: Colors.aiPurple,
+              }}
+            >
               AI Tổng quan
             </Text>
           </View>
-          <Text className="text-sm leading-6" style={{ color: "#1e1b2e" }}>
-            Thái Hoc là người yêu ẩm thực, đặc biệt thích phở bò và đồ Việt. Em rất
-            thích đi cafe có view đẹp, yên tĩnh. Sở thích chính gồm đọc sách và nghe
-            nhạc indie. Lưu ý em dị ứng tôm và hải sản có vỏ.
+          <Text style={{ fontSize: 14, lineHeight: 24, color: Colors.textPrimary }}>
+            Thái Hoc là người yêu ẩm thực, đặc biệt thích phở bò và đồ Việt. Em rất thích
+            đi cafe có view đẹp, yên tĩnh. Sở thích chính gồm đọc sách và nghe nhạc indie.
+            Lưu ý em dị ứng tôm và hải sản có vỏ.
           </Text>
-          <View className="mt-3 p-3 rounded-xl bg-white">
-            <Text className="text-xs font-semibold mb-1" style={{ color: "#8b5cf6" }}>
+          <View
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 12,
+              backgroundColor: Colors.surface,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "600",
+                marginBottom: 4,
+                color: Colors.aiPurple,
+              }}
+            >
               💡 Gợi ý hẹn hò
             </Text>
-            <Text className="text-xs leading-5" style={{ color: Colors.textSecondary }}>
+            <Text
+              style={{ fontSize: 12, lineHeight: 20, color: Colors.textSecondary }}
+            >
               Thử đưa em đi quán cafe view sông Hồng vào cuối tuần, gọi trà sữa trà xanh
               (em thích!) và mang theo cuốn sách mới.
             </Text>

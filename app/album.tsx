@@ -56,9 +56,9 @@ const PHOTO_GROUPS: PhotoGroup[] = [
     count: 8,
     gridType: 'mixed',
     cells: [
-      { bg: '#ffe4e6', Icon: Heart, iconColor: '#fda4af', iconSize: 36 },
+      { bg: Colors.backgroundSecondary, Icon: Heart, iconColor: Colors.primaryLight, iconSize: 36 },
       { bg: '#fecdd3', Icon: Utensils, iconColor: Colors.primaryLight },
-      { bg: '#fff1f2', Icon: Camera, iconColor: '#fda4af', extra: 5 },
+      { bg: Colors.primaryAlpha08, Icon: Camera, iconColor: Colors.primaryLight, extra: 5 },
     ],
   },
   {
@@ -68,9 +68,9 @@ const PHOTO_GROUPS: PhotoGroup[] = [
     count: 24,
     gridType: 'triple',
     cells: [
-      { bg: '#dbeafe', Icon: Mountain, iconColor: '#93c5fd' },
-      { bg: '#d1fae5', Icon: Sun, iconColor: '#6ee7b7' },
-      { bg: '#fef9c3', Icon: Sparkles, iconColor: '#fcd34d', extra: 21 },
+      { bg: Colors.infoAlpha15, Icon: Mountain, iconColor: Colors.infoLight },
+      { bg: Colors.successAlpha15, Icon: Sun, iconColor: Colors.successLight },
+      { bg: Colors.warningAlpha15, Icon: Sparkles, iconColor: Colors.warningLight, extra: 21 },
     ],
   },
   {
@@ -80,9 +80,9 @@ const PHOTO_GROUPS: PhotoGroup[] = [
     count: 15,
     gridType: 'mixed',
     cells: [
-      { bg: '#ede9fe', Icon: PartyPopper, iconColor: '#c4b5fd', iconSize: 36 },
-      { bg: '#fce7f3', Icon: Cake, iconColor: '#f9a8d4' },
-      { bg: '#fff1f2', Icon: Sparkles, iconColor: '#fda4af', extra: 12 },
+      { bg: Colors.aiPurpleAlpha15, Icon: PartyPopper, iconColor: Colors.aiPurpleLight, iconSize: 36 },
+      { bg: Colors.backgroundSecondary, Icon: Cake, iconColor: Colors.primaryLight },
+      { bg: Colors.primaryAlpha08, Icon: Sparkles, iconColor: Colors.primaryLight, extra: 12 },
     ],
   },
 ];
@@ -157,7 +157,7 @@ function PhotoGridMixed({
                 justifyContent: 'center',
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: '#374151' }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.textPrimary }}>
                 +{cells[2].extra}
               </Text>
             </View>
@@ -209,7 +209,7 @@ function PhotoGridTriple({
                 justifyContent: 'center',
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: '#374151' }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.textPrimary }}>
                 +{cell.extra}
               </Text>
             </View>
@@ -235,7 +235,7 @@ export default function AlbumScreen() {
   const totalPhotos = PHOTO_GROUPS.reduce((s, g) => s + g.count, 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       {/* ── Header ── */}
       <View
         style={{
@@ -248,15 +248,19 @@ export default function AlbumScreen() {
       >
         <Pressable
           onPress={() => router.back()}
-          hitSlop={10}
+          hitSlop={12}
           style={({ pressed }) => ({
             padding: 8,
             borderRadius: 24,
+            minWidth: 48,
+            minHeight: 48,
+            justifyContent: "center" as const,
             opacity: pressed ? 0.6 : 1,
           })}
           accessibilityLabel="Quay lại"
+          accessibilityRole="button"
         >
-          <ChevronLeft size={24} color="#1f2937" />
+          <ChevronLeft size={24} color={Colors.textPrimary} />
         </Pressable>
 
         <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.textPrimary }}>
@@ -264,13 +268,18 @@ export default function AlbumScreen() {
         </Text>
 
         <Pressable
-          hitSlop={10}
+          hitSlop={12}
           style={({ pressed }) => ({
             padding: 8,
             borderRadius: 24,
+            minWidth: 48,
+            minHeight: 48,
+            alignItems: "center" as const,
+            justifyContent: "center" as const,
             opacity: pressed ? 0.6 : 1,
           })}
           accessibilityLabel="Chụp ảnh"
+          accessibilityRole="button"
         >
           <Camera size={24} color={Colors.primary} />
         </Pressable>
@@ -307,7 +316,7 @@ export default function AlbumScreen() {
             ].map((stat, i) => (
               <React.Fragment key={i}>
                 {i > 0 && (
-                  <View style={{ width: 1, height: 36, backgroundColor: '#f1f5f9' }} />
+                  <View style={{ width: 1, height: 36, backgroundColor: Colors.borderLight }} />
                 )}
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Text
@@ -397,7 +406,7 @@ export default function AlbumScreen() {
                     {group.date} • {group.count} ảnh
                   </Text>
                 </View>
-                <Pressable hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
+                <Pressable hitSlop={12} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, minHeight: 48, justifyContent: "center" as const })} accessibilityLabel="Xem tất cả ảnh" accessibilityRole="button">
                   <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.primary }}>
                     Xem tất cả
                   </Text>
@@ -434,6 +443,7 @@ export default function AlbumScreen() {
         <Pressable
           style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] })}
           accessibilityLabel="Thêm ảnh"
+          accessibilityRole="button"
         >
           <LinearGradient
             colors={[Colors.primary, Colors.primaryLight]}
@@ -452,7 +462,7 @@ export default function AlbumScreen() {
               elevation: 8,
             }}
           >
-            <Camera size={26} color="#ffffff" />
+            <Camera size={26} color={Colors.textOnPrimary} />
           </LinearGradient>
         </Pressable>
       </View>

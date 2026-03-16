@@ -288,7 +288,7 @@ export default function RecordingScreen() {
             <Pressable
               onPress={() => router.back()}
               style={({ pressed }) => ({
-                backgroundColor: pressed ? '#e5e7eb' : '#f1f5f9',
+                backgroundColor: pressed ? Colors.border : Colors.surfaceSecondary,
                 paddingVertical: 16,
                 borderRadius: 14,
                 alignItems: 'center',
@@ -296,7 +296,7 @@ export default function RecordingScreen() {
               })}
               accessibilityLabel="Hủy"
             >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: '#4b5563' }}>
+              <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.textSecondary }}>
                 Hủy
               </Text>
             </Pressable>

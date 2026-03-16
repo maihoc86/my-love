@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -180,6 +181,12 @@ export default function ChatScreen() {
                 <Pressable
                   onPress={() => handleSave(item.id, item.parsed_entries!)}
                   disabled={isSaving}
+                  accessibilityLabel={
+                    isSaving
+                      ? 'Đang lưu ghi chú'
+                      : `Lưu tất cả vào nhật ký, ${item.parsed_entries!.length} mục`
+                  }
+                  accessibilityRole="button"
                 >
                   {({ pressed }) => (
                     <View
@@ -190,7 +197,7 @@ export default function ChatScreen() {
                         paddingVertical: 14,
                         paddingHorizontal: 20,
                         borderRadius: 16,
-                        backgroundColor: isSaving ? '#d1d5db' : Colors.success,
+                        backgroundColor: isSaving ? Colors.border : Colors.success,
                         opacity: isSaving ? 0.8 : pressed ? 0.85 : 1,
                         shadowColor: Colors.success,
                         shadowOffset: { width: 0, height: 4 },
@@ -199,12 +206,12 @@ export default function ChatScreen() {
                         elevation: isSaving ? 0 : 4,
                       }}
                     >
-                      <Save size={16} color="#ffffff" />
+                      <Save size={16} color={Colors.textOnPrimary} />
                       <Text
                         style={{
                           fontSize: 14,
                           fontWeight: '700',
-                          color: '#ffffff',
+                          color: Colors.textOnPrimary,
                           marginLeft: 8,
                         }}
                       >
@@ -256,7 +263,8 @@ export default function ChatScreen() {
   // ─────────────────────────────────────────────────────────────────────────────
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
+    <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: Colors.background }}>
+      <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -270,8 +278,8 @@ export default function ChatScreen() {
             justifyContent: 'space-between',
             paddingHorizontal: 16,
             paddingVertical: 12,
-            backgroundColor: 'rgba(255,255,255,0.8)',
-            shadowColor: '#000',
+            backgroundColor: Colors.whiteAlpha80,
+            shadowColor: Colors.textPrimary,
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.04,
             shadowRadius: 8,
@@ -281,7 +289,7 @@ export default function ChatScreen() {
           {/* Left: gradient AI avatar + title */}
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <LinearGradient
-              colors={[Colors.aiPurple, '#6366f1']}
+              colors={[Colors.aiPurple, Colors.aiPurpleDark]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{
@@ -305,7 +313,7 @@ export default function ChatScreen() {
                     width: 7,
                     height: 7,
                     borderRadius: 4,
-                    backgroundColor: isTyping ? '#f59e0b' : '#22c55e',
+                    backgroundColor: isTyping ? Colors.warning : Colors.success,
                   }}
                 />
                 <Text style={{ fontSize: 11, color: Colors.textTertiary, fontWeight: '500' }}>
@@ -318,18 +326,20 @@ export default function ChatScreen() {
           {/* Right: history button */}
           <Pressable
             onPress={() => router.push('/chat-history')}
+            hitSlop={12}
             style={({ pressed }) => ({
-              width: 38,
-              height: 38,
-              borderRadius: 19,
-              backgroundColor: '#f9fafb',
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              backgroundColor: Colors.surfaceSecondary,
               borderWidth: 1,
-              borderColor: '#f1f5f9',
+              borderColor: Colors.borderLight,
               alignItems: 'center',
               justifyContent: 'center',
               opacity: pressed ? 0.7 : 1,
             })}
             accessibilityLabel="Lịch sử chat"
+            accessibilityRole="button"
           >
             <Clock size={18} color={Colors.textTertiary} />
           </Pressable>
@@ -356,14 +366,17 @@ export default function ChatScreen() {
                   <Pressable
                     key={prompt.label}
                     onPress={() => handleSend(prompt.text)}
+                    accessibilityLabel={prompt.label}
+                    accessibilityRole="button"
                     style={({ pressed }) => ({
                       backgroundColor: Colors.surface,
                       paddingHorizontal: 16,
-                      paddingVertical: 10,
+                      minHeight: 48,
+                      justifyContent: 'center',
                       borderRadius: 20,
                       borderWidth: 1,
-                      borderColor: '#f1f5f9',
-                      shadowColor: '#000',
+                      borderColor: Colors.borderLight,
+                      shadowColor: Colors.textPrimary,
                       shadowOffset: { width: 0, height: 1 },
                       shadowOpacity: 0.05,
                       shadowRadius: 4,
@@ -389,7 +402,7 @@ export default function ChatScreen() {
             paddingHorizontal: 16,
             paddingTop: 10,
             paddingBottom: 8,
-            shadowColor: '#000',
+            shadowColor: Colors.textPrimary,
             shadowOffset: { width: 0, height: -4 },
             shadowOpacity: 0.04,
             shadowRadius: 12,
@@ -400,17 +413,19 @@ export default function ChatScreen() {
             {/* Mic button */}
             <Pressable
               onPress={() => router.push('/recording')}
+              hitSlop={12}
               style={({ pressed }) => ({
-                width: 46,
-                height: 46,
-                borderRadius: 23,
-                backgroundColor: '#f3e8ff',
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                backgroundColor: Colors.aiPurpleAlpha10,
                 alignItems: 'center',
                 justifyContent: 'center',
                 opacity: pressed ? 0.75 : 1,
                 flexShrink: 0,
               })}
               accessibilityLabel="Ghi âm giọng nói"
+              accessibilityRole="button"
             >
               <Mic size={22} color={Colors.aiPurpleDark} />
             </Pressable>
@@ -421,10 +436,10 @@ export default function ChatScreen() {
                 flex: 1,
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: '#f8fafc',
+                backgroundColor: Colors.surfaceSecondary,
                 borderRadius: 24,
                 borderWidth: 1,
-                borderColor: '#f1f5f9',
+                borderColor: Colors.borderLight,
                 paddingLeft: 16,
                 paddingRight: 6,
                 paddingVertical: 4,
@@ -440,20 +455,22 @@ export default function ChatScreen() {
                   paddingVertical: 10,
                 }}
                 placeholder="Ghi nhận sở thích của Thái Hoc..."
-                placeholderTextColor="#b0b8c4"
+                placeholderTextColor={Colors.textMuted}
                 value={inputText}
                 onChangeText={setInputText}
                 multiline
                 maxLength={1000}
                 returnKeyType="send"
                 onSubmitEditing={() => handleSend()}
+                accessibilityLabel="Nhập tin nhắn"
               />
               {/* Send button — gradient circle when active */}
               <Pressable
                 onPress={() => handleSend()}
                 disabled={!hasInput || isTyping}
-                hitSlop={6}
+                hitSlop={12}
                 accessibilityLabel="Gửi tin nhắn"
+                accessibilityRole="button"
               >
                 {hasInput && !isTyping ? (
                   <LinearGradient
@@ -461,9 +478,9 @@ export default function ChatScreen() {
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 17,
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
                       alignItems: 'center',
                       justifyContent: 'center',
                       shadowColor: Colors.primary,
@@ -473,19 +490,19 @@ export default function ChatScreen() {
                       elevation: 3,
                     }}
                   >
-                    <Send size={16} color="#fff" />
+                    <Send size={16} color={Colors.textOnPrimary} />
                   </LinearGradient>
                 ) : (
                   <View
                     style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 17,
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
-                    <Send size={16} color="#cbd5e1" />
+                    <Send size={16} color={Colors.textTertiary} />
                   </View>
                 )}
               </Pressable>

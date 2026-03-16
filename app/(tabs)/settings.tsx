@@ -63,15 +63,17 @@ const NavRow = memo(function NavRow({
   label,
   onPress,
   hasBorderTop = true,
+  accessibilityLabel: a11yLabel,
 }: {
   icon: React.ReactNode;
   iconBg: string;
   label: string;
   onPress?: () => void;
   hasBorderTop?: boolean;
+  accessibilityLabel?: string;
 }) {
   return (
-    <Pressable onPress={onPress} hitSlop={4}>
+    <Pressable onPress={onPress} hitSlop={4} accessibilityLabel={a11yLabel ?? label} accessibilityRole="button">
       {({ pressed }) => (
         <View
           style={{
@@ -79,6 +81,7 @@ const NavRow = memo(function NavRow({
             alignItems: "center",
             paddingHorizontal: 12,
             paddingVertical: 13,
+            minHeight: 48,
             gap: 14,
             backgroundColor: pressed ? "#f8fafc" : "transparent",
             borderTopWidth: hasBorderTop ? 1 : 0,
@@ -184,6 +187,7 @@ const ToggleRow = memo(function ToggleRow({
         alignItems: "center",
         paddingHorizontal: 12,
         paddingVertical: 12,
+        minHeight: 48,
         gap: 14,
         borderTopWidth: hasBorderTop ? 1 : 0,
         borderTopColor: "#f8fafc",
@@ -210,7 +214,9 @@ const ToggleRow = memo(function ToggleRow({
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: "#e2e8f0", true: "#fda4af" }}
-        thumbColor={value ? Colors.primary : "#f1f5f9"}
+        thumbColor={value ? Colors.primary : Colors.surfaceSecondary}
+        accessibilityLabel={label}
+        accessibilityRole="switch"
       />
     </View>
   );
@@ -244,7 +250,7 @@ const SettingsSection = memo(function SettingsSection({
           backgroundColor: Colors.surface,
           borderRadius: 20,
           borderWidth: 1,
-          borderColor: "#f1f5f9",
+          borderColor: Colors.surfaceSecondary,
           overflow: "hidden",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 1 },
@@ -342,7 +348,7 @@ export default function SettingsScreen() {
                   right: 0,
                   width: "55%",
                   height: "100%",
-                  backgroundColor: "#9333ea",
+                  backgroundColor: Colors.aiPurpleDark,
                   opacity: 0.55,
                 }}
               />
@@ -363,7 +369,7 @@ export default function SettingsScreen() {
                       width: 64,
                       height: 64,
                       borderRadius: 32,
-                      backgroundColor: "rgba(255,255,255,0.28)",
+                      backgroundColor: Colors.whiteAlpha28,
                       borderWidth: 2,
                       borderColor: "rgba(255,255,255,0.5)",
                       alignItems: "center",
@@ -416,11 +422,13 @@ export default function SettingsScreen() {
                 <Pressable
                   onPress={() => router.push("/settings/personal-info")}
                   hitSlop={8}
+                  accessibilityLabel="Chỉnh sửa hồ sơ"
+                  accessibilityRole="button"
                   style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 12,
-                    backgroundColor: "rgba(255,255,255,0.2)",
+                    width: 48,
+                    height: 48,
+                    borderRadius: 14,
+                    backgroundColor: Colors.whiteAlpha20,
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -543,26 +551,28 @@ export default function SettingsScreen() {
               hasBorderTop={false}
             />
             <InfoRow
-              icon={<Cake size={18} color="#a855f7" />}
-              iconBg="#f3e8ff"
+              icon={<Cake size={18} color={Colors.aiPurpleLight} />}
+              iconBg={Colors.aiPurpleAlpha15}
               label="Sinh nhật"
               value="15 tháng 8"
             />
             <InfoRow
-              icon={<Heart size={18} color="#f59e0b" />}
-              iconBg="#fef3c7"
+              icon={<Heart size={18} color={Colors.warning} />}
+              iconBg={Colors.warningAlpha15}
               label="Biệt danh"
               value="Em bé"
             />
             <InfoRow
-              icon={<Image size={18} color="#3b82f6" />}
-              iconBg="#eff6ff"
+              icon={<Image size={18} color={Colors.info} />}
+              iconBg={Colors.infoAlpha15}
               label="Ảnh đại diện"
               value="Đã tải lên"
             />
             <Pressable
               onPress={() => router.push("/settings/partner-info")}
               hitSlop={4}
+              accessibilityLabel="Chỉnh sửa thông tin người yêu"
+              accessibilityRole="button"
             >
               {({ pressed }) => (
                 <View
@@ -589,26 +599,26 @@ export default function SettingsScreen() {
           <SettingsSection title="Tài khoản">
             <NavRow
               icon={<User size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Thông tin cá nhân"
               onPress={() => router.push("/settings/personal-info")}
               hasBorderTop={false}
             />
             <NavRow
               icon={<Lock size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Đổi mật khẩu"
               onPress={() => router.push("/settings/security")}
             />
             <NavRow
               icon={<Shield size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Bảo mật"
               onPress={() => router.push("/settings/security")}
             />
             <NavRow
               icon={<CloudUpload size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Sao lưu & đồng bộ"
               onPress={() => router.push("/settings/backup")}
             />
@@ -651,27 +661,27 @@ export default function SettingsScreen() {
           <SettingsSection title="Chung">
             <InfoRow
               icon={<Sun size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Giao diện"
               value="Sáng"
               hasBorderTop={false}
             />
             <InfoRow
               icon={<Globe size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Ngôn ngữ"
               value="Tiếng Việt"
             />
             <InfoRow
               icon={<Database size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Bộ nhớ"
               value="124 MB"
               valueColor={Colors.textMuted}
             />
             <NavRow
               icon={<Trash2 size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Xoá dữ liệu cache"
               onPress={handleClearCache}
             />
@@ -681,23 +691,23 @@ export default function SettingsScreen() {
           <SettingsSection title="Hỗ trợ">
             <NavRow
               icon={<HelpCircle size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Trung tâm trợ giúp"
               hasBorderTop={false}
             />
             <NavRow
               icon={<MessageSquare size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Góp ý & phản hồi"
             />
             <NavRow
               icon={<FileText size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Chính sách bảo mật"
             />
             <NavRow
               icon={<FileText size={18} color={Colors.textSecondary} />}
-              iconBg="#f1f5f9"
+              iconBg={Colors.surfaceSecondary}
               label="Điều khoản sử dụng"
             />
           </SettingsSection>
@@ -755,7 +765,7 @@ export default function SettingsScreen() {
           </View>
 
           {/* ── Logout button ── */}
-          <Pressable onPress={handleLogout} hitSlop={4}>
+          <Pressable onPress={handleLogout} hitSlop={4} accessibilityLabel="Đăng xuất" accessibilityRole="button">
             {({ pressed }) => (
               <View
                 style={{
@@ -763,6 +773,7 @@ export default function SettingsScreen() {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 10,
+                  minHeight: 48,
                   paddingVertical: 16,
                   borderRadius: 16,
                   borderWidth: 2,

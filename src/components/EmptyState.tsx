@@ -18,18 +18,36 @@ export default function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <View className="flex-1 items-center justify-center px-8 py-12">
-      <View className="mb-4">{icon}</View>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 32,
+        paddingVertical: 48,
+      }}
+    >
+      <View style={{ marginBottom: 16 }}>{icon}</View>
       <Text
-        className="text-lg font-bold text-center mb-2"
-        style={{ color: Colors.textPrimary }}
+        style={{
+          fontSize: 18,
+          fontWeight: '700',
+          textAlign: 'center',
+          marginBottom: 8,
+          color: Colors.textPrimary,
+        }}
       >
         {title}
       </Text>
       {subtitle ? (
         <Text
-          className="text-sm text-center mb-6"
-          style={{ color: Colors.textSecondary, lineHeight: 20 }}
+          style={{
+            fontSize: 14,
+            textAlign: 'center',
+            marginBottom: 24,
+            color: Colors.textSecondary,
+            lineHeight: 20,
+          }}
         >
           {subtitle}
         </Text>
@@ -37,13 +55,24 @@ export default function EmptyState({
       {actionLabel && onAction ? (
         <Pressable
           onPress={onAction}
-          className="px-6 py-3 rounded-xl"
+          accessibilityLabel={actionLabel}
+          accessibilityRole="button"
           style={{
-            backgroundColor: Colors.primary,
+            paddingHorizontal: 24,
+            paddingVertical: 12,
             borderRadius: 14,
+            backgroundColor: Colors.primary,
+            minHeight: 48,
+            justifyContent: 'center',
           }}
         >
-          <Text className="text-sm font-semibold" style={{ color: Colors.surface }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '600',
+              color: Colors.surface,
+            }}
+          >
             {actionLabel}
           </Text>
         </Pressable>

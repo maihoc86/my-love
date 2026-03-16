@@ -1,6 +1,6 @@
-import React from "react";
-import { Colors } from "@/theme";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import React, { memo } from "react";
+import { Colors, Shadows } from "@/theme";
+import { View, Text, Pressable, ScrollView, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import {
@@ -30,169 +30,312 @@ const MILESTONES = [
   { day: 1000, label: "1000 ngày yêu thương", emoji: "👑" },
 ];
 
+const BREAKDOWN = [
+  { value: YEARS, label: "Năm" },
+  { value: MONTHS, label: "Tháng" },
+  { value: DAYS, label: "Ngày" },
+  { value: TOTAL_HOURS.toLocaleString(), label: "Giờ" },
+];
+
+const MilestoneItem = memo(function MilestoneItem({
+  m,
+  idx,
+  achieved,
+  isLast,
+}: {
+  m: (typeof MILESTONES)[number];
+  idx: number;
+  achieved: boolean;
+  isLast: boolean;
+}) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+      <View style={{ alignItems: "center", marginRight: 16 }}>
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: achieved ? Colors.success : Colors.borderLight,
+          }}
+        >
+          {achieved ? (
+            <Check size={18} color={Colors.textOnPrimary} />
+          ) : (
+            <Clock size={18} color={Colors.textTertiary} />
+          )}
+        </View>
+        {!isLast && (
+          <View
+            style={{
+              width: 2,
+              height: 24,
+              backgroundColor: achieved ? Colors.success : Colors.border,
+            }}
+          />
+        )}
+      </View>
+      <View
+        style={{
+          flex: 1,
+          padding: 12,
+          borderRadius: 12,
+          backgroundColor: achieved ? Colors.successAlpha15 : Colors.surface,
+          borderWidth: achieved ? 1 : 0,
+          borderColor: Colors.successLight,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ fontSize: 18, marginRight: 8 }}>{m.emoji}</Text>
+          <Text
+            style={{
+              fontWeight: "600",
+              fontSize: 14,
+              flex: 1,
+              color: achieved ? Colors.success : Colors.textPrimary,
+            }}
+          >
+            {m.label}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "500",
+              color: achieved ? Colors.success : Colors.textTertiary,
+            }}
+          >
+            {achieved ? "Đã đạt ✓" : `Còn ${m.day - TOTAL_DAYS} ngày`}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+});
+
 export default function LoveCounterScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
+      <StatusBar barStyle="light-content" />
       <ScrollView bounces={false}>
         {/* Hero Section */}
         <View
-          className="px-6 pt-4 pb-10 items-center"
-          style={{ backgroundColor: Colors.primary }}
+          style={{
+            paddingHorizontal: 24,
+            paddingTop: 16,
+            paddingBottom: 40,
+            alignItems: "center",
+            backgroundColor: Colors.primary,
+          }}
         >
           {/* Header */}
-          <View className="flex-row items-center w-full mb-8">
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              width: "100%",
+              marginBottom: 32,
+            }}
+          >
             <Pressable
               onPress={() => router.back()}
-              className="w-10 h-10 rounded-full items-center justify-center"
-              style={{ backgroundColor: "rgba(255,255,255,0.2)" }}
+              accessibilityLabel="Quay lại"
+              accessibilityRole="button"
+              hitSlop={12}
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.whiteAlpha20,
+              }}
             >
-              <ChevronLeft size={20} color="#fff" />
+              <ChevronLeft size={20} color={Colors.textOnPrimary} />
             </Pressable>
-            <Text className="flex-1 text-center text-lg font-bold text-white mr-10">
+            <Text
+              style={{
+                flex: 1,
+                textAlign: "center",
+                fontSize: 18,
+                fontWeight: "700",
+                color: Colors.textOnPrimary,
+                marginRight: 48,
+              }}
+            >
               Đếm ngày yêu nhau
             </Text>
           </View>
 
           {/* Couple Avatars */}
-          <View className="flex-row items-center mb-6">
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 24 }}>
             <View
-              className="w-16 h-16 rounded-full items-center justify-center"
-              style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.whiteAlpha25,
+              }}
             >
-              <Text className="text-2xl">👤</Text>
+              <Text style={{ fontSize: 24 }}>👤</Text>
             </View>
-            <View className="mx-4">
-              <Heart size={24} color="#fff" fill="#fff" />
+            <View style={{ marginHorizontal: 16 }}>
+              <Heart size={24} color={Colors.textOnPrimary} fill={Colors.textOnPrimary} />
             </View>
             <View
-              className="w-16 h-16 rounded-full items-center justify-center"
-              style={{ backgroundColor: "rgba(255,255,255,0.25)" }}
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.whiteAlpha25,
+              }}
             >
-              <Text className="text-2xl">👩</Text>
+              <Text style={{ fontSize: 24 }}>👩</Text>
             </View>
           </View>
 
           {/* Main Counter */}
-          <Text className="text-7xl font-extrabold text-white">{TOTAL_DAYS}</Text>
-          <Text className="text-white/80 text-lg font-medium mt-1">ngày</Text>
-          <Text className="text-white/60 text-sm mt-2">
+          <Text style={{ fontSize: 72, fontWeight: "800", color: Colors.textOnPrimary }}>
+            {TOTAL_DAYS}
+          </Text>
+          <Text
+            style={{
+              color: Colors.whiteAlpha80,
+              fontSize: 18,
+              fontWeight: "500",
+              marginTop: 4,
+            }}
+          >
+            ngày
+          </Text>
+          <Text style={{ color: Colors.whiteAlpha60, fontSize: 14, marginTop: 8 }}>
             Bắt đầu từ {LOVE_START.toLocaleDateString("vi-VN")}
           </Text>
 
           {/* Breakdown */}
-          <View className="flex-row mt-6 gap-4">
-            {[
-              { value: YEARS, label: "Năm" },
-              { value: MONTHS, label: "Tháng" },
-              { value: DAYS, label: "Ngày" },
-              { value: TOTAL_HOURS.toLocaleString(), label: "Giờ" },
-            ].map((item, idx) => (
+          <View style={{ flexDirection: "row", marginTop: 24, gap: 16 }}>
+            {BREAKDOWN.map((item, idx) => (
               <View
                 key={idx}
-                className="items-center px-3 py-2 rounded-xl"
-                style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+                style={{
+                  alignItems: "center",
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                  backgroundColor: Colors.whiteAlpha15,
+                }}
               >
-                <Text className="text-white font-extrabold text-lg">
+                <Text
+                  style={{ color: Colors.textOnPrimary, fontWeight: "800", fontSize: 18 }}
+                >
                   {item.value}
                 </Text>
-                <Text className="text-white/70 text-xs">{item.label}</Text>
+                <Text style={{ color: Colors.whiteAlpha80, fontSize: 12 }}>
+                  {item.label}
+                </Text>
               </View>
             ))}
           </View>
         </View>
 
         {/* Actions */}
-        <View className="flex-row px-6 -mt-5 gap-3 mb-6">
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 24,
+            marginTop: -20,
+            gap: 12,
+            marginBottom: 24,
+          }}
+        >
           <Pressable
-            className="flex-1 flex-row items-center justify-center py-3.5 rounded-xl bg-white"
-            style={{ shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 }}
+            accessibilityLabel="Chia sẻ"
+            accessibilityRole="button"
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingVertical: 14,
+              borderRadius: 12,
+              backgroundColor: Colors.surface,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.08,
+              shadowRadius: 8,
+              elevation: 3,
+            }}
           >
             <Share2 size={16} color={Colors.primary} />
-            <Text className="font-semibold text-sm ml-2" style={{ color: Colors.primary }}>
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                marginLeft: 8,
+                color: Colors.primary,
+              }}
+            >
               Chia sẻ
             </Text>
           </Pressable>
           <Pressable
-            className="flex-1 flex-row items-center justify-center py-3.5 rounded-xl bg-white"
-            style={{ shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 }}
+            accessibilityLabel="Đặt hình nền"
+            accessibilityRole="button"
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              paddingVertical: 14,
+              borderRadius: 12,
+              backgroundColor: Colors.surface,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.08,
+              shadowRadius: 8,
+              elevation: 3,
+            }}
           >
-            <ImageIcon size={16} color="#8b5cf6" />
-            <Text className="font-semibold text-sm ml-2" style={{ color: "#8b5cf6" }}>
+            <ImageIcon size={16} color={Colors.aiPurple} />
+            <Text
+              style={{
+                fontWeight: "600",
+                fontSize: 14,
+                marginLeft: 8,
+                color: Colors.aiPurple,
+              }}
+            >
               Đặt hình nền
             </Text>
           </Pressable>
         </View>
 
         {/* Milestones */}
-        <View className="px-6 mb-8">
-          <Text className="text-base font-bold mb-4" style={{ color: "#1e1b2e" }}>
+        <View style={{ paddingHorizontal: 24, marginBottom: 32 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              marginBottom: 16,
+              color: Colors.textPrimary,
+            }}
+          >
             Cột mốc tình yêu
           </Text>
-
-          {MILESTONES.map((m, idx) => {
-            const achieved = TOTAL_DAYS >= m.day;
-            return (
-              <View key={idx} className="flex-row items-center mb-3">
-                {/* Timeline */}
-                <View className="items-center mr-4">
-                  <View
-                    className="w-10 h-10 rounded-full items-center justify-center"
-                    style={{
-                      backgroundColor: achieved ? Colors.success : Colors.borderLight,
-                    }}
-                  >
-                    {achieved ? (
-                      <Check size={18} color="#fff" />
-                    ) : (
-                      <Clock size={18} color={Colors.textTertiary} />
-                    )}
-                  </View>
-                  {idx < MILESTONES.length - 1 && (
-                    <View
-                      className="w-0.5 h-6"
-                      style={{
-                        backgroundColor: achieved ? Colors.success : Colors.border,
-                      }}
-                    />
-                  )}
-                </View>
-
-                {/* Content */}
-                <View
-                  className="flex-1 p-3 rounded-xl"
-                  style={{
-                    backgroundColor: achieved ? "#ecfdf5" : "#fff",
-                    borderWidth: achieved ? 1 : 0,
-                    borderColor: "#d1fae5",
-                  }}
-                >
-                  <View className="flex-row items-center">
-                    <Text className="text-lg mr-2">{m.emoji}</Text>
-                    <Text
-                      className="font-semibold text-sm flex-1"
-                      style={{
-                        color: achieved ? "#065f46" : "#1e1b2e",
-                      }}
-                    >
-                      {m.label}
-                    </Text>
-                    <Text
-                      className="text-xs font-medium"
-                      style={{
-                        color: achieved ? Colors.success : Colors.textTertiary,
-                      }}
-                    >
-                      {achieved
-                        ? "Đã đạt ✓"
-                        : `Còn ${m.day - TOTAL_DAYS} ngày`}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            );
-          })}
+          {MILESTONES.map((m, idx) => (
+            <MilestoneItem
+              key={idx}
+              m={m}
+              idx={idx}
+              achieved={TOTAL_DAYS >= m.day}
+              isLast={idx === MILESTONES.length - 1}
+            />
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Trash2, X } from 'lucide-react-native';
-import { Colors } from '@/theme';
+import { Colors, Shadows } from '@/theme';
 import { Entry, getCategoryInfo, getSentimentInfo } from '../types';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -49,75 +49,118 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
 
   return (
     <View
-      className="flex-row items-center p-4 mb-3 rounded-2xl"
       style={{
-        backgroundColor: Colors.surface,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        marginBottom: 12,
         borderRadius: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 6,
-        elevation: 2,
+        backgroundColor: Colors.surface,
+        ...Shadows.sm,
       }}
     >
       {/* Category Icon */}
       <View
-        className="w-12 h-12 rounded-full items-center justify-center mr-3"
-        style={{ backgroundColor: Colors.background }}
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 24,
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginRight: 12,
+          backgroundColor: Colors.background,
+        }}
       >
-        <Text className="text-xl">{catInfo.icon}</Text>
+        <Text style={{ fontSize: 20 }}>{catInfo.icon}</Text>
       </View>
 
       {/* Content */}
-      <View className="flex-1 mr-2">
-        <Text className="text-base font-semibold" style={{ color: Colors.textPrimary }}>
+      <View style={{ flex: 1, marginRight: 8 }}>
+        <Text
+          style={{ fontSize: 16, fontWeight: '600', color: Colors.textPrimary }}
+        >
           {entry.title}
         </Text>
         {entry.detail ? (
           <Text
-            className="text-sm mt-0.5"
-            style={{ color: Colors.textSecondary }}
+            style={{
+              fontSize: 14,
+              marginTop: 2,
+              color: Colors.textSecondary,
+            }}
             numberOfLines={1}
           >
             {entry.detail}
           </Text>
         ) : null}
-        <View className="flex-row items-center mt-1.5">
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}
+        >
           <View
-            className="px-2 py-0.5 rounded-full mr-2"
-            style={{ backgroundColor: Colors.backgroundSecondary }}
+            style={{
+              paddingHorizontal: 8,
+              paddingVertical: 2,
+              borderRadius: 999,
+              marginRight: 8,
+              backgroundColor: Colors.backgroundSecondary,
+            }}
           >
-            <Text className="text-xs" style={{ color: Colors.primary }}>
+            <Text style={{ fontSize: 12, color: Colors.primary }}>
               {catInfo.label}
             </Text>
           </View>
-          <Text className="text-xs" style={{ color: Colors.textTertiary }}>
+          <Text style={{ fontSize: 12, color: Colors.textTertiary }}>
             {relativeTime}
           </Text>
         </View>
       </View>
 
       {/* Right side: sentiment + delete */}
-      <View className="items-center">
-        <Text className="text-xl mb-2">{sentInfo.emoji}</Text>
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, marginBottom: 8 }}>{sentInfo.emoji}</Text>
 
         {showDelete ? (
-          <View className="flex-row items-center">
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Pressable
               onPress={handleConfirmDelete}
-              className="px-2 py-1 rounded-lg mr-1"
-              style={{ backgroundColor: '#fef2f2' }}
+              accessibilityLabel="Xác nhận xoá"
+              accessibilityRole="button"
+              style={{
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 8,
+                marginRight: 4,
+                backgroundColor: Colors.errorLight + '20',
+                minWidth: 48,
+                minHeight: 32,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
-              <Text className="text-xs font-semibold" style={{ color: Colors.error }}>
+              <Text
+                style={{ fontSize: 12, fontWeight: '600', color: Colors.error }}
+              >
                 Xoá
               </Text>
             </Pressable>
-            <Pressable onPress={handleCancelDelete} className="p-1">
+            <Pressable
+              onPress={handleCancelDelete}
+              accessibilityLabel="Huỷ xoá"
+              accessibilityRole="button"
+              hitSlop={12}
+              style={{ padding: 4 }}
+            >
               <X size={14} color={Colors.textTertiary} />
             </Pressable>
           </View>
         ) : (
-          <Pressable onPress={handleDeletePress} className="p-1">
+          <Pressable
+            onPress={handleDeletePress}
+            accessibilityLabel="Xoá ghi chú"
+            accessibilityRole="button"
+            hitSlop={12}
+            style={{ padding: 4 }}
+          >
             <Trash2 size={16} color={Colors.textTertiary} />
           </Pressable>
         )}

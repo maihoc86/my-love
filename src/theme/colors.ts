@@ -51,10 +51,33 @@ export const Colors = {
   sentimentHate: '#8b5cf6',
 
   // Transparent variants
+  primaryAlpha05: 'rgba(244,63,94,0.05)',
   primaryAlpha08: 'rgba(244,63,94,0.08)',
+  primaryAlpha10: 'rgba(244,63,94,0.10)',
   primaryAlpha15: 'rgba(244,63,94,0.15)',
   blackAlpha06: 'rgba(0,0,0,0.06)',
+  blackAlpha08: 'rgba(0,0,0,0.08)',
+  blackAlpha10: 'rgba(0,0,0,0.10)',
   blackAlpha50: 'rgba(0,0,0,0.5)',
+  whiteAlpha07: 'rgba(255,255,255,0.07)',
+  whiteAlpha10: 'rgba(255,255,255,0.1)',
+  whiteAlpha15: 'rgba(255,255,255,0.15)',
+  whiteAlpha20: 'rgba(255,255,255,0.2)',
+  whiteAlpha25: 'rgba(255,255,255,0.25)',
+  whiteAlpha28: 'rgba(255,255,255,0.28)',
+  whiteAlpha60: 'rgba(255,255,255,0.6)',
+  whiteAlpha80: 'rgba(255,255,255,0.8)',
+  successAlpha10: 'rgba(16,185,129,0.1)',
+  successAlpha15: 'rgba(16,185,129,0.15)',
+  infoAlpha15: 'rgba(59,130,246,0.15)',
+  aiPurpleAlpha05: 'rgba(139,92,246,0.05)',
+  aiPurpleAlpha10: 'rgba(139,92,246,0.10)',
+  aiPurpleAlpha15: 'rgba(139,92,246,0.15)',
+  errorAlpha10: 'rgba(239,68,68,0.10)',
+  warningAlpha15: 'rgba(245,158,11,0.15)',
+
+  // Brand colors
+  googleBlue: '#4285F4',
 } as const;
 
 export type ColorKey = keyof typeof Colors;

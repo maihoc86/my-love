@@ -92,16 +92,19 @@ const CategoryGrid = memo(function CategoryGrid({
             <Pressable
               key={cat.key}
               onPress={() => onSelect(cat.key)}
+              accessibilityLabel={`Danh mục ${cat.label}`}
+              accessibilityRole="button"
+              hitSlop={12}
               style={{
                 width: "31%",
                 paddingVertical: 12,
                 alignItems: "center",
                 gap: 4,
-                backgroundColor: isActive ? "rgba(244,63,94,0.05)" : Colors.surface,
+                backgroundColor: isActive ? Colors.primaryAlpha05 : Colors.surface,
                 borderRadius: 14,
                 borderWidth: isActive ? 2 : 1,
                 borderColor: isActive ? Colors.primary : Colors.border,
-                shadowColor: isActive ? Colors.primary : "#000",
+                shadowColor: isActive ? Colors.primary : Colors.textPrimary,
                 shadowOffset: { width: 0, height: isActive ? 4 : 1 },
                 shadowOpacity: isActive ? 0.15 : 0.04,
                 shadowRadius: isActive ? 8 : 3,
@@ -155,7 +158,10 @@ const SentimentPicker = memo(function SentimentPicker({
             <Pressable
               key={s.key}
               onPress={() => onSelect(s.key)}
-              style={{ alignItems: "center", gap: 6 }}
+              accessibilityLabel={`Cảm xúc ${s.label}`}
+              accessibilityRole="button"
+              hitSlop={12}
+              style={{ alignItems: "center", gap: 6, minWidth: 48, minHeight: 48 }}
             >
               <View
                 style={{
@@ -430,8 +436,10 @@ export default function AddEntryScreen() {
               <Switch
                 value={isRecurring}
                 onValueChange={setIsRecurring}
-                trackColor={{ false: Colors.border, true: "#fda4af" }}
-                thumbColor={isRecurring ? Colors.primary : "#f4f3f4"}
+                trackColor={{ false: Colors.border, true: Colors.primaryLight }}
+                thumbColor={isRecurring ? Colors.primary : Colors.surfaceSecondary}
+                accessibilityLabel="Lặp lại hàng năm"
+                accessibilityRole="switch"
               />
             </View>
           </View>
@@ -441,11 +449,14 @@ export default function AddEntryScreen() {
             <Pressable
               onPress={handleSubmit}
               disabled={!canSubmit}
+              accessibilityLabel="Lưu ghi chú"
+              accessibilityRole="button"
               style={{
                 paddingVertical: 16,
                 borderRadius: 14,
                 alignItems: "center",
-                backgroundColor: canSubmit ? Colors.primary : "#fda4af",
+                minHeight: 48,
+                backgroundColor: canSubmit ? Colors.primary : Colors.primaryLight,
                 shadowColor: Colors.primary,
                 shadowOffset: { width: 0, height: canSubmit ? 6 : 0 },
                 shadowOpacity: canSubmit ? 0.3 : 0,
@@ -454,7 +465,7 @@ export default function AddEntryScreen() {
               }}
             >
               <Text
-                style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}
+                style={{ fontSize: 16, fontWeight: "700", color: Colors.textOnPrimary }}
               >
                 Lưu ghi chú
               </Text>
@@ -463,7 +474,10 @@ export default function AddEntryScreen() {
             {/* Quick AI Chat shortcut */}
             <Pressable
               onPress={() => router.push("/(tabs)/chat")}
-              style={{ alignItems: "center", marginTop: 14, paddingVertical: 8 }}
+              accessibilityLabel="Dùng AI Chat để ghi nhanh bằng giọng nói"
+              accessibilityRole="button"
+              hitSlop={12}
+              style={{ alignItems: "center", marginTop: 14, paddingVertical: 8, minHeight: 48 }}
             >
               <Text
                 style={{ fontSize: 13, color: Colors.textSecondary, fontWeight: "500" }}

@@ -156,7 +156,7 @@ const CountdownRing = memo(function CountdownRing({
           cy={18}
           r={16}
           fill="none"
-          stroke="#f1f5f9"
+          stroke={Colors.surfaceSecondary}
           strokeWidth={3}
         />
         {/* Progress */}
@@ -219,7 +219,7 @@ const EventCard = memo(function EventCard({
         alignItems: "center",
         gap: 14,
         borderWidth: isUrgent ? 1.5 : 1,
-        borderColor: isUrgent ? `${color}50` : "#f1f5f9",
+        borderColor: isUrgent ? `${color}50` : Colors.surfaceSecondary,
         shadowColor: isUrgent ? color : "#000",
         shadowOffset: { width: 0, height: isUrgent ? 4 : 1 },
         shadowOpacity: isUrgent ? 0.12 : 0.04,
@@ -274,7 +274,7 @@ const EventCard = memo(function EventCard({
           style={{
             fontSize: 15,
             fontWeight: "800",
-            color: "#0f172a",
+            color: Colors.textPrimary,
             marginBottom: 3,
           }}
           numberOfLines={1}
@@ -298,11 +298,13 @@ const EventCard = memo(function EventCard({
       <View style={{ gap: 8 }}>
         <Pressable
           hitSlop={6}
+          accessibilityLabel="Thông báo"
+          accessibilityRole="button"
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            backgroundColor: "#eff6ff",
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: Colors.infoAlpha15,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -313,11 +315,13 @@ const EventCard = memo(function EventCard({
         <Pressable
           hitSlop={6}
           onPress={() => onDelete(item.id)}
+          accessibilityLabel="Xoá sự kiện"
+          accessibilityRole="button"
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            backgroundColor: isConfirmingDelete ? "#fef2f2" : Colors.surfaceSecondary,
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            backgroundColor: isConfirmingDelete ? Colors.errorAlpha10 : Colors.surfaceSecondary,
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -380,7 +384,7 @@ export default function CalendarScreen() {
       >
         <View>
           <Text
-            style={{ fontSize: 24, fontWeight: "800", color: "#0f172a" }}
+            style={{ fontSize: 24, fontWeight: "800", color: Colors.textPrimary }}
           >
             Ngày đặc biệt
           </Text>
@@ -391,10 +395,12 @@ export default function CalendarScreen() {
         <Pressable
           onPress={() => router.push("/(tabs)/add")}
           hitSlop={8}
+          accessibilityLabel="Thêm sự kiện"
+          accessibilityRole="button"
           style={{
-            width: 46,
-            height: 46,
-            borderRadius: 23,
+            width: 48,
+            height: 48,
+            borderRadius: 24,
             backgroundColor: Colors.primary,
             alignItems: "center",
             justifyContent: "center",
@@ -443,10 +449,13 @@ export default function CalendarScreen() {
             </Text>
             <Pressable
               onPress={() => router.push("/(tabs)/add")}
+              accessibilityLabel="Thêm sự kiện đầu tiên"
+              accessibilityRole="button"
               style={{
                 marginTop: 24,
                 paddingHorizontal: 28,
-                paddingVertical: 14,
+                minHeight: 48,
+                justifyContent: "center",
                 borderRadius: 14,
                 backgroundColor: Colors.primary,
               }}

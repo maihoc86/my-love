@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Colors } from "@/theme";
-import { View, Text, Pressable, ScrollView, Switch } from "react-native";
+import { View, Text, Pressable, ScrollView, Switch, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import {
@@ -29,7 +29,7 @@ const REMINDERS = [
     date: "20 tháng 5",
     daysLeft: 2,
     type: "upcoming" as const,
-    color: "#f97316",
+    color: Colors.sentimentLike,
   },
   {
     id: "3",
@@ -62,83 +62,172 @@ export default function DailyReminderScreen() {
   });
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
       <ScrollView bounces={false}>
         {/* Header */}
-        <View className="flex-row items-center px-4 py-3">
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+          }}
+        >
           <Pressable
             onPress={() => router.back()}
-            className="w-10 h-10 rounded-full items-center justify-center bg-white"
-            style={{ shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+            accessibilityLabel="Quay lại"
+            accessibilityRole="button"
+            hitSlop={12}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: Colors.surface,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            }}
           >
-            <ChevronLeft size={20} color="#1e1b2e" />
+            <ChevronLeft size={20} color={Colors.textPrimary} />
           </Pressable>
-          <Text className="flex-1 text-lg font-bold text-center" style={{ color: "#1e1b2e" }}>
+          <Text
+            style={{
+              flex: 1,
+              fontSize: 18,
+              fontWeight: "700",
+              textAlign: "center",
+              color: Colors.textPrimary,
+            }}
+          >
             Nhắc nhở hàng ngày
           </Text>
-          <View className="w-10" />
+          <View style={{ width: 48 }} />
         </View>
 
         {/* Today Card */}
         <View
-          className="mx-4 mb-4 p-4 rounded-2xl"
-          style={{ backgroundColor: Colors.primary }}
+          style={{
+            marginHorizontal: 16,
+            marginBottom: 16,
+            padding: 16,
+            borderRadius: 16,
+            backgroundColor: Colors.primary,
+          }}
         >
-          <View className="flex-row items-center mb-2">
-            <Calendar size={16} color="#fff" />
-            <Text className="text-white/70 text-xs ml-2">Hôm nay</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+            <Calendar size={16} color={Colors.textOnPrimary} />
+            <Text
+              style={{
+                color: Colors.whiteAlpha80,
+                fontSize: 12,
+                marginLeft: 8,
+              }}
+            >
+              Hôm nay
+            </Text>
           </View>
-          <Text className="text-white font-bold text-base">{today}</Text>
-          <Text className="text-white/80 text-sm mt-1">
+          <Text style={{ color: Colors.textOnPrimary, fontWeight: "700", fontSize: 16 }}>
+            {today}
+          </Text>
+          <Text
+            style={{
+              color: Colors.whiteAlpha80,
+              fontSize: 14,
+              marginTop: 4,
+            }}
+          >
             Chúc bạn có một ngày tuyệt vời bên Thái Hoc! 💕
           </Text>
         </View>
 
         {/* Reminders */}
-        <View className="px-4 mb-6">
-          <Text className="text-sm font-bold mb-3" style={{ color: "#1e1b2e" }}>
+        <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "700",
+              marginBottom: 12,
+              color: Colors.textPrimary,
+            }}
+          >
             Nhắc nhở hôm nay
           </Text>
 
           {REMINDERS.map((r) => (
             <View
               key={r.id}
-              className="bg-white rounded-xl p-4 mb-2 flex-row"
               style={{
+                backgroundColor: Colors.surface,
+                borderRadius: 12,
+                padding: 16,
+                marginBottom: 8,
+                flexDirection: "row",
                 borderLeftWidth: 4,
                 borderLeftColor: r.color,
-                shadowColor: "#000",
+                shadowColor: Colors.textPrimary,
                 shadowOpacity: 0.04,
                 shadowRadius: 4,
                 elevation: 1,
               }}
             >
-              <View className="flex-1">
-                <Text className="text-sm font-semibold" style={{ color: "#1e1b2e" }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary }}>
                   {r.title}
                 </Text>
-                <Text className="text-xs mt-0.5" style={{ color: Colors.textSecondary }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    marginTop: 2,
+                    color: Colors.textSecondary,
+                  }}
+                >
                   {r.date} ·{" "}
-                  {r.daysLeft === 0
-                    ? "Hôm nay!"
-                    : `Còn ${r.daysLeft} ngày`}
+                  {r.daysLeft === 0 ? "Hôm nay!" : `Còn ${r.daysLeft} ngày`}
                 </Text>
               </View>
-              <View className="flex-row gap-2">
+              <View style={{ flexDirection: "row", gap: 8 }}>
                 <Pressable
-                  className="px-3 py-2 rounded-lg flex-row items-center"
-                  style={{ backgroundColor: "#eff6ff" }}
+                  accessibilityLabel="Gửi qua Telegram"
+                  accessibilityRole="button"
+                  style={{
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 8,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    backgroundColor: Colors.infoAlpha15,
+                    minHeight: 48,
+                  }}
                 >
                   <Send size={12} color={Colors.info} />
-                  <Text className="text-xs font-medium ml-1" style={{ color: Colors.info }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "500",
+                      marginLeft: 4,
+                      color: Colors.info,
+                    }}
+                  >
                     Telegram
                   </Text>
                 </Pressable>
                 <Pressable
-                  className="w-8 h-8 rounded-lg items-center justify-center"
-                  style={{ backgroundColor: "#ecfdf5" }}
+                  accessibilityLabel="Đánh dấu hoàn thành"
+                  accessibilityRole="button"
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 8,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: Colors.successAlpha15,
+                  }}
                 >
-                  <Check size={14} color="#10b981" />
+                  <Check size={14} color={Colors.success} />
                 </Pressable>
               </View>
             </View>
@@ -146,38 +235,79 @@ export default function DailyReminderScreen() {
         </View>
 
         {/* AI Suggestions */}
-        <View className="px-4 mb-6">
-          <View className="flex-row items-center justify-between mb-3">
-            <View className="flex-row items-center">
-              <Sparkles size={16} color="#8b5cf6" />
-              <Text className="text-sm font-bold ml-2" style={{ color: "#1e1b2e" }}>
+        <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Sparkles size={16} color={Colors.aiPurple} />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "700",
+                  marginLeft: 8,
+                  color: Colors.textPrimary,
+                }}
+              >
                 AI gợi ý hôm nay
               </Text>
             </View>
           </View>
 
-          <View className="bg-white rounded-2xl p-4" style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 }}>
+          <View
+            style={{
+              backgroundColor: Colors.surface,
+              borderRadius: 16,
+              padding: 16,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.04,
+              shadowRadius: 4,
+              elevation: 1,
+            }}
+          >
             {AI_SUGGESTIONS.map((suggestion, idx) => (
               <View
                 key={idx}
-                className="py-2"
                 style={{
+                  paddingVertical: 8,
                   borderTopWidth: idx > 0 ? 1 : 0,
                   borderTopColor: Colors.borderLight,
                 }}
               >
-                <Text className="text-sm" style={{ color: "#1e1b2e" }}>
+                <Text style={{ fontSize: 14, color: Colors.textPrimary }}>
                   {suggestion}
                 </Text>
               </View>
             ))}
 
             <Pressable
-              className="mt-3 py-3 rounded-xl flex-row items-center justify-center"
-              style={{ backgroundColor: "#eff6ff" }}
+              accessibilityLabel="Gửi gợi ý qua Telegram"
+              accessibilityRole="button"
+              style={{
+                marginTop: 12,
+                paddingVertical: 12,
+                borderRadius: 12,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: Colors.infoAlpha15,
+                minHeight: 48,
+              }}
             >
               <Send size={14} color={Colors.info} />
-              <Text className="text-sm font-semibold ml-2" style={{ color: Colors.info }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "600",
+                  marginLeft: 8,
+                  color: Colors.info,
+                }}
+              >
                 Gửi gợi ý qua Telegram
               </Text>
             </Pressable>
@@ -185,73 +315,123 @@ export default function DailyReminderScreen() {
         </View>
 
         {/* Settings */}
-        <View className="px-4 mb-8">
-          <View className="flex-row items-center mb-3">
-            <Settings size={16} color="#6b7280" />
-            <Text className="text-sm font-bold ml-2" style={{ color: "#1e1b2e" }}>
+        <View style={{ paddingHorizontal: 16, marginBottom: 32 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+            <Settings size={16} color={Colors.textSecondary} />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "700",
+                marginLeft: 8,
+                color: Colors.textPrimary,
+              }}
+            >
               Cài đặt nhắc nhở
             </Text>
           </View>
 
-          <View className="bg-white rounded-2xl overflow-hidden">
+          <View
+            style={{
+              backgroundColor: Colors.surface,
+              borderRadius: 16,
+              overflow: "hidden",
+            }}
+          >
             {/* Time */}
-            <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
-              <View className="flex-row items-center">
-                <Clock size={18} color="#6b7280" />
-                <Text className="text-sm ml-3" style={{ color: "#1e1b2e" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.borderLight,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Clock size={18} color={Colors.textSecondary} />
+                <Text style={{ fontSize: 14, marginLeft: 12, color: Colors.textPrimary }}>
                   Giờ nhắc
                 </Text>
               </View>
-              <Text className="text-sm font-semibold" style={{ color: Colors.primary }}>
+              <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.primary }}>
                 08:00
               </Text>
             </View>
 
             {/* Push */}
-            <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
-              <View className="flex-row items-center">
-                <Bell size={18} color="#6b7280" />
-                <Text className="text-sm ml-3" style={{ color: "#1e1b2e" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.borderLight,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Bell size={18} color={Colors.textSecondary} />
+                <Text style={{ fontSize: 14, marginLeft: 12, color: Colors.textPrimary }}>
                   Push notification
                 </Text>
               </View>
               <Switch
                 value={pushEnabled}
                 onValueChange={setPushEnabled}
-                trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                thumbColor={pushEnabled ? Colors.primary : "#fff"}
+                accessibilityLabel="Bật/tắt push notification"
+                trackColor={{ false: Colors.border, true: Colors.primaryLight }}
+                thumbColor={pushEnabled ? Colors.primary : Colors.surface}
               />
             </View>
 
             {/* Telegram */}
-            <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
-              <View className="flex-row items-center">
-                <Send size={18} color="#6b7280" />
-                <Text className="text-sm ml-3" style={{ color: "#1e1b2e" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.borderLight,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Send size={18} color={Colors.textSecondary} />
+                <Text style={{ fontSize: 14, marginLeft: 12, color: Colors.textPrimary }}>
                   Telegram
                 </Text>
               </View>
               <Switch
                 value={telegramEnabled}
                 onValueChange={setTelegramEnabled}
-                trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                thumbColor={telegramEnabled ? Colors.primary : "#fff"}
+                accessibilityLabel="Bật/tắt Telegram"
+                trackColor={{ false: Colors.border, true: Colors.primaryLight }}
+                thumbColor={telegramEnabled ? Colors.primary : Colors.surface}
               />
             </View>
 
             {/* AI Auto */}
-            <View className="flex-row items-center justify-between p-4">
-              <View className="flex-row items-center">
-                <Sparkles size={18} color="#6b7280" />
-                <Text className="text-sm ml-3" style={{ color: "#1e1b2e" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Sparkles size={18} color={Colors.textSecondary} />
+                <Text style={{ fontSize: 14, marginLeft: 12, color: Colors.textPrimary }}>
                   AI gợi ý tự động
                 </Text>
               </View>
               <Switch
                 value={aiEnabled}
                 onValueChange={setAiEnabled}
-                trackColor={{ false: "#e5e7eb", true: "#c4b5fd" }}
-                thumbColor={aiEnabled ? "#8b5cf6" : "#fff"}
+                accessibilityLabel="Bật/tắt AI gợi ý tự động"
+                trackColor={{ false: Colors.border, true: Colors.aiPurpleLight }}
+                thumbColor={aiEnabled ? Colors.aiPurple : Colors.surface}
               />
             </View>
           </View>

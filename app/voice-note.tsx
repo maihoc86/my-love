@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Colors } from "@/theme";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import {
@@ -43,74 +43,152 @@ export default function VoiceNoteScreen() {
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
+      <StatusBar barStyle="dark-content" />
       {/* Header */}
-      <View className="flex-row items-center px-4 py-3">
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+        }}
+      >
         <Pressable
           onPress={() => router.back()}
-          className="w-10 h-10 rounded-full items-center justify-center bg-white"
-          style={{ shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}
+          accessibilityLabel="Quay lại"
+          accessibilityRole="button"
+          hitSlop={12}
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 24,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: Colors.surface,
+            shadowColor: Colors.textPrimary,
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 2,
+          }}
         >
-          <ChevronLeft size={20} color="#1e1b2e" />
+          <ChevronLeft size={20} color={Colors.textPrimary} />
         </Pressable>
-        <Text className="flex-1 text-lg font-bold text-center" style={{ color: "#1e1b2e" }}>
+        <Text
+          style={{
+            flex: 1,
+            fontSize: 18,
+            fontWeight: "700",
+            textAlign: "center",
+            color: Colors.textPrimary,
+          }}
+        >
           Ghi chú giọng nói
         </Text>
-        <View className="w-10" />
+        <View style={{ width: 48 }} />
       </View>
 
-      <ScrollView className="flex-1 px-4">
-        {/* Voice Notes List */}
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 16 }}
+        showsVerticalScrollIndicator={false}
+      >
         {VOICE_NOTES.map((note) => (
           <View
             key={note.id}
-            className="bg-white rounded-2xl p-4 mb-4"
-            style={{ shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 }}
+            style={{
+              backgroundColor: Colors.surface,
+              borderRadius: 16,
+              padding: 16,
+              marginBottom: 16,
+              shadowColor: Colors.textPrimary,
+              shadowOpacity: 0.04,
+              shadowRadius: 8,
+              elevation: 2,
+            }}
           >
             {/* Player Row */}
-            <View className="flex-row items-center mb-3">
+            <View
+              style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}
+            >
               <Pressable
-                className="w-10 h-10 rounded-full items-center justify-center"
-                style={{ backgroundColor: Colors.primary }}
+                accessibilityLabel={
+                  playingId === note.id ? "Tạm dừng" : "Phát ghi âm"
+                }
+                accessibilityRole="button"
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 24,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: Colors.primary,
+                }}
                 onPress={() =>
                   setPlayingId(playingId === note.id ? null : note.id)
                 }
               >
                 {playingId === note.id ? (
-                  <Pause size={18} color="#fff" fill="#fff" />
+                  <Pause size={18} color={Colors.textOnPrimary} fill={Colors.textOnPrimary} />
                 ) : (
-                  <Play size={18} color="#fff" fill="#fff" />
+                  <Play size={18} color={Colors.textOnPrimary} fill={Colors.textOnPrimary} />
                 )}
               </Pressable>
 
               {/* Waveform placeholder */}
-              <View className="flex-1 flex-row items-center mx-3 gap-0.5">
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginHorizontal: 12,
+                  gap: 2,
+                }}
+              >
                 {[...Array(20)].map((_, i) => (
                   <View
                     key={i}
-                    className="rounded-full"
                     style={{
                       width: 3,
                       height: 6 + Math.random() * 18,
+                      borderRadius: 999,
                       backgroundColor:
-                        playingId === note.id ? Colors.primary : "#d1d5db",
+                        playingId === note.id ? Colors.primary : Colors.border,
                     }}
                   />
                 ))}
               </View>
 
-              <Text className="text-xs font-medium" style={{ color: Colors.textSecondary }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: "500",
+                  color: Colors.textSecondary,
+                }}
+              >
                 {note.duration}
               </Text>
             </View>
 
             {/* Status + Date */}
-            <View className="flex-row items-center justify-between mb-3">
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 12,
+              }}
+            >
               <View
-                className="flex-row items-center px-2 py-1 rounded-full"
                 style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  borderRadius: 999,
                   backgroundColor:
-                    note.status === "saved" ? "#ecfdf5" : "#fffbeb",
+                    note.status === "saved"
+                      ? Colors.successAlpha15
+                      : Colors.warningLight + "30",
                 }}
               >
                 {note.status === "saved" ? (
@@ -119,23 +197,30 @@ export default function VoiceNoteScreen() {
                   <Clock size={12} color={Colors.warning} />
                 )}
                 <Text
-                  className="text-xs font-medium ml-1"
                   style={{
-                    color: note.status === "saved" ? Colors.success : Colors.warning,
+                    fontSize: 12,
+                    fontWeight: "500",
+                    marginLeft: 4,
+                    color:
+                      note.status === "saved" ? Colors.success : Colors.warning,
                   }}
                 >
                   {note.status === "saved" ? "Đã lưu" : "Chờ lưu"}
                 </Text>
               </View>
-              <Text className="text-xs" style={{ color: Colors.textTertiary }}>
+              <Text style={{ fontSize: 12, color: Colors.textTertiary }}>
                 {note.date}
               </Text>
             </View>
 
             {/* Transcript */}
             <Text
-              className="text-sm italic mb-3"
-              style={{ color: Colors.textSecondary }}
+              style={{
+                fontSize: 14,
+                fontStyle: "italic",
+                marginBottom: 12,
+                color: Colors.textSecondary,
+              }}
               numberOfLines={2}
             >
               "{note.transcript}"
@@ -143,26 +228,57 @@ export default function VoiceNoteScreen() {
 
             {/* AI Parsed Entries */}
             <View
-              className="p-3 rounded-xl mb-3"
-              style={{ backgroundColor: "#f5f3ff" }}
+              style={{
+                padding: 12,
+                borderRadius: 12,
+                marginBottom: 12,
+                backgroundColor: Colors.aiPurpleAlpha10,
+              }}
             >
-              <View className="flex-row items-center mb-2">
-                <Sparkles size={14} color="#8b5cf6" />
-                <Text className="text-xs font-bold ml-1.5" style={{ color: "#8b5cf6" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 8,
+                }}
+              >
+                <Sparkles size={14} color={Colors.aiPurple} />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "700",
+                    marginLeft: 6,
+                    color: Colors.aiPurple,
+                  }}
+                >
                   Kết quả phân tích
                 </Text>
               </View>
               {note.entries.map((entry, idx) => (
-                <View key={idx} className="flex-row items-center mb-1">
+                <View
+                  key={idx}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: 4,
+                  }}
+                >
                   <View
-                    className="px-2 py-0.5 rounded-full mr-2"
-                    style={{ backgroundColor: "#ede9fe" }}
+                    style={{
+                      paddingHorizontal: 8,
+                      paddingVertical: 2,
+                      borderRadius: 999,
+                      marginRight: 8,
+                      backgroundColor: Colors.aiPurpleAlpha05,
+                    }}
                   >
-                    <Text className="text-xs" style={{ color: "#8b5cf6" }}>
+                    <Text style={{ fontSize: 12, color: Colors.aiPurple }}>
                       {entry.category}
                     </Text>
                   </View>
-                  <Text className="text-xs flex-1" style={{ color: "#1e1b2e" }}>
+                  <Text
+                    style={{ fontSize: 12, flex: 1, color: Colors.textPrimary }}
+                  >
                     {entry.title}
                   </Text>
                 </View>
@@ -172,10 +288,23 @@ export default function VoiceNoteScreen() {
             {/* Save Button (for pending) */}
             {note.status === "pending" && (
               <Pressable
-                className="py-3 rounded-xl items-center"
-                style={{ backgroundColor: Colors.success }}
+                accessibilityLabel="Lưu ghi chú"
+                accessibilityRole="button"
+                style={{
+                  paddingVertical: 12,
+                  borderRadius: 12,
+                  alignItems: "center",
+                  backgroundColor: Colors.success,
+                  minHeight: 48,
+                }}
               >
-                <Text className="text-white font-bold text-sm">
+                <Text
+                  style={{
+                    color: Colors.textOnPrimary,
+                    fontWeight: "700",
+                    fontSize: 14,
+                  }}
+                >
                   Lưu ghi chú
                 </Text>
               </Pressable>
@@ -185,13 +314,21 @@ export default function VoiceNoteScreen() {
       </ScrollView>
 
       {/* Floating Mic Button */}
-      <View className="items-center pb-6">
-        <Text className="text-xs mb-2" style={{ color: Colors.textTertiary }}>
+      <View style={{ alignItems: "center", paddingBottom: 24 }}>
+        <Text
+          style={{ fontSize: 12, marginBottom: 8, color: Colors.textTertiary }}
+        >
           Nhấn giữ để ghi âm
         </Text>
         <Pressable
-          className="w-16 h-16 rounded-full items-center justify-center"
+          accessibilityLabel="Ghi âm giọng nói"
+          accessibilityRole="button"
           style={{
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            alignItems: "center",
+            justifyContent: "center",
             backgroundColor: Colors.primary,
             shadowColor: Colors.primary,
             shadowOpacity: 0.4,
@@ -200,7 +337,7 @@ export default function VoiceNoteScreen() {
           }}
           onLongPress={() => router.push("/recording")}
         >
-          <Mic size={28} color="#fff" />
+          <Mic size={28} color={Colors.textOnPrimary} />
         </Pressable>
       </View>
     </SafeAreaView>
