@@ -12,11 +12,13 @@ interface User {
 
 interface UseAuthReturn {
   isAuthenticated: boolean;
+  needsOnboarding: boolean;
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<boolean>;
+  completeOnboarding: () => Promise<void>;
 }
 
 /**
@@ -25,12 +27,14 @@ interface UseAuthReturn {
  */
 export function useAuth(): UseAuthReturn {
   const [isAuthenticated] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const [user] = useState<User | null>(null);
   const [loading] = useState(false);
 
   const login = useCallback(
     async (_email: string, _password: string): Promise<boolean> => {
       // TODO: Tích hợp Supabase Auth
+      // TODO: Check if user has completed onboarding (partner info exists)
       console.log('[Auth] login - placeholder, chưa triển khai');
       return true;
     },
@@ -49,11 +53,19 @@ export function useAuth(): UseAuthReturn {
       _name: string
     ): Promise<boolean> => {
       // TODO: Tích hợp Supabase Auth
+      // After register, user needs onboarding
+      setNeedsOnboarding(true);
       console.log('[Auth] register - placeholder, chưa triển khai');
       return true;
     },
     []
   );
 
-  return { isAuthenticated, user, loading, login, logout, register };
+  const completeOnboarding = useCallback(async (): Promise<void> => {
+    // TODO: Save onboarding data to Supabase
+    setNeedsOnboarding(false);
+    console.log('[Auth] onboarding completed');
+  }, []);
+
+  return { isAuthenticated, needsOnboarding, user, loading, login, logout, register, completeOnboarding };
 }

@@ -25,11 +25,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { ArrowLeft, ChevronDown, Plus, Search, SlidersHorizontal, X } from "lucide-react-native";
-
-// ─── Constants ───────────────────────────────────────────────
-
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -195,7 +191,7 @@ const EntryCard = memo(function EntryCard({
         onPressOut={handlePressOut}
         onPress={() => onPress(item.id)}
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: Colors.surface,
           borderRadius: 16,
           padding: 14,
           flexDirection: "row",
@@ -231,7 +227,7 @@ const EntryCard = memo(function EntryCard({
             style={{
               fontSize: 14,
               fontWeight: "700",
-              color: "#0f172a",
+              color: Colors.textPrimary,
               marginBottom: 2,
             }}
           >
@@ -240,12 +236,12 @@ const EntryCard = memo(function EntryCard({
           {item.detail ? (
             <Text
               numberOfLines={1}
-              style={{ fontSize: 13, color: "#64748b", marginBottom: 2 }}
+              style={{ fontSize: 13, color: Colors.textSecondary, marginBottom: 2 }}
             >
               {item.detail}
             </Text>
           ) : null}
-          <Text style={{ fontSize: 12, color: "#94a3b8" }}>
+          <Text style={{ fontSize: 12, color: Colors.textMuted }}>
             {item.categoryLabel} · {item.timeAgo}
           </Text>
         </View>
@@ -255,7 +251,7 @@ const EntryCard = memo(function EntryCard({
           style={{
             fontSize: 13,
             fontWeight: "700",
-            color: PRIMARY,
+            color: Colors.primary,
             flexShrink: 0,
           }}
         >
@@ -278,29 +274,30 @@ const FilterChip = memo(function FilterChip({
   onPress: () => void;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={4}
-      style={({ pressed }) => ({
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 999,
-        backgroundColor: active ? PRIMARY : "#fff",
-        borderWidth: 1,
-        borderColor: active ? PRIMARY : "#e2e8f0",
-        opacity: pressed ? 0.85 : 1,
-      })}
-    >
-      <Text
-        style={{
-          fontSize: 13,
-          fontWeight: active ? "700" : "500",
-          color: active ? "#fff" : "#475569",
-          whiteSpace: "nowrap",
-        } as any}
-      >
-        {label}
-      </Text>
+    <Pressable onPress={onPress} hitSlop={4}>
+      {({ pressed }) => (
+        <View
+          style={{
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            borderRadius: 999,
+            backgroundColor: active ? Colors.primary : Colors.surface,
+            borderWidth: 1,
+            borderColor: active ? Colors.primary : "#e2e8f0",
+            opacity: pressed ? 0.85 : 1,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: active ? "700" : "500",
+              color: active ? Colors.textOnPrimary : "#475569",
+            }}
+          >
+            {label}
+          </Text>
+        </View>
+      )}
     </Pressable>
   );
 });
@@ -342,7 +339,7 @@ const SortSheet = memo(function SortSheet({
           <TouchableWithoutFeedback>
             <View
               style={{
-                backgroundColor: "#fff",
+                backgroundColor: Colors.surface,
                 borderTopLeftRadius: 24,
                 borderTopRightRadius: 24,
                 paddingBottom: Platform.OS === "ios" ? 36 : 24,
@@ -364,7 +361,7 @@ const SortSheet = memo(function SortSheet({
                 style={{
                   fontSize: 16,
                   fontWeight: "700",
-                  color: "#0f172a",
+                  color: Colors.textPrimary,
                   textAlign: "center",
                   marginBottom: 20,
                 }}
@@ -376,36 +373,41 @@ const SortSheet = memo(function SortSheet({
                 <Pressable
                   key={opt.key}
                   onPress={() => { onSelect(opt.key); onClose(); }}
-                  style={({ pressed }) => ({
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingHorizontal: 24,
-                    paddingVertical: 16,
-                    backgroundColor: pressed ? "#f8fafc" : "transparent",
-                  })}
                 >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: current === opt.key ? "700" : "500",
-                      color: current === opt.key ? PRIMARY : "#374151",
-                    }}
-                  >
-                    {opt.label}
-                  </Text>
-                  {current === opt.key && (
+                  {({ pressed }) => (
                     <View
                       style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 10,
-                        backgroundColor: PRIMARY,
+                        flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "center",
+                        justifyContent: "space-between",
+                        paddingHorizontal: 24,
+                        paddingVertical: 16,
+                        backgroundColor: pressed ? "#f8fafc" : "transparent",
                       }}
                     >
-                      <Text style={{ color: "#fff", fontSize: 12, fontWeight: "700" }}>✓</Text>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: current === opt.key ? "700" : "500",
+                          color: current === opt.key ? Colors.primary : "#374151",
+                        }}
+                      >
+                        {opt.label}
+                      </Text>
+                      {current === opt.key && (
+                        <View
+                          style={{
+                            width: 20,
+                            height: 20,
+                            borderRadius: 10,
+                            backgroundColor: Colors.primary,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Text style={{ color: Colors.textOnPrimary, fontSize: 12, fontWeight: "700" }}>✓</Text>
+                        </View>
+                      )}
                     </View>
                   )}
                 </Pressable>
@@ -521,7 +523,7 @@ export default function AllNotesScreen() {
         <Text
           style={{
             fontSize: 13,
-            color: "#94a3b8",
+            color: Colors.textMuted,
             textAlign: "center",
             lineHeight: 20,
             marginBottom: 24,
@@ -539,7 +541,7 @@ export default function AllNotesScreen() {
             backgroundColor: pressed ? "#fee2e8" : "#fff1f4",
           })}
         >
-          <Text style={{ fontSize: 13, fontWeight: "700", color: PRIMARY }}>
+          <Text style={{ fontSize: 13, fontWeight: "700", color: Colors.primary }}>
             Xoá bộ lọc
           </Text>
         </Pressable>
@@ -560,7 +562,7 @@ export default function AllNotesScreen() {
           marginBottom: 4,
         }}
       >
-        <Text style={{ fontSize: 13, fontWeight: "500", color: "#64748b" }}>
+        <Text style={{ fontSize: 13, fontWeight: "500", color: Colors.textSecondary }}>
           {filteredEntries.length} ghi chú
         </Text>
         <Pressable
@@ -568,10 +570,10 @@ export default function AllNotesScreen() {
           hitSlop={8}
           style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
         >
-          <Text style={{ fontSize: 13, fontWeight: "700", color: PRIMARY }}>
+          <Text style={{ fontSize: 13, fontWeight: "700", color: Colors.primary }}>
             {sortLabel}
           </Text>
-          <ChevronDown size={14} color={PRIMARY} />
+          <ChevronDown size={14} color={Colors.primary} />
         </Pressable>
       </View>
     ),
@@ -579,7 +581,7 @@ export default function AllNotesScreen() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* ── Sticky Header + Search ── */}
@@ -587,7 +589,7 @@ export default function AllNotesScreen() {
         style={{
           backgroundColor: "rgba(248,245,246,0.95)",
           borderBottomWidth: 1,
-          borderBottomColor: "rgba(244,63,94,0.08)",
+          borderBottomColor: Colors.primaryAlpha08,
           paddingBottom: 12,
         }}
       >
@@ -601,7 +603,7 @@ export default function AllNotesScreen() {
           }}
         >
           <Pressable onPress={() => router.back()} hitSlop={10} style={{ width: 40 }}>
-            <ArrowLeft size={22} color="#0f172a" />
+            <ArrowLeft size={22} color={Colors.textPrimary} />
           </Pressable>
           <Text
             style={{
@@ -609,7 +611,7 @@ export default function AllNotesScreen() {
               textAlign: "center",
               fontSize: 17,
               fontWeight: "700",
-              color: "#0f172a",
+              color: Colors.textPrimary,
             }}
           >
             Tất cả ghi chú
@@ -619,7 +621,7 @@ export default function AllNotesScreen() {
             hitSlop={10}
             style={{ width: 40, alignItems: "flex-end" }}
           >
-            <SlidersHorizontal size={20} color="#64748b" />
+            <SlidersHorizontal size={20} color={Colors.textSecondary} />
           </Pressable>
         </View>
 
@@ -629,7 +631,7 @@ export default function AllNotesScreen() {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: "#fff",
+              backgroundColor: Colors.surface,
               borderRadius: 14,
               borderWidth: 1,
               borderColor: "#e2e8f0",
@@ -643,17 +645,17 @@ export default function AllNotesScreen() {
               elevation: 1,
             }}
           >
-            <Search size={16} color="#94a3b8" />
+            <Search size={16} color={Colors.textMuted} />
             <TextInput
               ref={searchRef}
               style={{
                 flex: 1,
                 fontSize: 15,
-                color: "#0f172a",
+                color: Colors.textPrimary,
                 paddingVertical: 0,
               }}
               placeholder="Tìm kiếm ghi chú..."
-              placeholderTextColor="#94a3b8"
+              placeholderTextColor={Colors.textMuted}
               value={searchQuery}
               onChangeText={setSearchQuery}
               returnKeyType="search"
@@ -662,7 +664,7 @@ export default function AllNotesScreen() {
             />
             {searchQuery.length > 0 && (
               <Pressable onPress={handleClearSearch} hitSlop={8}>
-                <X size={16} color="#94a3b8" />
+                <X size={16} color={Colors.textMuted} />
               </Pressable>
             )}
           </View>
@@ -672,7 +674,7 @@ export default function AllNotesScreen() {
       {/* ── Filter Chips ── */}
       <View
         style={{
-          backgroundColor: BG,
+          backgroundColor: Colors.background,
           paddingVertical: 10,
         }}
       >
@@ -720,10 +722,10 @@ export default function AllNotesScreen() {
           width: 56,
           height: 56,
           borderRadius: 28,
-          backgroundColor: PRIMARY,
+          backgroundColor: Colors.primary,
           alignItems: "center",
           justifyContent: "center",
-          shadowColor: PRIMARY,
+          shadowColor: Colors.primary,
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.4,
           shadowRadius: 12,
@@ -731,7 +733,7 @@ export default function AllNotesScreen() {
           opacity: pressed ? 0.88 : 1,
         })}
       >
-        <Plus size={26} color="#fff" />
+        <Plus size={26} color={Colors.textOnPrimary} />
       </Pressable>
 
       {/* ── Sort Sheet ── */}

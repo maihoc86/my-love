@@ -1,9 +1,9 @@
 {
   "project": {
-    "name": "cto-ai-assistant",
+    "name": "MyLoveThaiHoc-Mobile",
     "version": "2.0.0",
-    "description": "CTO AI Assistant - Trợ lý AI cho CTO qua Claude Code",
-    "author": "CTO Office - Tiên Phong CDS"
+    "description": "MyLoveThaiHoc - Personal mobile app (React Native + Expo)",
+    "author": "Tiên Phong CDS"
   },
 
   "defaults": {
@@ -13,47 +13,20 @@
     "template_directory": ".claude/templates"
   },
 
-  "templates": {
-    "emails": {
-      "directory": ".claude/templates/emails",
-      "available": [
-        "meeting-followup",
-        "solution-proposal",
-        "customer-update",
-        "team-announcement"
-      ]
-    },
-    "documents": {
-      "directory": ".claude/templates/documents",
-      "available": [
-        "technical-proposal",
-        "project-plan",
-        "solution-architecture"
-      ]
-    },
-    "reports": {
-      "directory": ".claude/templates/reports",
-      "available": [
-        "weekly-team-summary",
-        "monthly-metrics",
-        "project-status"
-      ]
-    }
-  },
-
-  "skills": [
-    "cto-advisor",
-    "product-manager-toolkit",
-    "internal-comms",
-    "ux-researcher-designer",
-    "ui-design-system"
-  ],
-
   "hooks": {
-    "Stop": [
+    "PostToolUse": [
       {
+        "matcher": "Write|Edit",
         "type": "command",
-        "command": "bash tools/scripts/update-dashboard-bg.sh",
+        "command": "bash .claude/hooks/typecheck.sh",
+        "timeout": 30
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "type": "command",
+        "command": "bash .claude/hooks/pre-commit-check.sh",
         "timeout": 10
       }
     ]

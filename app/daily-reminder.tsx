@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Colors } from "@/theme";
 import { View, Text, Pressable, ScrollView, Switch } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -20,7 +21,7 @@ const REMINDERS = [
     date: "27 tháng 5",
     daysLeft: 0,
     type: "today" as const,
-    color: "#f43f5e",
+    color: Colors.primary,
   },
   {
     id: "2",
@@ -36,7 +37,7 @@ const REMINDERS = [
     date: "14 tháng 2",
     daysLeft: 6,
     type: "weekly" as const,
-    color: "#3b82f6",
+    color: Colors.info,
   },
 ];
 
@@ -61,7 +62,7 @@ export default function DailyReminderScreen() {
   });
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
       <ScrollView bounces={false}>
         {/* Header */}
         <View className="flex-row items-center px-4 py-3">
@@ -81,7 +82,7 @@ export default function DailyReminderScreen() {
         {/* Today Card */}
         <View
           className="mx-4 mb-4 p-4 rounded-2xl"
-          style={{ backgroundColor: "#f43f5e" }}
+          style={{ backgroundColor: Colors.primary }}
         >
           <View className="flex-row items-center mb-2">
             <Calendar size={16} color="#fff" />
@@ -116,7 +117,7 @@ export default function DailyReminderScreen() {
                 <Text className="text-sm font-semibold" style={{ color: "#1e1b2e" }}>
                   {r.title}
                 </Text>
-                <Text className="text-xs mt-0.5" style={{ color: "#6b7280" }}>
+                <Text className="text-xs mt-0.5" style={{ color: Colors.textSecondary }}>
                   {r.date} ·{" "}
                   {r.daysLeft === 0
                     ? "Hôm nay!"
@@ -128,8 +129,8 @@ export default function DailyReminderScreen() {
                   className="px-3 py-2 rounded-lg flex-row items-center"
                   style={{ backgroundColor: "#eff6ff" }}
                 >
-                  <Send size={12} color="#3b82f6" />
-                  <Text className="text-xs font-medium ml-1" style={{ color: "#3b82f6" }}>
+                  <Send size={12} color={Colors.info} />
+                  <Text className="text-xs font-medium ml-1" style={{ color: Colors.info }}>
                     Telegram
                   </Text>
                 </Pressable>
@@ -162,7 +163,7 @@ export default function DailyReminderScreen() {
                 className="py-2"
                 style={{
                   borderTopWidth: idx > 0 ? 1 : 0,
-                  borderTopColor: "#f3f4f6",
+                  borderTopColor: Colors.borderLight,
                 }}
               >
                 <Text className="text-sm" style={{ color: "#1e1b2e" }}>
@@ -175,8 +176,8 @@ export default function DailyReminderScreen() {
               className="mt-3 py-3 rounded-xl flex-row items-center justify-center"
               style={{ backgroundColor: "#eff6ff" }}
             >
-              <Send size={14} color="#3b82f6" />
-              <Text className="text-sm font-semibold ml-2" style={{ color: "#3b82f6" }}>
+              <Send size={14} color={Colors.info} />
+              <Text className="text-sm font-semibold ml-2" style={{ color: Colors.info }}>
                 Gửi gợi ý qua Telegram
               </Text>
             </Pressable>
@@ -201,7 +202,7 @@ export default function DailyReminderScreen() {
                   Giờ nhắc
                 </Text>
               </View>
-              <Text className="text-sm font-semibold" style={{ color: "#f43f5e" }}>
+              <Text className="text-sm font-semibold" style={{ color: Colors.primary }}>
                 08:00
               </Text>
             </View>
@@ -218,7 +219,7 @@ export default function DailyReminderScreen() {
                 value={pushEnabled}
                 onValueChange={setPushEnabled}
                 trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                thumbColor={pushEnabled ? "#f43f5e" : "#fff"}
+                thumbColor={pushEnabled ? Colors.primary : "#fff"}
               />
             </View>
 
@@ -234,7 +235,7 @@ export default function DailyReminderScreen() {
                 value={telegramEnabled}
                 onValueChange={setTelegramEnabled}
                 trackColor={{ false: "#e5e7eb", true: "#fda4af" }}
-                thumbColor={telegramEnabled ? "#f43f5e" : "#fff"}
+                thumbColor={telegramEnabled ? Colors.primary : "#fff"}
               />
             </View>
 

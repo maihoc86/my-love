@@ -1,4 +1,5 @@
 import React from "react";
+import { Colors } from "@/theme";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -33,12 +34,12 @@ export default function LoveCounterScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
       <ScrollView bounces={false}>
         {/* Hero Section */}
         <View
           className="px-6 pt-4 pb-10 items-center"
-          style={{ backgroundColor: "#f43f5e" }}
+          style={{ backgroundColor: Colors.primary }}
         >
           {/* Header */}
           <View className="flex-row items-center w-full mb-8">
@@ -108,8 +109,8 @@ export default function LoveCounterScreen() {
             className="flex-1 flex-row items-center justify-center py-3.5 rounded-xl bg-white"
             style={{ shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 8, elevation: 3 }}
           >
-            <Share2 size={16} color="#f43f5e" />
-            <Text className="font-semibold text-sm ml-2" style={{ color: "#f43f5e" }}>
+            <Share2 size={16} color={Colors.primary} />
+            <Text className="font-semibold text-sm ml-2" style={{ color: Colors.primary }}>
               Chia sẻ
             </Text>
           </Pressable>
@@ -139,20 +140,20 @@ export default function LoveCounterScreen() {
                   <View
                     className="w-10 h-10 rounded-full items-center justify-center"
                     style={{
-                      backgroundColor: achieved ? "#10b981" : "#f3f4f6",
+                      backgroundColor: achieved ? Colors.success : Colors.borderLight,
                     }}
                   >
                     {achieved ? (
                       <Check size={18} color="#fff" />
                     ) : (
-                      <Clock size={18} color="#9ca3af" />
+                      <Clock size={18} color={Colors.textTertiary} />
                     )}
                   </View>
                   {idx < MILESTONES.length - 1 && (
                     <View
                       className="w-0.5 h-6"
                       style={{
-                        backgroundColor: achieved ? "#10b981" : "#e5e7eb",
+                        backgroundColor: achieved ? Colors.success : Colors.border,
                       }}
                     />
                   )}
@@ -180,7 +181,7 @@ export default function LoveCounterScreen() {
                     <Text
                       className="text-xs font-medium"
                       style={{
-                        color: achieved ? "#10b981" : "#9ca3af",
+                        color: achieved ? Colors.success : Colors.textTertiary,
                       }}
                     >
                       {achieved

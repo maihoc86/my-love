@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Colors } from "@/theme";
 import {
   View,
   Text,
@@ -56,7 +57,7 @@ const PHOTO_GROUPS: PhotoGroup[] = [
     gridType: 'mixed',
     cells: [
       { bg: '#ffe4e6', Icon: Heart, iconColor: '#fda4af', iconSize: 36 },
-      { bg: '#fecdd3', Icon: Utensils, iconColor: '#fb7185' },
+      { bg: '#fecdd3', Icon: Utensils, iconColor: Colors.primaryLight },
       { bg: '#fff1f2', Icon: Camera, iconColor: '#fda4af', extra: 5 },
     ],
   },
@@ -234,7 +235,7 @@ export default function AlbumScreen() {
   const totalPhotos = PHOTO_GROUPS.reduce((s, g) => s + g.count, 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f5f6' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
       {/* ── Header ── */}
       <View
         style={{
@@ -258,7 +259,7 @@ export default function AlbumScreen() {
           <ChevronLeft size={24} color="#1f2937" />
         </Pressable>
 
-        <Text style={{ fontSize: 20, fontWeight: '700', color: '#1f2937' }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.textPrimary }}>
           Album ảnh
         </Text>
 
@@ -271,7 +272,7 @@ export default function AlbumScreen() {
           })}
           accessibilityLabel="Chụp ảnh"
         >
-          <Camera size={24} color="#f43f5e" />
+          <Camera size={24} color={Colors.primary} />
         </Pressable>
       </View>
 
@@ -284,14 +285,14 @@ export default function AlbumScreen() {
         <View style={{ paddingHorizontal: 24, paddingVertical: 8, marginBottom: 8 }}>
           <View
             style={{
-              backgroundColor: '#ffffff',
+              backgroundColor: Colors.surface,
               borderRadius: 24,
               paddingVertical: 20,
               paddingHorizontal: 8,
               flexDirection: 'row',
               alignItems: 'center',
               borderWidth: 1,
-              borderColor: 'rgba(244,63,94,0.08)',
+              borderColor: Colors.primaryAlpha08,
               shadowColor: 'rgba(244,62,92,0.08)',
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 1,
@@ -313,14 +314,14 @@ export default function AlbumScreen() {
                     style={{
                       fontSize: 10,
                       fontWeight: '500',
-                      color: '#9ca3af',
+                      color: Colors.textTertiary,
                       letterSpacing: 0.8,
                       marginBottom: 4,
                     }}
                   >
                     {stat.label}
                   </Text>
-                  <Text style={{ fontSize: 22, fontWeight: '700', color: '#1f2937' }}>
+                  <Text style={{ fontSize: 22, fontWeight: '700', color: Colors.textPrimary }}>
                     {stat.value}
                   </Text>
                 </View>
@@ -340,30 +341,35 @@ export default function AlbumScreen() {
             <Pressable
               key={f}
               onPress={() => setActiveFilter(f)}
-              style={({ pressed }) => ({
-                paddingHorizontal: 20,
-                paddingVertical: 10,
-                borderRadius: 24,
-                backgroundColor: activeFilter === f ? '#f43f5e' : '#ffffff',
-                borderWidth: activeFilter === f ? 0 : 1,
-                borderColor: '#e5e7eb',
-                shadowColor: activeFilter === f ? '#f43f5e' : '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: activeFilter === f ? 0.25 : 0.04,
-                shadowRadius: activeFilter === f ? 8 : 4,
-                elevation: activeFilter === f ? 4 : 1,
-                opacity: pressed ? 0.8 : 1,
-              })}
             >
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: '600',
-                  color: activeFilter === f ? '#ffffff' : '#6b7280',
-                }}
-              >
-                {f}
-              </Text>
+              {({ pressed }) => (
+                <View
+                  style={{
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    borderRadius: 24,
+                    backgroundColor: activeFilter === f ? Colors.primary : Colors.surface,
+                    borderWidth: activeFilter === f ? 0 : 1,
+                    borderColor: Colors.border,
+                    shadowColor: activeFilter === f ? Colors.primary : '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: activeFilter === f ? 0.25 : 0.04,
+                    shadowRadius: activeFilter === f ? 8 : 4,
+                    elevation: activeFilter === f ? 4 : 1,
+                    opacity: pressed ? 0.8 : 1,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '600',
+                      color: activeFilter === f ? Colors.surface : Colors.textSecondary,
+                    }}
+                  >
+                    {f}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           ))}
         </ScrollView>
@@ -383,16 +389,16 @@ export default function AlbumScreen() {
               >
                 <View>
                   <Text
-                    style={{ fontSize: 18, fontWeight: '700', color: '#1f2937', marginBottom: 2 }}
+                    style={{ fontSize: 18, fontWeight: '700', color: Colors.textPrimary, marginBottom: 2 }}
                   >
                     {group.title}
                   </Text>
-                  <Text style={{ fontSize: 12, fontWeight: '500', color: '#9ca3af' }}>
+                  <Text style={{ fontSize: 12, fontWeight: '500', color: Colors.textTertiary }}>
                     {group.date} • {group.count} ảnh
                   </Text>
                 </View>
                 <Pressable hitSlop={8} style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>
-                  <Text style={{ fontSize: 13, fontWeight: '600', color: '#f43f5e' }}>
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: Colors.primary }}>
                     Xem tất cả
                   </Text>
                 </Pressable>
@@ -430,7 +436,7 @@ export default function AlbumScreen() {
           accessibilityLabel="Thêm ảnh"
         >
           <LinearGradient
-            colors={['#f43f5e', '#fb7185']}
+            colors={[Colors.primary, Colors.primaryLight]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -439,7 +445,7 @@ export default function AlbumScreen() {
               borderRadius: 32,
               alignItems: 'center',
               justifyContent: 'center',
-              shadowColor: '#f43f5e',
+              shadowColor: Colors.primary,
               shadowOffset: { width: 0, height: 6 },
               shadowOpacity: 0.4,
               shadowRadius: 16,

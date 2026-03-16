@@ -30,8 +30,7 @@ import {
 
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── SectionHeader ────────────────────────────────────────────
 
@@ -41,7 +40,7 @@ const SectionHeader = memo(function SectionHeader({ title }: { title: string }) 
       style={{
         fontSize: 11,
         fontWeight: "700",
-        color: "#94a3b8",
+        color: Colors.textTertiary,
         textTransform: "uppercase",
         letterSpacing: 1.2,
         marginBottom: 8,
@@ -60,7 +59,7 @@ const Card = memo(function Card({ children }: { children: React.ReactNode }) {
     <View
       style={{
         marginHorizontal: 16,
-        backgroundColor: "#fff",
+        backgroundColor: Colors.surface,
         borderRadius: 20,
         overflow: "hidden",
         shadowColor: "#000",
@@ -113,7 +112,7 @@ const ToggleRow = memo(function ToggleRow({
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: "rgba(244,63,94,0.08)",
+          backgroundColor: Colors.primaryAlpha08,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -123,14 +122,14 @@ const ToggleRow = memo(function ToggleRow({
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 15, fontWeight: "500", color: "#0f172a" }}>{label}</Text>
         {sublabel ? (
-          <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{sublabel}</Text>
+          <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>{sublabel}</Text>
         ) : null}
       </View>
       <Switch
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: "#e2e8f0", true: "rgba(244,63,94,0.4)" }}
-        thumbColor={value ? PRIMARY : "#f1f5f9"}
+        thumbColor={value ? Colors.primary : "#f1f5f9"}
         ios_backgroundColor="#e2e8f0"
       />
     </View>
@@ -156,47 +155,48 @@ const ActionRow = memo(function ActionRow({
   danger?: boolean;
   accent?: string;
 }) {
-  const color = danger ? "#ef4444" : accent ?? PRIMARY;
+  const color = danger ? Colors.error : accent ?? Colors.primary;
   return (
-    <Pressable
-      onPress={onPress}
-      disabled={loading}
-      hitSlop={4}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        gap: 12,
-        opacity: pressed || loading ? 0.7 : 1,
-      })}
-    >
-      <View
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          backgroundColor: danger
-            ? "rgba(239,68,68,0.08)"
-            : accent
-            ? `${accent}14`
-            : "rgba(244,63,94,0.08)",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {icon}
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 15, fontWeight: "500", color }}>{label}</Text>
-        {sublabel ? (
-          <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{sublabel}</Text>
-        ) : null}
-      </View>
-      {loading ? (
-        <ActivityIndicator size="small" color={color} />
-      ) : (
-        <ChevronRight size={16} color={danger ? "#ef4444" : "#cbd5e1"} />
+    <Pressable onPress={onPress} disabled={loading} hitSlop={4}>
+      {({ pressed }) => (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            gap: 12,
+            opacity: pressed || loading ? 0.7 : 1,
+          }}
+        >
+          <View
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              backgroundColor: danger
+                ? "rgba(239,68,68,0.08)"
+                : accent
+                ? `${accent}14`
+                : Colors.primaryAlpha08,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 15, fontWeight: "500", color }}>{label}</Text>
+            {sublabel ? (
+              <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>{sublabel}</Text>
+            ) : null}
+          </View>
+          {loading ? (
+            <ActivityIndicator size="small" color={color} />
+          ) : (
+            <ChevronRight size={16} color={danger ? Colors.error : "#cbd5e1"} />
+          )}
+        </View>
       )}
     </Pressable>
   );
@@ -269,7 +269,7 @@ export default function BackupScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* ── Header ── */}
@@ -281,7 +281,7 @@ export default function BackupScreen() {
           paddingVertical: 13,
           backgroundColor: "rgba(248,245,246,0.95)",
           borderBottomWidth: 1,
-          borderBottomColor: "rgba(244,63,94,0.08)",
+          borderBottomColor: Colors.primaryAlpha08,
         }}
       >
         <Pressable onPress={() => router.back()} hitSlop={10} style={{ width: 40 }}>
@@ -312,7 +312,7 @@ export default function BackupScreen() {
             style={{
               borderRadius: 20,
               overflow: "hidden",
-              backgroundColor: PRIMARY,
+              backgroundColor: Colors.primary,
               padding: 20,
             }}
           >
@@ -339,10 +339,10 @@ export default function BackupScreen() {
                   justifyContent: "center",
                 }}
               >
-                <Cloud size={24} color="#fff" />
+                <Cloud size={24} color={Colors.surface} />
               </View>
               <View>
-                <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
+                <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.surface }}>
                   Đám mây MyLove
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
@@ -364,7 +364,7 @@ export default function BackupScreen() {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ fontSize: 16, fontWeight: "800", color: "#fff" }}>{backupSize}</Text>
+                <Text style={{ fontSize: 16, fontWeight: "800", color: Colors.surface }}>{backupSize}</Text>
                 <Text style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                   Dung lượng
                 </Text>
@@ -378,7 +378,7 @@ export default function BackupScreen() {
                   alignItems: "center",
                 }}
               >
-                <Text style={{ fontSize: 16, fontWeight: "800", color: "#fff" }}>Tự động</Text>
+                <Text style={{ fontSize: 16, fontWeight: "800", color: Colors.surface }}>Tự động</Text>
                 <Text style={{ fontSize: 10, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>
                   Chế độ
                 </Text>
@@ -393,7 +393,7 @@ export default function BackupScreen() {
         </View>
         <Card>
           <ToggleRow
-            icon={<RefreshCw size={18} color={PRIMARY} />}
+            icon={<RefreshCw size={18} color={Colors.primary} />}
             label="Tự động sao lưu"
             sublabel="Sao lưu hàng ngày lúc 2:00 AM"
             value={autoBackup}
@@ -401,7 +401,7 @@ export default function BackupScreen() {
           />
           <Divider />
           <ToggleRow
-            icon={<WifiOff size={18} color={PRIMARY} />}
+            icon={<WifiOff size={18} color={Colors.primary} />}
             label="Chỉ dùng Wi-Fi"
             sublabel="Không sao lưu khi dùng dữ liệu di động"
             value={wifiOnly}
@@ -415,7 +415,7 @@ export default function BackupScreen() {
         </View>
         <Card>
           <ActionRow
-            icon={<CloudUpload size={18} color={PRIMARY} />}
+            icon={<CloudUpload size={18} color={Colors.primary} />}
             label="Sao lưu ngay"
             sublabel="Tải dữ liệu hiện tại lên đám mây"
             onPress={handleManualBackup}
@@ -423,12 +423,12 @@ export default function BackupScreen() {
           />
           <Divider />
           <ActionRow
-            icon={<CloudDownload size={18} color="#3b82f6" />}
+            icon={<CloudDownload size={18} color={Colors.info} />}
             label="Khôi phục dữ liệu"
             sublabel="Tải về và ghi đè dữ liệu từ bản sao lưu"
             onPress={handleRestore}
             loading={isRestoring}
-            accent="#3b82f6"
+            accent={Colors.info}
           />
         </Card>
 
@@ -438,7 +438,7 @@ export default function BackupScreen() {
         </View>
         <Card>
           <ActionRow
-            icon={<Trash2 size={18} color="#ef4444" />}
+            icon={<Trash2 size={18} color={Colors.error} />}
             label="Xoá toàn bộ bản sao lưu"
             sublabel="Xoá vĩnh viễn dữ liệu trên đám mây"
             onPress={handleClearBackup}
@@ -461,7 +461,7 @@ export default function BackupScreen() {
             alignItems: "flex-start",
           }}
         >
-          <Cloud size={14} color={PRIMARY} style={{ marginTop: 1 }} />
+          <Cloud size={14} color={Colors.primary} style={{ marginTop: 1 }} />
           <Text style={{ flex: 1, fontSize: 12, color: "#64748b", lineHeight: 18 }}>
             Dữ liệu sao lưu được mã hoá và lưu trữ an toàn trên Supabase Storage. Bạn có thể khôi
             phục bất kỳ lúc nào chỉ với một lần chạm.

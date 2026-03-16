@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Bot, User } from 'lucide-react-native';
+import { Colors } from '@/theme';
 import { ChatMessage, getCategoryInfo, Sentiment } from '../types';
 
 // ─── Typing Dots ───────────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ function TypingDots() {
             width: 8,
             height: 8,
             borderRadius: 4,
-            backgroundColor: '#8b5cf6',
+            backgroundColor: Colors.aiPurpleLight,
             transform: [{ translateY: dot }],
           }}
         />
@@ -62,11 +63,11 @@ function getSentimentStyle(sentiment: Sentiment): SentimentStyle {
     case 'like':
       return { borderColor: '#3b82f6', badgeText: '#2563eb', badgeBg: '#eff6ff', label: 'Thích' };
     case 'neutral':
-      return { borderColor: '#9ca3af', badgeText: '#4b5563', badgeBg: '#f9fafb', label: 'Bình thường' };
+      return { borderColor: Colors.textTertiary, badgeText: '#4b5563', badgeBg: Colors.surfaceSecondary, label: 'Bình thường' };
     case 'dislike':
       return { borderColor: '#f97316', badgeText: '#ea580c', badgeBg: '#fff7ed', label: 'Không thích' };
     case 'hate':
-      return { borderColor: '#f43f5e', badgeText: '#e11d48', badgeBg: '#fff1f2', label: 'Ghét' };
+      return { borderColor: Colors.primary, badgeText: Colors.primaryDark, badgeBg: '#fff1f2', label: 'Ghét' };
   }
 }
 
@@ -74,18 +75,21 @@ function getSentimentStyle(sentiment: Sentiment): SentimentStyle {
 
 function BotAvatar() {
   return (
-    <View
+    <LinearGradient
+      colors={[Colors.aiPurpleLight, '#6366f1']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
       style={{
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: '#f3e8ff',
+        width: 30,
+        height: 30,
+        borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
+        flexShrink: 0,
       }}
     >
-      <Bot size={17} color="#8b5cf6" />
-    </View>
+      <Text style={{ fontSize: 14 }}>🤖</Text>
+    </LinearGradient>
   );
 }
 
@@ -104,26 +108,24 @@ export default function ChatBubble({ message, isTyping }: ChatBubbleProps) {
     return (
       <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginBottom: 16, paddingHorizontal: 16 }}>
         <BotAvatar />
-        <View style={{ marginLeft: 10, marginBottom: 2 }}>
-          <Text style={{ fontSize: 11, fontWeight: '600', color: '#8b5cf6', marginBottom: 6, marginLeft: 2 }}>
-            AI Assistant
-          </Text>
-          <View
-            style={{
-              backgroundColor: '#ffffff',
-              borderRadius: 18,
-              borderTopLeftRadius: 4,
-              paddingHorizontal: 18,
-              paddingVertical: 14,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.07,
-              shadowRadius: 8,
-              elevation: 3,
-            }}
-          >
-            <TypingDots />
-          </View>
+        <View
+          style={{
+            marginLeft: 10,
+            backgroundColor: Colors.surface,
+            borderRadius: 20,
+            borderTopLeftRadius: 6,
+            paddingHorizontal: 18,
+            paddingVertical: 14,
+            borderWidth: 1,
+            borderColor: Colors.backgroundSecondary,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 10,
+            elevation: 2,
+          }}
+        >
+          <TypingDots />
         </View>
       </View>
     );
@@ -135,64 +137,51 @@ export default function ChatBubble({ message, isTyping }: ChatBubbleProps) {
     const hasContent = message.content.length > 0;
 
     return (
-      <View style={{ marginBottom: 12, paddingHorizontal: 16 }}>
+      <View style={{ marginBottom: 16, paddingHorizontal: 16 }}>
         {/* AI text bubble */}
         {(hasContent || !hasParsed) && (
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginBottom: hasParsed ? 12 : 0 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', marginBottom: hasParsed ? 12 : 0, maxWidth: '85%' }}>
             <BotAvatar />
-            <View style={{ flex: 1, marginLeft: 10 }}>
-              <Text style={{ fontSize: 11, fontWeight: '600', color: '#8b5cf6', marginBottom: 6, marginLeft: 2 }}>
-                AI Assistant
+            <View
+              style={{
+                flex: 1,
+                marginLeft: 10,
+                backgroundColor: Colors.surface,
+                borderRadius: 20,
+                borderTopLeftRadius: 6,
+                paddingHorizontal: 14,
+                paddingVertical: 12,
+                borderWidth: 1,
+                borderColor: Colors.backgroundSecondary,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 10,
+                elevation: 2,
+              }}
+            >
+              <Text style={{ fontSize: 14, lineHeight: 22, color: '#374151' }}>
+                {message.content}
               </Text>
-              <View
-                style={{
-                  backgroundColor: '#ffffff',
-                  borderRadius: 18,
-                  borderTopLeftRadius: 4,
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                  maxWidth: '90%',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.07,
-                  shadowRadius: 8,
-                  elevation: 3,
-                }}
-              >
-                <Text style={{ fontSize: 14, lineHeight: 21, color: '#1f2937' }}>
-                  {message.content}
-                </Text>
-              </View>
             </View>
           </View>
         )}
 
         {/* Parsed entries section */}
         {hasParsed && (
-          <View style={{ marginLeft: 42 }}>
-            <Text
-              style={{
-                fontSize: 11,
-                fontWeight: '700',
-                color: '#9ca3af',
-                letterSpacing: 0.8,
-                marginBottom: 8,
-                marginLeft: 2,
-              }}
-            >
-              PHÂN TÍCH TỪ AI
-            </Text>
-
+          <View style={{ marginLeft: 40 }}>
             {/* Cards container */}
             <View
               style={{
-                backgroundColor: '#ffffff',
+                backgroundColor: Colors.surface,
                 borderRadius: 16,
                 overflow: 'hidden',
+                borderWidth: 1,
+                borderColor: '#f1f5f9',
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.07,
-                shadowRadius: 8,
+                shadowOpacity: 0.06,
+                shadowRadius: 10,
                 elevation: 3,
               }}
             >
@@ -209,38 +198,36 @@ export default function ChatBubble({ message, isTyping }: ChatBubbleProps) {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       paddingHorizontal: 14,
-                      paddingVertical: 13,
-                      borderLeftWidth: 4,
-                      borderLeftColor: sentStyle.borderColor,
+                      paddingVertical: 14,
                       borderBottomWidth: isLast ? 0 : 1,
-                      borderBottomColor: '#f3f4f6',
+                      borderBottomColor: '#f1f5f9',
                     }}
                   >
                     {/* Left: icon + info */}
                     <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginRight: 8 }}>
-                      <Text style={{ fontSize: 26, marginRight: 12 }}>{catInfo.icon}</Text>
+                      <Text style={{ fontSize: 22, marginRight: 12 }}>{catInfo.icon}</Text>
                       <View style={{ flex: 1 }}>
                         <Text
-                          style={{ fontSize: 14, fontWeight: '700', color: '#1f2937', marginBottom: 2 }}
+                          style={{ fontSize: 14, fontWeight: '600', color: '#1e293b', marginBottom: 2 }}
                           numberOfLines={1}
                         >
                           {entry.title}
                         </Text>
-                        <Text style={{ fontSize: 12, color: '#9ca3af' }}>{catInfo.label}</Text>
+                        <Text style={{ fontSize: 12, color: Colors.textMuted }}>{catInfo.label}</Text>
                       </View>
                     </View>
 
                     {/* Right: sentiment badge */}
                     <View
                       style={{
-                        paddingHorizontal: 10,
+                        paddingHorizontal: 8,
                         paddingVertical: 4,
-                        borderRadius: 8,
+                        borderRadius: 6,
                         backgroundColor: sentStyle.badgeBg,
                       }}
                     >
                       <Text
-                        style={{ fontSize: 12, fontWeight: '600', color: sentStyle.badgeText }}
+                        style={{ fontSize: 11, fontWeight: '700', color: sentStyle.badgeText }}
                       >
                         {sentStyle.label}
                       </Text>
@@ -258,43 +245,40 @@ export default function ChatBubble({ message, isTyping }: ChatBubbleProps) {
   // ── User bubble ──
   return (
     <View style={{ alignItems: 'flex-end', marginBottom: 16, paddingHorizontal: 16 }}>
-      {/* Label */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6, gap: 6 }}>
-        <Text style={{ fontSize: 11, fontWeight: '600', color: '#f43f5e', marginRight: 4 }}>Bạn</Text>
+      {/* Gradient bubble */}
+      <View style={{ maxWidth: '85%', flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
+        <LinearGradient
+          colors={[Colors.primaryGradientStart, Colors.primaryGradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            borderRadius: 20,
+            borderTopRightRadius: 6,
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+            shadowColor: Colors.primary,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 12,
+            elevation: 5,
+          }}
+        >
+          <Text style={{ fontSize: 14, lineHeight: 22, color: Colors.surface }}>{message.content}</Text>
+        </LinearGradient>
         <View
           style={{
             width: 26,
             height: 26,
             borderRadius: 13,
-            backgroundColor: '#fce7f3',
+            backgroundColor: '#e2e8f0',
             alignItems: 'center',
             justifyContent: 'center',
+            flexShrink: 0,
           }}
         >
-          <User size={13} color="#f43f5e" />
+          <User size={13} color="#64748b" />
         </View>
       </View>
-
-      {/* Gradient bubble */}
-      <LinearGradient
-        colors={['#f43f5e', '#ec4899']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={{
-          borderRadius: 18,
-          borderTopRightRadius: 4,
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-          maxWidth: '80%',
-          shadowColor: '#f43f5e',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.25,
-          shadowRadius: 10,
-          elevation: 5,
-        }}
-      >
-        <Text style={{ fontSize: 14, lineHeight: 21, color: '#ffffff' }}>{message.content}</Text>
-      </LinearGradient>
     </View>
   );
 }

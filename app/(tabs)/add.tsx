@@ -20,31 +20,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { CATEGORIES, SENTIMENTS, type Category, type Sentiment } from "../../src/types";
-
-// ─── Constants ───────────────────────────────────────────────
-
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
-const SURFACE = "#ffffff";
-const TEXT_PRIMARY = "#1f2937";
-const TEXT_SECONDARY = "#6b7280";
-const TEXT_MUTED = "#9ca3af";
-const BORDER = "#e5e7eb";
-
-/** Smart placeholder per category */
-const CATEGORY_PLACEHOLDERS: Record<Category, string> = {
-  food: "Thái Học thích ăn món gì...",
-  place: "Địa điểm Thái Học yêu thích...",
-  hobby: "Sở thích của Thái Học...",
-  date: "Tên ngày đặc biệt...",
-  gift: "Quà tặng Thái Học thích...",
-  trait: "Tính cách của Thái Học...",
-  allergy: "Thứ Thái Học bị dị ứng...",
-  style: "Phong cách thời trang của Thái Học...",
-  music: "Bài hát / nghệ sĩ Thái Học thích...",
-  movie: "Phim Thái Học yêu thích...",
-  other: "Ghi chú về Thái Học...",
-};
+import { Colors } from "@/theme";
+import { CATEGORY_PLACEHOLDERS } from "@/lib/constants";
 
 // ─── Sub-components ───────────────────────────────────────────
 
@@ -59,7 +36,7 @@ const AddHeader = memo(function AddHeader({ onBack }: { onBack?: () => void }) {
         paddingVertical: 13,
         backgroundColor: "rgba(248,245,246,0.95)",
         borderBottomWidth: 1,
-        borderBottomColor: "rgba(244,63,94,0.08)",
+        borderBottomColor: Colors.primaryAlpha08,
       }}
     >
       {/* Left spacer balances the title center */}
@@ -70,7 +47,7 @@ const AddHeader = memo(function AddHeader({ onBack }: { onBack?: () => void }) {
           textAlign: "center",
           fontSize: 17,
           fontWeight: "700",
-          color: TEXT_PRIMARY,
+          color: Colors.textPrimary,
         }}
       >
         Ghi chú mới
@@ -94,7 +71,7 @@ const CategoryGrid = memo(function CategoryGrid({
         style={{
           fontSize: 11,
           fontWeight: "700",
-          color: PRIMARY,
+          color: Colors.primary,
           textTransform: "uppercase",
           letterSpacing: 0.8,
           marginBottom: 12,
@@ -120,11 +97,11 @@ const CategoryGrid = memo(function CategoryGrid({
                 paddingVertical: 12,
                 alignItems: "center",
                 gap: 4,
-                backgroundColor: isActive ? "rgba(244,63,94,0.05)" : SURFACE,
+                backgroundColor: isActive ? "rgba(244,63,94,0.05)" : Colors.surface,
                 borderRadius: 14,
                 borderWidth: isActive ? 2 : 1,
-                borderColor: isActive ? PRIMARY : BORDER,
-                shadowColor: isActive ? PRIMARY : "#000",
+                borderColor: isActive ? Colors.primary : Colors.border,
+                shadowColor: isActive ? Colors.primary : "#000",
                 shadowOffset: { width: 0, height: isActive ? 4 : 1 },
                 shadowOpacity: isActive ? 0.15 : 0.04,
                 shadowRadius: isActive ? 8 : 3,
@@ -136,7 +113,7 @@ const CategoryGrid = memo(function CategoryGrid({
                 style={{
                   fontSize: 11,
                   fontWeight: "700",
-                  color: isActive ? PRIMARY : TEXT_SECONDARY,
+                  color: isActive ? Colors.primary : Colors.textSecondary,
                   textAlign: "center",
                 }}
                 numberOfLines={1}
@@ -165,7 +142,7 @@ const SentimentPicker = memo(function SentimentPicker({
         style={{
           fontSize: 14,
           fontWeight: "600",
-          color: TEXT_PRIMARY,
+          color: Colors.textPrimary,
           marginBottom: 14,
         }}
       >
@@ -185,12 +162,12 @@ const SentimentPicker = memo(function SentimentPicker({
                   width: 56,
                   height: 56,
                   borderRadius: 28,
-                  backgroundColor: isActive ? "rgba(244,63,94,0.06)" : SURFACE,
+                  backgroundColor: isActive ? "rgba(244,63,94,0.06)" : Colors.surface,
                   borderWidth: isActive ? 2 : 1.5,
-                  borderColor: isActive ? PRIMARY : BORDER,
+                  borderColor: isActive ? Colors.primary : Colors.border,
                   alignItems: "center",
                   justifyContent: "center",
-                  shadowColor: isActive ? PRIMARY : "transparent",
+                  shadowColor: isActive ? Colors.primary : "transparent",
                   shadowOffset: { width: 0, height: 3 },
                   shadowOpacity: isActive ? 0.2 : 0,
                   shadowRadius: 6,
@@ -204,7 +181,7 @@ const SentimentPicker = memo(function SentimentPicker({
                 style={{
                   fontSize: 9,
                   fontWeight: "700",
-                  color: isActive ? PRIMARY : TEXT_MUTED,
+                  color: isActive ? Colors.primary : Colors.textTertiary,
                   textAlign: "center",
                 }}
               >
@@ -272,7 +249,7 @@ export default function AddEntryScreen() {
   }, [canSubmit, category, title, detail, sentiment, eventDate, isRecurring, router]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* ── Header ── */}
@@ -292,11 +269,11 @@ export default function AddEntryScreen() {
           {/* ── Intro title ── */}
           <View style={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 4 }}>
             <Text
-              style={{ fontSize: 22, fontWeight: "700", color: TEXT_PRIMARY, lineHeight: 30 }}
+              style={{ fontSize: 22, fontWeight: "700", color: Colors.textPrimary, lineHeight: 30 }}
             >
               Thêm một điều về{"\n"}Thái Học 💕
             </Text>
-            <Text style={{ fontSize: 13, color: PRIMARY, marginTop: 6, opacity: 0.8 }}>
+            <Text style={{ fontSize: 13, color: Colors.primary, marginTop: 6, opacity: 0.8 }}>
               Ghi lại những điều quan trọng cần nhớ
             </Text>
           </View>
@@ -312,21 +289,21 @@ export default function AddEntryScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: "600",
-                  color: TEXT_PRIMARY,
+                  color: Colors.textPrimary,
                   marginBottom: 8,
                 }}
               >
                 Tiêu đề ghi chú{" "}
-                <Text style={{ color: PRIMARY }}>*</Text>
+                <Text style={{ color: Colors.primary }}>*</Text>
               </Text>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: SURFACE,
+                  backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
-                  borderColor: title.trim() ? PRIMARY : "rgba(244,63,94,0.2)",
+                  borderColor: title.trim() ? Colors.primary : "rgba(244,63,94,0.2)",
                   paddingHorizontal: 14,
                 }}
               >
@@ -340,10 +317,10 @@ export default function AddEntryScreen() {
                     flex: 1,
                     paddingVertical: 14,
                     fontSize: 15,
-                    color: TEXT_PRIMARY,
+                    color: Colors.textPrimary,
                   }}
                   placeholder={titlePlaceholder}
-                  placeholderTextColor={TEXT_MUTED}
+                  placeholderTextColor={Colors.textTertiary}
                   value={title}
                   onChangeText={setTitle}
                   returnKeyType="next"
@@ -357,7 +334,7 @@ export default function AddEntryScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: "600",
-                  color: TEXT_PRIMARY,
+                  color: Colors.textPrimary,
                   marginBottom: 8,
                 }}
               >
@@ -365,19 +342,19 @@ export default function AddEntryScreen() {
               </Text>
               <TextInput
                 style={{
-                  backgroundColor: SURFACE,
+                  backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
                   borderColor: "rgba(244,63,94,0.2)",
                   paddingHorizontal: 14,
                   paddingVertical: 12,
                   fontSize: 15,
-                  color: TEXT_PRIMARY,
+                  color: Colors.textPrimary,
                   minHeight: 100,
                   textAlignVertical: "top",
                 }}
                 placeholder="Nhập thêm thông tin chi tiết tại đây..."
-                placeholderTextColor={TEXT_MUTED}
+                placeholderTextColor={Colors.textTertiary}
                 value={detail}
                 onChangeText={setDetail}
                 multiline
@@ -400,11 +377,11 @@ export default function AddEntryScreen() {
               }}
             >
               <Text
-                style={{ fontSize: 13, fontWeight: "600", color: TEXT_PRIMARY }}
+                style={{ fontSize: 13, fontWeight: "600", color: Colors.textPrimary }}
               >
                 Tùy chọn nâng cao
               </Text>
-              <View style={{ flex: 1, height: 1, backgroundColor: BORDER }} />
+              <View style={{ flex: 1, height: 1, backgroundColor: Colors.border }} />
             </View>
 
             {/* Event date input */}
@@ -413,7 +390,7 @@ export default function AddEntryScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: "600",
-                  color: TEXT_PRIMARY,
+                  color: Colors.textPrimary,
                   marginBottom: 8,
                 }}
               >
@@ -421,17 +398,17 @@ export default function AddEntryScreen() {
               </Text>
               <TextInput
                 style={{
-                  backgroundColor: SURFACE,
+                  backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
                   borderColor: "rgba(244,63,94,0.2)",
                   paddingHorizontal: 14,
                   paddingVertical: 13,
                   fontSize: 15,
-                  color: TEXT_PRIMARY,
+                  color: Colors.textPrimary,
                 }}
                 placeholder="15/03/2026"
-                placeholderTextColor={TEXT_MUTED}
+                placeholderTextColor={Colors.textTertiary}
                 value={eventDate}
                 onChangeText={setEventDate}
                 keyboardType="numbers-and-punctuation"
@@ -447,14 +424,14 @@ export default function AddEntryScreen() {
                 paddingVertical: 4,
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "500", color: TEXT_PRIMARY }}>
+              <Text style={{ fontSize: 14, fontWeight: "500", color: Colors.textPrimary }}>
                 Lặp lại hàng năm
               </Text>
               <Switch
                 value={isRecurring}
                 onValueChange={setIsRecurring}
-                trackColor={{ false: BORDER, true: "#fda4af" }}
-                thumbColor={isRecurring ? PRIMARY : "#f4f3f4"}
+                trackColor={{ false: Colors.border, true: "#fda4af" }}
+                thumbColor={isRecurring ? Colors.primary : "#f4f3f4"}
               />
             </View>
           </View>
@@ -468,8 +445,8 @@ export default function AddEntryScreen() {
                 paddingVertical: 16,
                 borderRadius: 14,
                 alignItems: "center",
-                backgroundColor: canSubmit ? PRIMARY : "#fda4af",
-                shadowColor: PRIMARY,
+                backgroundColor: canSubmit ? Colors.primary : "#fda4af",
+                shadowColor: Colors.primary,
                 shadowOffset: { width: 0, height: canSubmit ? 6 : 0 },
                 shadowOpacity: canSubmit ? 0.3 : 0,
                 shadowRadius: 12,
@@ -489,10 +466,10 @@ export default function AddEntryScreen() {
               style={{ alignItems: "center", marginTop: 14, paddingVertical: 8 }}
             >
               <Text
-                style={{ fontSize: 13, color: TEXT_SECONDARY, fontWeight: "500" }}
+                style={{ fontSize: 13, color: Colors.textSecondary, fontWeight: "500" }}
               >
                 Hoặc{" "}
-                <Text style={{ color: PRIMARY, fontWeight: "700" }}>
+                <Text style={{ color: Colors.primary, fontWeight: "700" }}>
                   dùng AI Chat
                 </Text>{" "}
                 để ghi nhanh bằng giọng nói

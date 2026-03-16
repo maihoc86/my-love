@@ -15,7 +15,8 @@ import {
 SplashScreen.preventAutoHideAsync();
 
 const { width, height } = Dimensions.get("window");
-const PRIMARY = "#f43f5e";
+import { Colors } from "@/theme";
+const PRIMARY = Colors.primary;
 
 // ─── Custom Animated Splash ───────────────────────────────────
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { Colors } from "@/theme";
 import {
   X,
   Navigation as NavIcon,
@@ -65,7 +66,7 @@ export default function NavigationScreen() {
         <View className="absolute" style={{ top: "25%", right: "25%" }}>
           <View
             className="w-8 h-8 rounded-full items-center justify-center"
-            style={{ backgroundColor: "#f43f5e" }}
+            style={{ backgroundColor: Colors.primary }}
           >
             <MapPin size={16} color="#fff" />
           </View>
@@ -126,7 +127,7 @@ export default function NavigationScreen() {
               className="w-10 h-10 rounded-full items-center justify-center mr-3"
               style={{ backgroundColor: "#fff1f2" }}
             >
-              <MapPin size={18} color="#f43f5e" />
+              <MapPin size={18} color={Colors.primary} />
             </View>
             <View className="flex-1">
               <Text className="text-base font-bold" style={{ color: "#1e1b2e" }}>

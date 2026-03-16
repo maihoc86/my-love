@@ -19,8 +19,7 @@ import Svg, { Circle } from "react-native-svg";
 
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -101,10 +100,10 @@ function getDaysUntil(dateStr: string): number {
 }
 
 function getUrgencyColor(days: number): string {
-  if (days <= 0) return "#10b981"; // today or past
-  if (days <= 7) return "#ef4444"; // red — very soon
+  if (days <= 0) return Colors.success; // today or past
+  if (days <= 7) return Colors.error; // red — very soon
   if (days <= 30) return "#f97316"; // orange — within a month
-  return PRIMARY; // pink — far away
+  return Colors.primary; // pink — far away
 }
 
 /** Stroke-dashoffset for the SVG ring (out of 100) */
@@ -212,7 +211,7 @@ const EventCard = memo(function EventCard({
   return (
     <View
       style={{
-        backgroundColor: "#fff",
+        backgroundColor: Colors.surface,
         borderRadius: 16,
         padding: 16,
         marginBottom: 14,
@@ -240,14 +239,14 @@ const EventCard = memo(function EventCard({
           {item.isRecurring && (
             <View
               style={{
-                backgroundColor: "rgba(244,63,94,0.1)",
+                backgroundColor: Colors.primaryAlpha15,
                 borderRadius: 6,
                 paddingHorizontal: 7,
                 paddingVertical: 2,
               }}
             >
               <Text
-                style={{ fontSize: 9, fontWeight: "700", color: PRIMARY }}
+                style={{ fontSize: 9, fontWeight: "700", color: Colors.primary }}
               >
                 Hàng năm
               </Text>
@@ -256,14 +255,14 @@ const EventCard = memo(function EventCard({
           {!item.isRecurring && (
             <View
               style={{
-                backgroundColor: "#f3f4f6",
+                backgroundColor: Colors.borderLight,
                 borderRadius: 6,
                 paddingHorizontal: 7,
                 paddingVertical: 2,
               }}
             >
               <Text
-                style={{ fontSize: 9, fontWeight: "700", color: "#6b7280" }}
+                style={{ fontSize: 9, fontWeight: "700", color: Colors.textSecondary }}
               >
                 {catInfo.emoji} {catInfo.label}
               </Text>
@@ -282,12 +281,12 @@ const EventCard = memo(function EventCard({
         >
           {item.title}
         </Text>
-        <Text style={{ fontSize: 11, color: "#94a3b8" }}>
+        <Text style={{ fontSize: 11, color: Colors.textTertiary }}>
           {formatDateLong(item.date)}
         </Text>
         {!!item.note && (
           <Text
-            style={{ fontSize: 12, color: "#6b7280", marginTop: 3 }}
+            style={{ fontSize: 12, color: Colors.textSecondary, marginTop: 3 }}
             numberOfLines={1}
           >
             {item.note}
@@ -309,7 +308,7 @@ const EventCard = memo(function EventCard({
           }}
         >
           {/* TODO: wire up notification */}
-          <Bell size={15} color="#3b82f6" />
+          <Bell size={15} color={Colors.info} />
         </Pressable>
         <Pressable
           hitSlop={6}
@@ -318,12 +317,12 @@ const EventCard = memo(function EventCard({
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: isConfirmingDelete ? "#fef2f2" : "#f9fafb",
+            backgroundColor: isConfirmingDelete ? "#fef2f2" : Colors.surfaceSecondary,
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Trash2 size={15} color={isConfirmingDelete ? "#ef4444" : "#9ca3af"} />
+          <Trash2 size={15} color={isConfirmingDelete ? Colors.error : Colors.textTertiary} />
         </Pressable>
       </View>
     </View>
@@ -363,7 +362,7 @@ export default function CalendarScreen() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* ── Sticky Header ── */}
@@ -376,7 +375,7 @@ export default function CalendarScreen() {
           paddingVertical: 14,
           backgroundColor: "rgba(248,245,246,0.95)",
           borderBottomWidth: 1,
-          borderBottomColor: "rgba(244,63,94,0.08)",
+          borderBottomColor: Colors.primaryAlpha08,
         }}
       >
         <View>
@@ -385,7 +384,7 @@ export default function CalendarScreen() {
           >
             Ngày đặc biệt
           </Text>
-          <Text style={{ fontSize: 13, color: "#94a3b8", marginTop: 2 }}>
+          <Text style={{ fontSize: 13, color: Colors.textTertiary, marginTop: 2 }}>
             {upcomingCount} sự kiện sắp tới
           </Text>
         </View>
@@ -396,17 +395,17 @@ export default function CalendarScreen() {
             width: 46,
             height: 46,
             borderRadius: 23,
-            backgroundColor: PRIMARY,
+            backgroundColor: Colors.primary,
             alignItems: "center",
             justifyContent: "center",
-            shadowColor: PRIMARY,
+            shadowColor: Colors.primary,
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.35,
             shadowRadius: 10,
             elevation: 8,
           }}
         >
-          <Plus size={22} color="#fff" />
+          <Plus size={22} color={Colors.textOnPrimary} />
         </Pressable>
       </View>
 
@@ -438,7 +437,7 @@ export default function CalendarScreen() {
               Chưa có ngày đặc biệt
             </Text>
             <Text
-              style={{ fontSize: 14, color: "#94a3b8", textAlign: "center" }}
+              style={{ fontSize: 14, color: Colors.textTertiary, textAlign: "center" }}
             >
               Thêm sinh nhật, kỷ niệm của em!
             </Text>
@@ -449,10 +448,10 @@ export default function CalendarScreen() {
                 paddingHorizontal: 28,
                 paddingVertical: 14,
                 borderRadius: 14,
-                backgroundColor: PRIMARY,
+                backgroundColor: Colors.primary,
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "700", color: "#fff" }}>
+              <Text style={{ fontSize: 15, fontWeight: "700", color: Colors.textOnPrimary }}>
                 Thêm sự kiện đầu tiên
               </Text>
             </Pressable>

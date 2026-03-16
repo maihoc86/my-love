@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Trash2, X } from 'lucide-react-native';
+import { Colors } from '@/theme';
 import { Entry, getCategoryInfo, getSentimentInfo } from '../types';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -50,7 +51,7 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
     <View
       className="flex-row items-center p-4 mb-3 rounded-2xl"
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: Colors.surface,
         borderRadius: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
@@ -62,20 +63,20 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
       {/* Category Icon */}
       <View
         className="w-12 h-12 rounded-full items-center justify-center mr-3"
-        style={{ backgroundColor: '#fdf2f8' }}
+        style={{ backgroundColor: Colors.background }}
       >
         <Text className="text-xl">{catInfo.icon}</Text>
       </View>
 
       {/* Content */}
       <View className="flex-1 mr-2">
-        <Text className="text-base font-semibold" style={{ color: '#1f2937' }}>
+        <Text className="text-base font-semibold" style={{ color: Colors.textPrimary }}>
           {entry.title}
         </Text>
         {entry.detail ? (
           <Text
             className="text-sm mt-0.5"
-            style={{ color: '#6b7280' }}
+            style={{ color: Colors.textSecondary }}
             numberOfLines={1}
           >
             {entry.detail}
@@ -84,13 +85,13 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
         <View className="flex-row items-center mt-1.5">
           <View
             className="px-2 py-0.5 rounded-full mr-2"
-            style={{ backgroundColor: '#fce7f3' }}
+            style={{ backgroundColor: Colors.backgroundSecondary }}
           >
-            <Text className="text-xs" style={{ color: '#f43f5e' }}>
+            <Text className="text-xs" style={{ color: Colors.primary }}>
               {catInfo.label}
             </Text>
           </View>
-          <Text className="text-xs" style={{ color: '#9ca3af' }}>
+          <Text className="text-xs" style={{ color: Colors.textTertiary }}>
             {relativeTime}
           </Text>
         </View>
@@ -107,17 +108,17 @@ export default function EntryCard({ entry, onDelete }: EntryCardProps) {
               className="px-2 py-1 rounded-lg mr-1"
               style={{ backgroundColor: '#fef2f2' }}
             >
-              <Text className="text-xs font-semibold" style={{ color: '#ef4444' }}>
+              <Text className="text-xs font-semibold" style={{ color: Colors.error }}>
                 Xoá
               </Text>
             </Pressable>
             <Pressable onPress={handleCancelDelete} className="p-1">
-              <X size={14} color="#9ca3af" />
+              <X size={14} color={Colors.textTertiary} />
             </Pressable>
           </View>
         ) : (
           <Pressable onPress={handleDeletePress} className="p-1">
-            <Trash2 size={16} color="#9ca3af" />
+            <Trash2 size={16} color={Colors.textTertiary} />
           </Pressable>
         )}
       </View>

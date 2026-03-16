@@ -26,29 +26,8 @@ import {
   Bell,
   CalendarDays,
 } from "lucide-react-native";
-
-// ─── Constants ───────────────────────────────────────────────
-
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
-const SURFACE = "#ffffff";
-const TEXT_PRIMARY = "#1f2937";
-const TEXT_SECONDARY = "#6b7280";
-const TEXT_MUTED = "#9ca3af";
-
-const CATEGORY_EMOJIS: Record<string, string> = {
-  food: "🍜",
-  place: "📍",
-  hobby: "🎨",
-  allergy: "⚠️",
-  music: "🎵",
-  movie: "🎬",
-  gift: "🎁",
-  style: "👗",
-  trait: "✨",
-  date: "💑",
-  other: "📝",
-};
+import { Colors, Shadows } from "@/theme";
+import { CategoryIcons } from "@/lib/constants";
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -147,10 +126,10 @@ function getDaysUntil(dateStr: string): number {
 }
 
 function getCountdownColor(days: number): string {
-  if (days <= 0) return "#10b981";
-  if (days <= 3) return "#ef4444";
-  if (days <= 7) return "#f97316";
-  return "#ec4899";
+  if (days <= 0) return Colors.success;
+  if (days <= 3) return Colors.error;
+  if (days <= 7) return Colors.warning;
+  return Colors.primaryGradientEnd;
 }
 
 function formatCountdown(days: number): string {
@@ -171,9 +150,9 @@ const HeroCard = memo(function HeroCard() {
         marginTop: 16,
         borderRadius: 20,
         padding: 24,
-        backgroundColor: PRIMARY,
+        backgroundColor: Colors.primary,
         overflow: "hidden",
-        shadowColor: PRIMARY,
+        shadowColor: Colors.primary,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.35,
         shadowRadius: 16,
@@ -283,7 +262,7 @@ const UpcomingCard = memo(function UpcomingCard({ item }: { item: UpcomingDate }
       style={{
         width: 160,
         padding: 16,
-        backgroundColor: SURFACE,
+        backgroundColor: Colors.surface,
         borderRadius: 16,
         marginRight: 12,
         shadowColor: "#000",
@@ -315,7 +294,7 @@ const UpcomingCard = memo(function UpcomingCard({ item }: { item: UpcomingDate }
           width: 40,
           height: 40,
           borderRadius: 20,
-          backgroundColor: "rgba(244,63,94,0.08)",
+          backgroundColor: Colors.primaryAlpha08,
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 10,
@@ -324,7 +303,7 @@ const UpcomingCard = memo(function UpcomingCard({ item }: { item: UpcomingDate }
         <Text style={{ fontSize: 22 }}>{item.emoji}</Text>
       </View>
       <Text
-        style={{ fontSize: 13, fontWeight: "700", color: TEXT_PRIMARY }}
+        style={{ fontSize: 13, fontWeight: "700", color: Colors.textPrimary }}
         numberOfLines={2}
       >
         {item.title}
@@ -386,7 +365,7 @@ const AppTileItem = memo(function AppTileItem({
         style={{
           fontSize: 10,
           fontWeight: "700",
-          color: TEXT_SECONDARY,
+          color: Colors.textSecondary,
           textAlign: "center",
           marginTop: 6,
         }}
@@ -414,7 +393,7 @@ const RecentEntryRow = memo(function RecentEntryRow({
         alignItems: "center",
         paddingVertical: 12,
         paddingHorizontal: 14,
-        backgroundColor: SURFACE,
+        backgroundColor: Colors.surface,
         borderRadius: 16,
         marginBottom: 10,
         shadowColor: "#000",
@@ -437,30 +416,30 @@ const RecentEntryRow = memo(function RecentEntryRow({
         }}
       >
         <Text style={{ fontSize: 20 }}>
-          {CATEGORY_EMOJIS[item.category] ?? "📝"}
+          {CategoryIcons[item.category] ?? "📝"}
         </Text>
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text
-          style={{ fontSize: 13, fontWeight: "700", color: TEXT_PRIMARY }}
+          style={{ fontSize: 13, fontWeight: "700", color: Colors.textPrimary }}
           numberOfLines={1}
         >
           {item.title}
         </Text>
         {item.detail != null && (
           <Text
-            style={{ fontSize: 11, color: TEXT_SECONDARY, marginTop: 1 }}
+            style={{ fontSize: 11, color: Colors.textSecondary, marginTop: 1 }}
             numberOfLines={1}
           >
             {item.detail}
           </Text>
         )}
-        <Text style={{ fontSize: 10, color: TEXT_MUTED, marginTop: 2 }}>
+        <Text style={{ fontSize: 10, color: Colors.textMuted, marginTop: 2 }}>
           {item.categoryLabel} · {item.timeAgo}
         </Text>
       </View>
       <Text
-        style={{ fontSize: 11, fontWeight: "600", color: "rgba(244,63,94,0.65)" }}
+        style={{ fontSize: 11, fontWeight: "600", color: Colors.primaryAlpha15 }}
       >
         Chi tiết
       </Text>
@@ -495,7 +474,7 @@ export default function DashboardScreen() {
     {
       id: "counter",
       label: "Đếm ngày",
-      bg: "#f43f5e",
+      bg: Colors.primary,
       icon: <Timer size={24} color="#fff" />,
       badge: "HOT",
       badgeColor: "#ef4444",
@@ -554,7 +533,7 @@ export default function DashboardScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       <ScrollView
@@ -576,7 +555,7 @@ export default function DashboardScreen() {
               marginBottom: 12,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "700", color: TEXT_PRIMARY }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.textPrimary }}>
               Sắp tới
             </Text>
             <Pressable
@@ -588,7 +567,7 @@ export default function DashboardScreen() {
                 style={{
                   fontSize: 11,
                   fontWeight: "700",
-                  color: PRIMARY,
+                  color: Colors.primary,
                   textTransform: "uppercase",
                   letterSpacing: 0.5,
                 }}
@@ -610,16 +589,40 @@ export default function DashboardScreen() {
 
         {/* ── Tiện ích ── */}
         <View style={{ marginTop: 24, paddingHorizontal: 16 }}>
-          <Text
+          <View
             style={{
-              fontSize: 16,
-              fontWeight: "700",
-              color: TEXT_PRIMARY,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
               marginBottom: 16,
             }}
           >
-            Tiện ích
-          </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: Colors.textPrimary,
+              }}
+            >
+              Tiện ích
+            </Text>
+            <Pressable
+              onPress={() => router.push("/all-utilities")}
+              hitSlop={8}
+            >
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "700",
+                  color: Colors.primary,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                Xem tất cả
+              </Text>
+            </Pressable>
+          </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             {appTiles.map((tile) => (
               <AppTileItem
@@ -641,7 +644,7 @@ export default function DashboardScreen() {
               marginBottom: 12,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: "700", color: TEXT_PRIMARY }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.textPrimary }}>
               Ghi chép gần đây
             </Text>
             <Pressable
@@ -649,7 +652,7 @@ export default function DashboardScreen() {
               hitSlop={8}
             >
               <Text
-                style={{ fontSize: 11, fontWeight: "700", color: PRIMARY }}
+                style={{ fontSize: 11, fontWeight: "700", color: Colors.primary }}
               >
                 Xem tất cả {">"}
               </Text>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Colors } from "@/theme";
 import { View, Text, Pressable, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -81,7 +82,7 @@ export default function RecordingScreen() {
 
   return (
     <LinearGradient
-      colors={['#ffffff', 'rgba(244,63,94,0.05)']}
+      colors={[Colors.surface, 'rgba(244,63,94,0.05)']}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={{ flex: 1 }}
@@ -112,7 +113,7 @@ export default function RecordingScreen() {
             <X size={24} color="#1f2937" />
           </Pressable>
 
-          <Text style={{ fontSize: 17, fontWeight: '700', color: '#1f2937' }}>
+          <Text style={{ fontSize: 17, fontWeight: '700', color: Colors.textPrimary }}>
             MyLoveThaiHoc
           </Text>
 
@@ -137,7 +138,7 @@ export default function RecordingScreen() {
               style={{
                 fontSize: 12,
                 fontWeight: '700',
-                color: '#f43f5e',
+                color: Colors.primary,
                 textTransform: 'uppercase',
                 letterSpacing: 1.5,
               }}
@@ -151,7 +152,7 @@ export default function RecordingScreen() {
             style={{
               fontSize: 15,
               fontWeight: '500',
-              color: '#6b7280',
+              color: Colors.textSecondary,
               marginBottom: 48,
               textAlign: 'center',
             }}
@@ -179,14 +180,14 @@ export default function RecordingScreen() {
                 width: 192,
                 height: 192,
                 borderRadius: 96,
-                backgroundColor: 'rgba(244,63,94,0.15)',
+                backgroundColor: Colors.primaryAlpha15,
                 transform: [{ scale: ring2 }],
               }}
             />
 
             {/* Mic circle — gradient rose → purple */}
             <LinearGradient
-              colors={['#f43f5e', '#8b5cf6']}
+              colors={[Colors.primary, '#8b5cf6']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{
@@ -195,14 +196,14 @@ export default function RecordingScreen() {
                 borderRadius: 64,
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: '#f43f5e',
+                shadowColor: Colors.primary,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.35,
                 shadowRadius: 20,
                 elevation: 10,
               }}
             >
-              <Text style={{ fontSize: 48, color: '#ffffff' }}>🎙</Text>
+              <Text style={{ fontSize: 48, color: Colors.surface }}>🎙</Text>
             </LinearGradient>
 
             {/* Waveform bars — absolutely below the mic area */}
@@ -222,7 +223,7 @@ export default function RecordingScreen() {
                     width: 6,
                     height: h,
                     borderRadius: 3,
-                    backgroundColor: '#f43f5e',
+                    backgroundColor: Colors.primary,
                     opacity: bars[i].interpolate({
                       inputRange: [0.4, 1],
                       outputRange: [
@@ -242,7 +243,7 @@ export default function RecordingScreen() {
             style={{
               fontSize: 56,
               fontWeight: '800',
-              color: '#1f2937',
+              color: Colors.textPrimary,
               letterSpacing: -1,
               marginBottom: 48,
             }}
@@ -259,7 +260,7 @@ export default function RecordingScreen() {
               accessibilityLabel="Dừng và gửi"
             >
               <LinearGradient
-                colors={['#f43f5e', '#8b5cf6']}
+                colors={[Colors.primary, '#8b5cf6']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={{
@@ -269,7 +270,7 @@ export default function RecordingScreen() {
                   paddingVertical: 16,
                   borderRadius: 14,
                   gap: 8,
-                  shadowColor: '#f43f5e',
+                  shadowColor: Colors.primary,
                   shadowOffset: { width: 0, height: 4 },
                   shadowOpacity: 0.3,
                   shadowRadius: 12,
@@ -277,7 +278,7 @@ export default function RecordingScreen() {
                 }}
               >
                 <Send size={18} color="#ffffff" />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: '#ffffff' }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.surface }}>
                   Dừng &amp; Gửi
                 </Text>
               </LinearGradient>

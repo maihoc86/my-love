@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MyLoveThaiHoc AI Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            romantic: {
+              50: '#fdf2f8',
+              100: '#fce7f3',
+              200: '#fbcfe8',
+              500: '#ec4899',
+              600: '#db2777',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-animations">
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .dot-1 { animation: bounce-slow 1s infinite 0.1s; }
+    .dot-2 { animation: bounce-slow 1s infinite 0.2s; }
+    .dot-3 { animation: bounce-slow 1s infinite 0.3s; }
+    
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .ios-blur {
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body class="bg-romantic-50 font-sans text-slate-800 antialiased overflow-hidden">
+<!-- iPhone 15 Pro Container (393x852) -->
+<div class="relative mx-auto bg-romantic-50 h-[852px] w-[393px] shadow-2xl flex flex-col overflow-hidden">
+<!-- BEGIN: Header -->
+<header class="sticky top-0 z-50 bg-white/80 ios-blur pt-12 pb-4 px-4 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3">
+<!-- AI Avatar Container -->
+<div class="w-[42px] h-[42px] rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-xl shadow-inner">
+          🤖
+        </div>
+<div>
+<h1 class="text-[16px] font-bold text-slate-900 leading-tight">AI Trợ lý tình yêu</h1>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-[11px] text-slate-500 font-medium">Sẵn sàng giúp bạn</span>
+</div>
+</div>
+</div>
+<button class="w-[38px] h-[38px] rounded-full bg-slate-50 flex items-center justify-center text-slate-500 border border-slate-100">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Chat Area -->
+<main class="flex-1 overflow-y-auto px-4 py-4 space-y-6 hide-scrollbar">
+<!-- Quick Prompts Horizontal Scroll -->
+<section class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+<button class="whitespace-nowrap bg-white px-4 py-2.5 rounded-full border border-slate-100 shadow-sm text-[13px] font-medium text-slate-700 flex items-center gap-2">
+          🍜 Đồ ăn yêu thích
+        </button>
+<button class="whitespace-nowrap bg-white px-4 py-2.5 rounded-full border border-slate-100 shadow-sm text-[13px] font-medium text-slate-700 flex items-center gap-2">
+          🎁 Quà tặng hợp gu
+        </button>
+<button class="whitespace-nowrap bg-white px-4 py-2.5 rounded-full border border-slate-100 shadow-sm text-[13px] font-medium text-slate-700 flex items-center gap-2">
+          🎯 Sở thích của em
+        </button>
+<button class="whitespace-nowrap bg-white px-4 py-2.5 rounded-full border border-slate-100 shadow-sm text-[13px] font-medium text-slate-700 flex items-center gap-2">
+          📅 Ngày quan trọng
+        </button>
+</section>
+<!-- Message: Welcome AI -->
+<div class="flex gap-3 max-w-[85%]">
+<div class="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex-shrink-0 flex items-center justify-center text-[14px]">🤖</div>
+<div class="bg-white p-3.5 rounded-2xl rounded-tl-[6px] shadow-sm border border-pink-50">
+<p class="text-[14px] leading-relaxed text-slate-700">
+            Xin chào! 💕 Hôm nay bạn muốn kể gì về Thái Hoc? Hãy chia sẻ bất kì điều gì, mình sẽ phân tích và ghi nhận nhé!
+          </p>
+</div>
+</div>
+<!-- Message: User Input -->
+<div class="flex flex-row-reverse gap-3 ml-auto max-w-[85%]">
+<div class="w-[26px] h-[26px] rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMvllAe9r36ha3g0BbU_pbpJa9cx6NvjFruCCuKnOrt8ISDSXHcDWt4U_uSrQnZ7doyu72kBEmULUWSe2WUhWPmAMMujwA8kKiz3jTTT3HSNc0-TIPNaOsRhUw9VDdL1vyi-x0DF2RTTLh3nGK52XwkcC9YhSbkf8_cicBRJ3G0hQJsKpQZzpVZXecQMLjGHhdF_6GmJur8q6BtPB52vX5UA0P2GxtRNtdd74TXgkBLIGTIhj_I_ei3TQLwL36PXG4qomrSWEjLg94"/>
+</div>
+<div class="bg-gradient-to-br from-rose-400 to-pink-500 p-3.5 rounded-2xl rounded-tr-[6px] shadow-md">
+<p class="text-[14px] leading-relaxed text-white">
+            Thái Hoc thích ăn phở bò, dị ứng tôm nha
+          </p>
+</div>
+</div>
+<!-- Message: AI Response -->
+<div class="flex gap-3 max-w-[85%]">
+<div class="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex-shrink-0 flex items-center justify-center text-[14px]">🤖</div>
+<div class="bg-white p-3.5 rounded-2xl rounded-tl-[6px] shadow-sm border border-pink-50">
+<p class="text-[14px] leading-relaxed text-slate-700">
+            Mình đã ghi nhận 2 thông tin quan trọng về Thái Hoc rồi nhé! 📝
+          </p>
+</div>
+</div>
+<!-- Parsed Entries Card -->
+<div class="ml-10 space-y-3">
+<div class="bg-white rounded-2xl p-4 shadow-md border border-slate-50">
+<!-- Entry 1 -->
+<div class="flex items-center justify-between pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="text-xl">🍜</span>
+<div>
+<p class="text-[14px] font-semibold text-slate-800">Phở bò là món yêu thích</p>
+<p class="text-[12px] text-slate-500">Món ăn</p>
+</div>
+</div>
+<span class="bg-emerald-50 text-emerald-600 text-[11px] font-bold px-2 py-1 rounded-md">Yêu thích</span>
+</div>
+<!-- Entry 2 -->
+<div class="flex items-center justify-between pt-3">
+<div class="flex items-center gap-3">
+<span class="text-xl">⚠️</span>
+<div>
+<p class="text-[14px] font-semibold text-slate-800">Dị ứng tôm</p>
+<p class="text-[12px] text-slate-500">Dị ứng</p>
+</div>
+</div>
+<span class="bg-orange-50 text-orange-600 text-[11px] font-bold px-2 py-1 rounded-md">Ghét</span>
+</div>
+</div>
+<!-- Save Button -->
+<button class="w-full bg-emerald-500 hover:bg-emerald-600 transition-colors text-white font-bold py-4 rounded-xl shadow-md flex items-center justify-center gap-2">
+          Lưu tất cả vào nhật ký (2 mục)
+        </button>
+</div>
+<!-- Typing Indicator -->
+<div class="flex gap-3 items-center">
+<div class="w-[30px] h-[10px] flex-shrink-0"></div> <!-- spacing for avatar align -->
+<div class="bg-white px-4 py-3 rounded-2xl shadow-sm border border-slate-50 flex gap-1.5">
+<div class="w-2 h-2 bg-purple-400 rounded-full dot-1"></div>
+<div class="w-2 h-2 bg-purple-400 rounded-full dot-2"></div>
+<div class="w-2 h-2 bg-purple-400 rounded-full dot-3"></div>
+</div>
+</div>
+</main>
+<!-- END: Chat Area -->
+<!-- BEGIN: Input Bar -->
+<footer class="bg-white pt-3 pb-8 px-4 shadow-[0_-10px_20px_-5px_rgba(0,0,0,0.05)]">
+<div class="flex items-center gap-3">
+<!-- Voice Input Button -->
+<button class="w-[46px] h-[46px] rounded-full bg-purple-50 flex items-center justify-center text-purple-600 flex-shrink-0">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-20a3 3 0 00-3 3v8a3 3 0 006 0V5a3 3 0 00-3-3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Text Input Container -->
+<div class="flex-1 bg-slate-50 rounded-full flex items-center px-4 py-1.5 border border-slate-100">
+<input class="bg-transparent border-none focus:ring-0 text-[14px] flex-1 py-2 text-slate-700 placeholder-slate-400" placeholder="Ghi nhận sở thích của Thái Hoc..." type="text"/>
+<button class="w-[34px] h-[34px] rounded-full bg-gradient-to-r from-rose-400 to-pink-500 flex items-center justify-center text-white shadow-sm ml-2">
+<svg class="h-4 w-4 transform rotate-90" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Subtext -->
+<p class="text-center text-[10px] text-slate-400 mt-3">
+        Nhấn giữ <span class="text-purple-500 font-medium">🎙</span> để nói tiếng Việt — AI sẽ tự chuyển thành văn bản
+      </p>
+</footer>
+<!-- END: Input Bar -->
+</div>
+</body></html>

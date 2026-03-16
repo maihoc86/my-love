@@ -18,8 +18,7 @@ import { ChevronLeft, Camera, Tag, Calendar, MapPin, ChevronRight, Edit2, Check 
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 const SENTIMENTS_VIEW = [
   { key: "love", emoji: "❤️", label: "Yêu thích" },
@@ -170,7 +169,7 @@ const EditEmojiBox = React.memo(({ emoji }: EditEmojiProps) => (
     <View style={styles.editEmojiBox}>
       <Text style={styles.editEmoji}>{emoji}</Text>
       <View style={styles.editCameraBtn}>
-        <Camera size={14} color={PRIMARY} strokeWidth={2} />
+        <Camera size={14} color={Colors.primary} strokeWidth={2} />
       </View>
     </View>
   </View>
@@ -195,7 +194,7 @@ const SentimentGrid = React.memo(({ active, onSelect }: SentimentGridProps) => (
             activeOpacity={0.75}
           >
             <Text style={styles.sentimentGridEmoji}>{s.emoji}</Text>
-            <Text style={[styles.sentimentGridLabel, isActive && { color: PRIMARY }]}>
+            <Text style={[styles.sentimentGridLabel, isActive && { color: Colors.primary }]}>
               {s.label.toUpperCase()}
             </Text>
           </TouchableOpacity>
@@ -228,7 +227,7 @@ const MetaInfoRow = React.memo(
       </View>
       <View style={styles.metaEditRight}>
         <Text style={styles.metaEditValue}>{value}</Text>
-        <ChevronRight size={16} color="#9ca3af" strokeWidth={2} />
+        <ChevronRight size={16} color={Colors.textTertiary} strokeWidth={2} />
       </View>
     </TouchableOpacity>
   )
@@ -386,7 +385,7 @@ export default function EntryDetailScreen() {
                 value={draftTitle}
                 onChangeText={setDraftTitle}
                 placeholder="Nhập tiêu đề..."
-                placeholderTextColor="#94a3b8"
+                placeholderTextColor={Colors.textTertiary}
                 returnKeyType="done"
               />
             </View>
@@ -398,7 +397,7 @@ export default function EntryDetailScreen() {
           {/* Detail Textarea */}
           <View style={styles.sectionCard}>
             <View style={styles.detailLabelRow}>
-              <Edit2 size={14} color={PRIMARY} strokeWidth={2} />
+              <Edit2 size={14} color={Colors.primary} strokeWidth={2} />
               <Text style={[styles.metaEditLabel, { marginLeft: 6 }]}>Nội dung chi tiết</Text>
             </View>
             <TextInput
@@ -406,7 +405,7 @@ export default function EntryDetailScreen() {
               value={draftDetail}
               onChangeText={setDraftDetail}
               placeholder="Nhập nội dung chi tiết..."
-              placeholderTextColor="#94a3b8"
+              placeholderTextColor={Colors.textTertiary}
               multiline
               numberOfLines={5}
               textAlignVertical="top"
@@ -417,22 +416,22 @@ export default function EntryDetailScreen() {
           <View style={styles.sectionCard}>
             <MetaInfoRow
               iconBg="#fff1f2"
-              iconColor={PRIMARY}
-              icon={<Tag size={16} color={PRIMARY} strokeWidth={2} />}
+              iconColor={Colors.primary}
+              icon={<Tag size={16} color={Colors.primary} strokeWidth={2} />}
               label="Danh mục"
               value={entry.category}
             />
             <MetaInfoRow
               iconBg="#eff6ff"
-              iconColor="#3b82f6"
-              icon={<Calendar size={16} color="#3b82f6" strokeWidth={2} />}
+              iconColor={Colors.info}
+              icon={<Calendar size={16} color={Colors.info} strokeWidth={2} />}
               label="Ngày tạo"
               value={entry.createdAt}
             />
             <MetaInfoRow
               iconBg="#ecfdf5"
-              iconColor="#10b981"
-              icon={<MapPin size={16} color="#10b981" strokeWidth={2} />}
+              iconColor={Colors.success}
+              icon={<MapPin size={16} color={Colors.success} strokeWidth={2} />}
               label="Địa điểm"
               value={entry.location ?? "Chưa có"}
               borderBottom={false}
@@ -444,7 +443,7 @@ export default function EntryDetailScreen() {
       {/* Fixed Footer */}
       <View style={styles.editFooter}>
         <TouchableOpacity style={styles.btnSave} onPress={handleSave} activeOpacity={0.85}>
-          <Check size={20} color="#ffffff" strokeWidth={2.5} />
+          <Check size={20} color={Colors.surface} strokeWidth={2.5} />
           <Text style={styles.btnSaveText}>Lưu thay đổi</Text>
         </TouchableOpacity>
       </View>
@@ -457,7 +456,7 @@ export default function EntryDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG,
+    backgroundColor: Colors.background,
   },
 
   // Header
@@ -489,7 +488,7 @@ const styles = StyleSheet.create({
   headerEditText: {
     fontSize: 15,
     fontWeight: "600",
-    color: PRIMARY,
+    color: Colors.primary,
   },
   headerCancelText: {
     fontSize: 15,
@@ -505,7 +504,7 @@ const styles = StyleSheet.create({
 
   // Hero Card
   heroCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 24,
     alignItems: "center",
@@ -530,7 +529,7 @@ const styles = StyleSheet.create({
   categoryBadgeText: {
     fontSize: 10,
     fontWeight: "700",
-    color: PRIMARY,
+    color: Colors.primary,
     letterSpacing: 1,
   },
   heroTitle: {
@@ -543,7 +542,7 @@ const styles = StyleSheet.create({
 
   // Section Card
   sectionCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 16,
     shadowColor: "#000",
@@ -555,7 +554,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#94a3b8",
+    color: Colors.textTertiary,
     letterSpacing: 1.2,
     textAlign: "center",
     marginBottom: 14,
@@ -578,7 +577,7 @@ const styles = StyleSheet.create({
   sentimentBtnActive: {
     backgroundColor: "#fff1f2",
     borderWidth: 2,
-    borderColor: PRIMARY,
+    borderColor: Colors.primary,
     transform: [{ scale: 1.15 }],
   },
   sentimentEmoji: {
@@ -623,19 +622,19 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   btnPrimary: {
-    backgroundColor: PRIMARY,
+    backgroundColor: Colors.primary,
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: PRIMARY,
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
   },
   btnPrimaryText: {
-    color: "#ffffff",
+    color: Colors.surface,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -649,7 +648,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnDangerText: {
-    color: "#ef4444",
+    color: Colors.error,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -666,7 +665,7 @@ const styles = StyleSheet.create({
   editEmojiBox: {
     width: 96,
     height: 96,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#ffe4e6",
@@ -688,7 +687,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: "#fecdd3",
     alignItems: "center",
@@ -704,15 +703,15 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: PRIMARY,
+    color: Colors.primary,
     letterSpacing: 1,
     marginBottom: 6,
     marginLeft: 2,
   },
   titleInput: {
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderWidth: 2,
-    borderColor: PRIMARY,
+    borderColor: Colors.primary,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -733,7 +732,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderRadius: 12,
-    backgroundColor: "#ffffff",
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: "#f1f5f9",
     gap: 4,
@@ -741,7 +740,7 @@ const styles = StyleSheet.create({
   sentimentGridBtnActive: {
     backgroundColor: "#fff1f2",
     borderWidth: 2,
-    borderColor: PRIMARY,
+    borderColor: Colors.primary,
   },
   sentimentGridEmoji: {
     fontSize: 24,
@@ -749,7 +748,7 @@ const styles = StyleSheet.create({
   sentimentGridLabel: {
     fontSize: 9,
     fontWeight: "700",
-    color: "#94a3b8",
+    color: Colors.textTertiary,
     letterSpacing: 0.5,
     textAlign: "center",
   },
@@ -825,21 +824,21 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "ios" ? 32 : 16,
   },
   btnSave: {
-    backgroundColor: PRIMARY,
+    backgroundColor: Colors.primary,
     borderRadius: 12,
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    shadowColor: PRIMARY,
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
   },
   btnSaveText: {
-    color: "#ffffff",
+    color: Colors.surface,
     fontSize: 16,
     fontWeight: "700",
   },

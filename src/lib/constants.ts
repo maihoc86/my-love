@@ -1,57 +1,16 @@
 // ============================================================
 // MyLoveThaiHoc - App Constants
+// Colors are re-exported from @/theme for backward compatibility.
+// New code should import directly from '@/theme'.
 // ============================================================
+
+export { Colors } from '../theme/colors';
 
 export const APP_NAME = 'MyLoveThaiHoc';
 export const APP_VERSION = '2.0.0';
 export const LOVER_NAME = 'Thái Hoc';
 
-export const Colors = {
-  // Primary
-  primary: '#f43f5e',
-  primaryLight: '#fb7185',
-  primaryDark: '#e11d48',
-  primaryGradientStart: '#f43f5e',
-  primaryGradientEnd: '#ec4899',
-
-  // AI / Assistant
-  aiPurple: '#8b5cf6',
-  aiPurpleLight: '#a78bfa',
-  aiPurpleDark: '#7c3aed',
-
-  // Semantic
-  success: '#10b981',
-  successLight: '#34d399',
-  warning: '#f59e0b',
-  warningLight: '#fbbf24',
-  error: '#ef4444',
-  errorLight: '#f87171',
-  info: '#3b82f6',
-  infoLight: '#60a5fa',
-
-  // Background & Surface
-  background: '#fdf2f8',
-  backgroundSecondary: '#fce7f3',
-  surface: '#ffffff',
-  surfaceSecondary: '#f9fafb',
-
-  // Text
-  textPrimary: '#1f2937',
-  textSecondary: '#6b7280',
-  textTertiary: '#9ca3af',
-  textOnPrimary: '#ffffff',
-
-  // Border
-  border: '#e5e7eb',
-  borderLight: '#f3f4f6',
-
-  // Sentiment colors
-  sentimentLove: '#ef4444',
-  sentimentLike: '#f97316',
-  sentimentNeutral: '#6b7280',
-  sentimentDislike: '#3b82f6',
-  sentimentHate: '#8b5cf6',
-} as const;
+// ─── Category Icons (single source of truth) ─────────────────
 
 export const CategoryIcons: Record<string, string> = {
   food: '🍜',
@@ -67,6 +26,8 @@ export const CategoryIcons: Record<string, string> = {
   other: '📝',
 };
 
+// ─── Sentiment Emojis ─────────────────────────────────────────
+
 export const SentimentEmojis: Record<string, string> = {
   love: '❤️',
   like: '👍',
@@ -74,3 +35,44 @@ export const SentimentEmojis: Record<string, string> = {
   dislike: '👎',
   hate: '💔',
 };
+
+// ─── Category Background Colors ──────────────────────────────
+
+export const CategoryBgColors: Record<string, string> = {
+  food: '#fff7ed',
+  place: '#eff6ff',
+  hobby: '#f0fdf4',
+  date: '#fdf2f8',
+  gift: '#fef3c7',
+  trait: '#faf5ff',
+  allergy: '#fef2f2',
+  style: '#fdf4ff',
+  music: '#ecfdf5',
+  movie: '#eef2ff',
+  other: '#f9fafb',
+};
+
+// ─── Smart Placeholders per Category ─────────────────────────
+
+export const CATEGORY_PLACEHOLDERS: Record<string, string> = {
+  food: 'Thái Hoc thích ăn món gì...',
+  place: 'Địa điểm Thái Hoc yêu thích...',
+  hobby: 'Sở thích của Thái Hoc...',
+  date: 'Tên ngày đặc biệt...',
+  gift: 'Quà tặng Thái Hoc thích...',
+  trait: 'Tính cách của Thái Hoc...',
+  allergy: 'Thứ Thái Hoc bị dị ứng...',
+  style: 'Phong cách thời trang của Thái Hoc...',
+  music: 'Bài hát / nghệ sĩ Thái Hoc thích...',
+  movie: 'Phim Thái Hoc yêu thích...',
+  other: 'Ghi chú về Thái Hoc...',
+};
+
+// ─── Quick Prompts for AI Chat ────────────────────────────────
+
+export const QUICK_PROMPTS = [
+  { label: '🍜 Đồ ăn yêu thích', text: 'Thái Hoc thích ăn phở bò, dị ứng tôm' },
+  { label: '🎁 Quà tặng hợp gu', text: 'Thái Hoc thích hoa hồng và nước hoa ngọt' },
+  { label: '🎯 Sở thích của em', text: 'Thái Hoc hay đọc sách trước khi ngủ' },
+  { label: '📅 Ngày quan trọng', text: 'Sinh nhật Thái Hoc là ngày 15/8' },
+];

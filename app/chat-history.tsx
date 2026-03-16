@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Colors } from "@/theme";
 import {
   View,
   Text,
@@ -98,7 +99,7 @@ const TYPE_CONFIG: Record<
   ChatType,
   { Icon: typeof MessageCircle; color: string; bg: string; label: string }
 > = {
-  text: { Icon: MessageCircle, color: '#f43f5e', bg: '#fff1f2', label: 'Chat' },
+  text: { Icon: MessageCircle, color: Colors.primary, bg: '#fff1f2', label: 'Chat' },
   suggestion: { Icon: Sparkles, color: '#8b5cf6', bg: '#f5f3ff', label: 'Gợi ý AI' },
   voice: { Icon: Mic, color: '#f97316', bg: '#fff7ed', label: 'Voice' },
 };
@@ -140,7 +141,7 @@ export default function ChatHistoryScreen() {
   })).filter((group) => group.items.length > 0);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f5f6' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }}>
       {/* ── Header ── */}
       <View
         style={{
@@ -149,7 +150,7 @@ export default function ChatHistoryScreen() {
           justifyContent: 'space-between',
           paddingHorizontal: 16,
           paddingVertical: 14,
-          backgroundColor: '#f8f5f6',
+          backgroundColor: Colors.background,
         }}
       >
         <Pressable
@@ -161,7 +162,7 @@ export default function ChatHistoryScreen() {
           <ChevronLeft size={26} color="#1f2937" />
         </Pressable>
 
-        <Text style={{ fontSize: 20, fontWeight: '700', color: '#1f2937' }}>
+        <Text style={{ fontSize: 20, fontWeight: '700', color: Colors.textPrimary }}>
           Lịch sử Chat
         </Text>
 
@@ -182,13 +183,13 @@ export default function ChatHistoryScreen() {
         {/* ── Summary card (gradient) ── */}
         <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
           <LinearGradient
-            colors={['#7c3aed', '#f43f5e', '#fb923c']}
+            colors={['#7c3aed', Colors.primary, '#fb923c']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
               borderRadius: 20,
               padding: 20,
-              shadowColor: '#f43f5e',
+              shadowColor: Colors.primary,
               shadowOffset: { width: 0, height: 6 },
               shadowOpacity: 0.25,
               shadowRadius: 16,
@@ -223,7 +224,7 @@ export default function ChatHistoryScreen() {
                   )}
                   <View style={{ flex: 1, alignItems: 'center' }}>
                     <Text
-                      style={{ fontSize: 28, fontWeight: '800', color: '#ffffff' }}
+                      style={{ fontSize: 28, fontWeight: '800', color: Colors.surface }}
                     >
                       {stat.value}
                     </Text>
@@ -246,11 +247,11 @@ export default function ChatHistoryScreen() {
             marginBottom: 12,
             flexDirection: 'row',
             alignItems: 'center',
-            backgroundColor: '#ffffff',
+            backgroundColor: Colors.surface,
             borderRadius: 14,
             paddingHorizontal: 14,
             borderWidth: 1,
-            borderColor: '#f3f4f6',
+            borderColor: Colors.borderLight,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.05,
@@ -265,7 +266,7 @@ export default function ChatHistoryScreen() {
               paddingVertical: 13,
               paddingHorizontal: 10,
               fontSize: 14,
-              color: '#1f2937',
+              color: Colors.textPrimary,
             }}
             placeholder="Tìm kiếm lịch sử..."
             placeholderTextColor="#9ca3af"
@@ -285,25 +286,30 @@ export default function ChatHistoryScreen() {
             <Pressable
               key={f}
               onPress={() => setActiveFilter(f)}
-              style={({ pressed }) => ({
-                paddingHorizontal: 18,
-                paddingVertical: 9,
-                borderRadius: 24,
-                backgroundColor: activeFilter === f ? '#f43f5e' : '#ffffff',
-                borderWidth: activeFilter === f ? 0 : 1,
-                borderColor: '#e5e7eb',
-                opacity: pressed ? 0.8 : 1,
-              })}
             >
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: activeFilter === f ? '700' : '500',
-                  color: activeFilter === f ? '#ffffff' : '#6b7280',
-                }}
-              >
-                {f}
-              </Text>
+              {({ pressed }) => (
+                <View
+                  style={{
+                    paddingHorizontal: 18,
+                    paddingVertical: 9,
+                    borderRadius: 24,
+                    backgroundColor: activeFilter === f ? Colors.primary : Colors.surface,
+                    borderWidth: activeFilter === f ? 0 : 1,
+                    borderColor: Colors.border,
+                    opacity: pressed ? 0.8 : 1,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: activeFilter === f ? '700' : '500',
+                      color: activeFilter === f ? Colors.surface : Colors.textSecondary,
+                    }}
+                  >
+                    {f}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           ))}
         </ScrollView>
@@ -312,7 +318,7 @@ export default function ChatHistoryScreen() {
         {filteredHistory.length === 0 ? (
           <View style={{ alignItems: 'center', paddingTop: 48 }}>
             <Text style={{ fontSize: 40, marginBottom: 12 }}>💬</Text>
-            <Text style={{ fontSize: 15, fontWeight: '600', color: '#6b7280' }}>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: Colors.textSecondary }}>
               Chưa có cuộc chat nào
             </Text>
           </View>
@@ -325,7 +331,7 @@ export default function ChatHistoryScreen() {
                   paddingHorizontal: 16,
                   fontSize: 11,
                   fontWeight: '700',
-                  color: '#9ca3af',
+                  color: Colors.textTertiary,
                   letterSpacing: 0.8,
                   marginBottom: 8,
                 }}
@@ -337,7 +343,7 @@ export default function ChatHistoryScreen() {
               <View
                 style={{
                   marginHorizontal: 16,
-                  backgroundColor: '#ffffff',
+                  backgroundColor: Colors.surface,
                   borderRadius: 18,
                   overflow: 'hidden',
                   shadowColor: '#000',
@@ -358,82 +364,85 @@ export default function ChatHistoryScreen() {
                       : `${item.entries > 0 ? `${item.entries} entries đã lưu · ` : ''}${item.time}`;
 
                   return (
-                    <Pressable
-                      key={item.id}
-                      style={({ pressed }) => ({
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 16,
-                        paddingVertical: 14,
-                        borderTopWidth: idx > 0 ? 1 : 0,
-                        borderTopColor: '#f3f4f6',
-                        backgroundColor: pressed ? '#fafafa' : 'transparent',
-                      })}
-                    >
-                      {/* Icon circle */}
-                      <View
-                        style={{
-                          width: 44,
-                          height: 44,
-                          borderRadius: 22,
-                          backgroundColor: cfg.bg,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          marginRight: 12,
-                          flexShrink: 0,
-                        }}
-                      >
-                        <Icon size={20} color={cfg.color} />
-                      </View>
-
-                      {/* Content */}
-                      <View style={{ flex: 1, marginRight: 10 }}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: '600',
-                            color: '#1f2937',
-                            marginBottom: 4,
-                          }}
-                          numberOfLines={1}
-                        >
-                          {item.preview}
-                        </Text>
-                        <Text
-                          style={{ fontSize: 12, color: '#9ca3af' }}
-                          numberOfLines={1}
-                        >
-                          {subtitle}
-                        </Text>
-                      </View>
-
-                      {/* Entry count badge */}
-                      {item.entries > 0 && (
+                    <Pressable key={item.id}>
+                      {({ pressed }) => (
                         <View
                           style={{
-                            width: 24,
-                            height: 24,
-                            borderRadius: 12,
-                            backgroundColor: '#f43f5e',
+                            flexDirection: 'row',
                             alignItems: 'center',
-                            justifyContent: 'center',
-                            marginRight: 8,
-                            flexShrink: 0,
+                            paddingHorizontal: 16,
+                            paddingVertical: 14,
+                            borderTopWidth: idx > 0 ? 1 : 0,
+                            borderTopColor: Colors.borderLight,
+                            backgroundColor: pressed ? '#fafafa' : 'transparent',
                           }}
                         >
-                          <Text
+                          {/* Icon circle */}
+                          <View
                             style={{
-                              fontSize: 11,
-                              fontWeight: '700',
-                              color: '#ffffff',
+                              width: 44,
+                              height: 44,
+                              borderRadius: 22,
+                              backgroundColor: cfg.bg,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginRight: 12,
+                              flexShrink: 0,
                             }}
                           >
-                            {item.entries}
-                          </Text>
+                            <Icon size={20} color={cfg.color} />
+                          </View>
+
+                          {/* Content */}
+                          <View style={{ flex: 1, marginRight: 10 }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                fontWeight: '600',
+                                color: Colors.textPrimary,
+                                marginBottom: 4,
+                              }}
+                              numberOfLines={1}
+                            >
+                              {item.preview}
+                            </Text>
+                            <Text
+                              style={{ fontSize: 12, color: Colors.textTertiary }}
+                              numberOfLines={1}
+                            >
+                              {subtitle}
+                            </Text>
+                          </View>
+
+                          {/* Entry count badge */}
+                          {item.entries > 0 && (
+                            <View
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 12,
+                                backgroundColor: Colors.primary,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight: 8,
+                                flexShrink: 0,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 11,
+                                  fontWeight: '700',
+                                  color: Colors.surface,
+                                }}
+                              >
+                                {item.entries}
+                              </Text>
+                            </View>
+                          )}
+
+                          <ChevronRight size={16} color="#d1d5db" />
                         </View>
                       )}
-
-                      <ChevronRight size={16} color="#d1d5db" />
                     </Pressable>
                   );
                 })}

@@ -27,9 +27,11 @@ import {
   ShieldCheck,
 } from "lucide-react-native";
 
+import { Colors } from "@/theme";
+
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
+const PRIMARY = Colors.primary;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.22;
 

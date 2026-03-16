@@ -27,9 +27,11 @@ import {
   ChevronLeft,
 } from "lucide-react-native";
 
+import { Colors } from "@/theme";
+
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
+const PRIMARY = Colors.primary;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const HEADER_HEIGHT = SCREEN_HEIGHT * 0.24;
 
@@ -215,7 +217,8 @@ export default function RegisterScreen() {
     // TODO: Supabase signUp + OTP verify
     setTimeout(() => {
       setLoading(false);
-      router.replace("/(tabs)");
+      // Redirect to onboarding for first-time users
+      router.replace("/onboarding");
     }, 1500);
   }, [canRegister, loading, router]);
 

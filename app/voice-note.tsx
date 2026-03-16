@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Colors } from "@/theme";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -42,7 +43,7 @@ export default function VoiceNoteScreen() {
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
       {/* Header */}
       <View className="flex-row items-center px-4 py-3">
         <Pressable
@@ -70,7 +71,7 @@ export default function VoiceNoteScreen() {
             <View className="flex-row items-center mb-3">
               <Pressable
                 className="w-10 h-10 rounded-full items-center justify-center"
-                style={{ backgroundColor: "#f43f5e" }}
+                style={{ backgroundColor: Colors.primary }}
                 onPress={() =>
                   setPlayingId(playingId === note.id ? null : note.id)
                 }
@@ -92,13 +93,13 @@ export default function VoiceNoteScreen() {
                       width: 3,
                       height: 6 + Math.random() * 18,
                       backgroundColor:
-                        playingId === note.id ? "#f43f5e" : "#d1d5db",
+                        playingId === note.id ? Colors.primary : "#d1d5db",
                     }}
                   />
                 ))}
               </View>
 
-              <Text className="text-xs font-medium" style={{ color: "#6b7280" }}>
+              <Text className="text-xs font-medium" style={{ color: Colors.textSecondary }}>
                 {note.duration}
               </Text>
             </View>
@@ -113,20 +114,20 @@ export default function VoiceNoteScreen() {
                 }}
               >
                 {note.status === "saved" ? (
-                  <Check size={12} color="#10b981" />
+                  <Check size={12} color={Colors.success} />
                 ) : (
-                  <Clock size={12} color="#f59e0b" />
+                  <Clock size={12} color={Colors.warning} />
                 )}
                 <Text
                   className="text-xs font-medium ml-1"
                   style={{
-                    color: note.status === "saved" ? "#10b981" : "#f59e0b",
+                    color: note.status === "saved" ? Colors.success : Colors.warning,
                   }}
                 >
                   {note.status === "saved" ? "Đã lưu" : "Chờ lưu"}
                 </Text>
               </View>
-              <Text className="text-xs" style={{ color: "#9ca3af" }}>
+              <Text className="text-xs" style={{ color: Colors.textTertiary }}>
                 {note.date}
               </Text>
             </View>
@@ -134,7 +135,7 @@ export default function VoiceNoteScreen() {
             {/* Transcript */}
             <Text
               className="text-sm italic mb-3"
-              style={{ color: "#6b7280" }}
+              style={{ color: Colors.textSecondary }}
               numberOfLines={2}
             >
               "{note.transcript}"
@@ -172,7 +173,7 @@ export default function VoiceNoteScreen() {
             {note.status === "pending" && (
               <Pressable
                 className="py-3 rounded-xl items-center"
-                style={{ backgroundColor: "#10b981" }}
+                style={{ backgroundColor: Colors.success }}
               >
                 <Text className="text-white font-bold text-sm">
                   Lưu ghi chú
@@ -185,14 +186,14 @@ export default function VoiceNoteScreen() {
 
       {/* Floating Mic Button */}
       <View className="items-center pb-6">
-        <Text className="text-xs mb-2" style={{ color: "#9ca3af" }}>
+        <Text className="text-xs mb-2" style={{ color: Colors.textTertiary }}>
           Nhấn giữ để ghi âm
         </Text>
         <Pressable
           className="w-16 h-16 rounded-full items-center justify-center"
           style={{
-            backgroundColor: "#f43f5e",
-            shadowColor: "#f43f5e",
+            backgroundColor: Colors.primary,
+            shadowColor: Colors.primary,
             shadowOpacity: 0.4,
             shadowRadius: 12,
             elevation: 8,

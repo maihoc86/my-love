@@ -1,8 +1,112 @@
 # CLAUDE.md - Project Instructions
 
 ## Project Overview
-MyLoveThaiHoc - Personal app ghi nhận thông tin về người yêu (Thái Hoc).
-Tech stack: React 19 + Vite 8 + Tailwind CSS 4 + Supabase + OpenRouter AI + Telegram Bot.
+
+MyLoveThaiHoc - Personal mobile app ghi nhận thông tin về người yêu (Thái Hoc).
+
+**Tech stack**: React Native 0.81.5 + Expo SDK 54 + Expo Router 6 + TypeScript + Supabase + OpenRouter AI + Telegram Bot.
+
+## Architecture
+
+### Routing (Expo Router — file-based)
+
+```
+app/
+├── _layout.tsx              # Root layout + splash screen
+├── index.tsx                # Landing/redirect
+├── onboarding.tsx           # Onboarding 5-step (Welcome → Name → Birthday → Anniversary → Avatar)
+├── (auth)/                  # Auth flow
+├── (tabs)/                  # Main tab navigator
+│   ├── _layout.tsx          # Tab bar (5 tabs: Trang chủ → AI Chat → + Thêm → Lịch → Cài đặt)
+│   ├── index.tsx            # Dashboard (SCR-01)
+│   ├── chat.tsx             # AI Chat (SCR-03)
+│   ├── add.tsx              # Thêm ghi chú (SCR-02)
+│   ├── calendar.tsx         # Lịch (SCR-04)
+│   └── settings.tsx         # Cài đặt (SCR-05)
+├── entries/                 # Entry screens (Stack navigator)
+│   ├── _layout.tsx
+│   ├── all.tsx              # Tất cả ghi chú (SCR-02.1)
+│   └── [id].tsx             # Chi tiết ghi chú — View + Edit mode
+├── settings/                # Settings sub-screens (Stack navigator)
+│   ├── _layout.tsx
+│   ├── personal-info.tsx    # Thông tin cá nhân (SCR-05.1)
+│   ├── partner-info.tsx     # Thông tin người yêu (SCR-05.2)
+│   ├── security.tsx         # Bảo mật (SCR-05.3)
+│   └── backup.tsx           # Sao lưu (SCR-05.4)
+├── album.tsx                # Album ảnh
+├── chat-history.tsx         # Lịch sử chat
+├── daily-reminder.tsx       # Nhắc nhở hàng ngày
+├── date-map.tsx             # Bản đồ hẹn hò
+├── insight.tsx              # Insights
+├── love-counter.tsx         # Đếm ngày yêu
+├── recording.tsx            # Ghi âm
+└── voice-note.tsx           # Ghi chú giọng nói
+```
+
+### Key Patterns
+
+- **SafeAreaView**: `edges={["top"]}` trên mọi screen
+- **KeyboardAvoidingView**: Bọc mọi form/input screen
+- **React.memo**: Tất cả sub-components
+- **useCallback**: Tất cả handlers
+- **useMemo**: Filtered/sorted/computed data
+- **FlatList**: Dùng cho danh sách (không dùng ScrollView cho list)
+- **Animation**: `Animated.Value` + spring/timing (không dùng thư viện ngoài)
+
+### Design System
+
+**Centralized trong `src/theme/`** — KHÔNG hardcode colors trong screens.
+
+```
+src/theme/
+├── colors.ts       # All color tokens (primary, semantic, text, border...)
+├── spacing.ts      # Spacing scale, radius presets, layout constants
+├── typography.ts   # Font sizes, weights, line heights
+├── shadows.ts      # Shadow presets (sm, md, lg, fab, tabBar)
+└── index.ts        # Barrel export
+```
+
+- **Import**: `import { Colors, Shadows, Spacing } from '@/theme'`
+- **Primary**: `Colors.primary` (#f43f5e rose-500)
+- **Icons**: `lucide-react-native` (single source)
+- **Tab bar**: FAB circular button ở giữa (nút Thêm), `Layout.fabElevation`
+- **Touch target**: Min 48dp (`Layout.minTouchTarget`)
+
+### Shared Components
+
+```
+src/components/
+├── ui/              # Base UI primitives
+│   ├── ScreenHeader.tsx
+│   ├── Card.tsx
+│   ├── PrimaryButton.tsx
+│   ├── AppTextInput.tsx
+│   └── index.ts
+├── ChatBubble.tsx   # Domain-specific
+├── EntryCard.tsx
+├── CategoryGrid.tsx
+├── SentimentPicker.tsx
+├── CountdownRing.tsx
+├── EmptyState.tsx
+└── index.ts         # Barrel export
+```
+
+### Barrel Exports
+
+- **Components**: `import { Card, EntryCard } from '@/components'`
+- **Hooks**: `import { useAuth, useEntries } from '@/hooks'`
+- **Lib**: `import { parseUserInput, addEntry } from '@/lib'`
+- **Theme**: `import { Colors, Shadows } from '@/theme'`
+
+## Hooks System
+
+Hooks được cấu hình trong `.claude/settings.json` và scripts nằm tại `.claude/hooks/`.
+
+| Hook | Event | Mục đích |
+|------|-------|----------|
+| `typecheck.sh` | PostToolUse (Write\|Edit) | Tự động `tsc --noEmit` sau khi sửa .ts/.tsx |
+| `pre-commit-check.sh` | PreToolUse (Bash) | Kiểm tra secrets trước khi chạy commands |
+| `lint-check.sh` | Manual | Chạy `expo lint` khi cần |
 
 ## Skills System
 
@@ -12,35 +116,11 @@ Mỗi skill là một thư mục trong `.claude/skills/<skill-name>/` với cấ
 
 ```
 .claude/skills/<skill-name>/
-├── SKILL.md          # File chính - chứa frontmatter + hướng dẫn đầy đủ
-├── references/       # (optional) Tài liệu tham khảo, frameworks
-├── scripts/          # (optional) Scripts thực thi (Python, JS, etc.)
-└── evals/            # (optional) Test cases cho skill
+├── SKILL.md          # File chính - chứa frontmatter + hướng dẫn
+├── references/       # (optional) Tài liệu tham khảo
+├── scripts/          # (optional) Scripts thực thi
+└── evals/            # (optional) Test cases
 ```
-
-### Cách đọc SKILL.md
-
-Mỗi `SKILL.md` có YAML frontmatter ở đầu file:
-
-```yaml
----
-name: <skill-name>              # Tên skill, dùng để invoke: /skill-name
-description: <mô tả chi tiết>   # Mô tả + trigger keywords
-license: MIT | Proprietary
-metadata:                        # (optional)
-  version: x.x.x
-  author: ...
-  category: ...
-  domain: ...
-  updated: YYYY-MM-DD
-  integrations: ...              # Các service tích hợp (notion, telegram, etc.)
----
-```
-
-Phần body của SKILL.md chứa:
-- **Keywords**: Từ khóa trigger skill
-- **Quick Start**: Cách sử dụng nhanh
-- **Chi tiết**: Hướng dẫn đầy đủ, templates, workflows
 
 ### Quy trình khi nhận request từ user
 
@@ -81,9 +161,96 @@ Phần body của SKILL.md chứa:
 | `figma:code-connect-components` | Connect Figma components to code |
 | `figma:create-design-system-rules` | Design system rules |
 
-## User Stories
+## Store Guidelines (Google Play & App Store)
 
-Khi cần liên kết hoặc tham chiếu đến User Story, **bắt buộc dùng file JSON**:
+Tài liệu đầy đủ: `docs/STORE_GUIDELINES.md`
+
+### Quy tắc BẮT BUỘC áp dụng khi code
+
+#### 1. Privacy & Consent (quan trọng nhất — #1 lý do bị reject)
+
+- **Consent modal cho AI**: Trước khi gửi dữ liệu đến OpenRouter, PHẢI hiển thị consent cụ thể:
+  > "Dữ liệu của bạn sẽ được gửi đến OpenRouter (dịch vụ AI) để xử lý tin nhắn"
+- **Không thu thập dữ liệu thừa**: Chỉ request data cần thiết cho core functionality
+- **Không hardcode secrets**: API keys, tokens phải dùng env variables hoặc Expo SecureStore
+- **Privacy policy link**: Phải có trong app (Settings screen) và luôn truy cập được
+
+#### 2. Permissions — Chỉ request khi cần
+
+```tsx
+// ✅ ĐÚNG — Chỉ request permission khi user thực sự dùng feature
+const requestCamera = async () => {
+  const { status } = await Camera.requestPermissionsAsync();
+  if (status !== "granted") { /* handle gracefully */ }
+};
+
+// ❌ SAI — Request tất cả permissions khi mở app
+```
+
+**Info.plist keys** (chỉ khai báo cho features thực sự dùng — khai báo thừa = reject):
+- `NSCameraUsageDescription` — nếu dùng camera
+- `NSPhotoLibraryUsageDescription` — nếu đọc photo library
+- `NSLocationWhenInUseUsageDescription` — nếu dùng location
+- `NSFaceIDUsageDescription` — nếu dùng biometric
+- `ITSAppUsesNonExemptEncryption: false` — chỉ dùng HTTPS standard
+
+**Android permissions** (trong app.json `expo.android.permissions`):
+- Chỉ liệt kê permissions cần thiết, không dùng wildcard
+
+#### 3. UI/UX — Chuẩn Store
+
+- **Safe Areas**: `SafeAreaView edges={["top"]}` — KHÔNG đặt nội dung dưới notch/Dynamic Island/home indicator
+- **Touch target**: Tối thiểu **48dp** cho mọi nút bấm (`minWidth: 48, minHeight: 48`)
+- **Accessibility**: Mọi interactive element phải có `accessibilityLabel` và `accessibilityRole`
+- **KeyboardAvoidingView**: Bọc mọi screen có input
+- **Responsive**: Test trên nhiều kích thước (iPhone SE → Pro Max)
+- **Dynamic Type** (iOS): Typography nên adapt theo user settings
+- **Error handling**: App KHÔNG ĐƯỢC crash — mọi async operation cần try/catch
+
+#### 4. AI Chat — Quy định đặc biệt
+
+- Khai báo rõ đây là **AI chatbot**, không giả làm người thật
+- Phải có cơ chế **report/flag** nội dung AI không phù hợp
+- Ngăn chặn AI tạo nội dung bị cấm (hate speech, CSAM, lừa đảo)
+- Developer chịu trách nhiệm mọi nội dung AI tạo ra
+- Khai báo "Messages" trong Data Safety (Google Play) và Privacy Manifest (iOS)
+
+#### 5. Build & Versioning
+
+```json
+// app.json
+{
+  "expo": {
+    "ios": {
+      "bundleIdentifier": "com.tienphongcds.mylovethaihoc",
+      "buildNumber": "1"  // Phải tăng mỗi lần submit
+    },
+    "android": {
+      "package": "com.tienphongcds.mylovethaihoc",
+      "versionCode": 1    // Phải tăng mỗi lần submit
+    }
+  }
+}
+```
+
+- Android: build `.aab` (không dùng APK), target API 35
+- iOS: build với iOS 18 SDK (Expo SDK 54 tự xử lý)
+- Test trên thiết bị thật trước khi submit (TestFlight cho iOS)
+
+## Documentation
+
+| File | Nội dung |
+|------|----------|
+| `docs/BRD.md` | Business Requirements Document (v2.3.0) |
+| `docs/SRS.md` | Software Requirements Specification (v2.3.0) |
+| `docs/user-stories.json` | User Stories (JSON format) |
+| `docs/STORE_GUIDELINES.md` | Quy định Google Play & App Store đầy đủ |
+| `docs/STITCH_PROMPT.md` | Google Stitch prompts |
+| `docs/PROTOTYPE.md` | Prototype notes |
+
+### User Stories
+
+Khi cần tham chiếu User Story, **bắt buộc dùng file JSON**:
 
 - **File**: `docs/user-stories.json`
 - **Không dùng** file `.md` (đã xóa)
@@ -94,5 +261,6 @@ Khi cần liên kết hoặc tham chiếu đến User Story, **bắt buộc dùn
 - Ngôn ngữ giao tiếp: Tiếng Việt
 - Timezone: Asia/Ho_Chi_Minh
 - Draft files lưu tại: `.claude/drafts/`
-- Tailwind CSS 4: dùng `@tailwindcss/vite` plugin, KHÔNG dùng `tailwind.config.js`
-- Dùng `--legacy-peer-deps` khi npm install (Vite 8 peer dep conflict)
+- Dùng `--legacy-peer-deps` khi npm install
+- TypeScript strict mode — 0 errors required
+- npm scripts: `npm run ts:check` (tsc), `npm run lint` (expo lint)

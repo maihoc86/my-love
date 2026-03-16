@@ -38,11 +38,7 @@ import {
   User,
 } from "lucide-react-native";
 import { useRouter } from "expo-router";
-
-// ─── Constants ───────────────────────────────────────────────
-
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── Mock user data ───────────────────────────────────────────
 
@@ -75,38 +71,40 @@ const NavRow = memo(function NavRow({
   hasBorderTop?: boolean;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={4}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 12,
-        paddingVertical: 13,
-        gap: 14,
-        backgroundColor: pressed ? "#f8fafc" : "transparent",
-        borderTopWidth: hasBorderTop ? 1 : 0,
-        borderTopColor: "#f8fafc",
-      })}
-    >
-      <View
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 12,
-          backgroundColor: iconBg,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {icon}
-      </View>
-      <Text
-        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
-      >
-        {label}
-      </Text>
-      <ChevronRight size={16} color="#cbd5e1" />
+    <Pressable onPress={onPress} hitSlop={4}>
+      {({ pressed }) => (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 12,
+            paddingVertical: 13,
+            gap: 14,
+            backgroundColor: pressed ? "#f8fafc" : "transparent",
+            borderTopWidth: hasBorderTop ? 1 : 0,
+            borderTopColor: "#f8fafc",
+          }}
+        >
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              backgroundColor: iconBg,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </View>
+          <Text
+            style={{ flex: 1, fontSize: 14, fontWeight: "500", color: Colors.textPrimary }}
+          >
+            {label}
+          </Text>
+          <ChevronRight size={16} color="#cbd5e1" />
+        </View>
+      )}
     </Pressable>
   );
 });
@@ -117,7 +115,7 @@ const InfoRow = memo(function InfoRow({
   iconBg,
   label,
   value,
-  valueColor = PRIMARY,
+  valueColor = Colors.primary,
   hasBorderTop = true,
 }: {
   icon: React.ReactNode;
@@ -152,7 +150,7 @@ const InfoRow = memo(function InfoRow({
         {icon}
       </View>
       <Text
-        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
+        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: Colors.textPrimary }}
       >
         {label}
       </Text>
@@ -204,7 +202,7 @@ const ToggleRow = memo(function ToggleRow({
         {icon}
       </View>
       <Text
-        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: "#1e293b" }}
+        style={{ flex: 1, fontSize: 14, fontWeight: "500", color: Colors.textPrimary }}
       >
         {label}
       </Text>
@@ -212,7 +210,7 @@ const ToggleRow = memo(function ToggleRow({
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: "#e2e8f0", true: "#fda4af" }}
-        thumbColor={value ? PRIMARY : "#f1f5f9"}
+        thumbColor={value ? Colors.primary : "#f1f5f9"}
       />
     </View>
   );
@@ -232,7 +230,7 @@ const SettingsSection = memo(function SettingsSection({
         style={{
           fontSize: 11,
           fontWeight: "700",
-          color: "#94a3b8",
+          color: Colors.textMuted,
           textTransform: "uppercase",
           letterSpacing: 1.5,
           marginBottom: 10,
@@ -243,7 +241,7 @@ const SettingsSection = memo(function SettingsSection({
       </Text>
       <View
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: Colors.surface,
           borderRadius: 20,
           borderWidth: 1,
           borderColor: "#f1f5f9",
@@ -308,7 +306,7 @@ export default function SettingsScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       <ScrollView
@@ -322,7 +320,7 @@ export default function SettingsScreen() {
             style={{
               borderRadius: 28,
               overflow: "hidden",
-              shadowColor: "#f43f5e",
+              shadowColor: Colors.primary,
               shadowOffset: { width: 0, height: 8 },
               shadowOpacity: 0.25,
               shadowRadius: 20,
@@ -332,7 +330,7 @@ export default function SettingsScreen() {
             {/* Rose base */}
             <View
               style={{
-                backgroundColor: PRIMARY,
+                backgroundColor: Colors.primary,
                 padding: 24,
               }}
             >
@@ -376,7 +374,7 @@ export default function SettingsScreen() {
                       style={{
                         fontSize: 24,
                         fontWeight: "800",
-                        color: "#fff",
+                        color: Colors.textOnPrimary,
                       }}
                     >
                       {USER.initial}
@@ -389,7 +387,7 @@ export default function SettingsScreen() {
                       style={{
                         fontSize: 18,
                         fontWeight: "800",
-                        color: "#fff",
+                        color: Colors.textOnPrimary,
                       }}
                     >
                       {USER.name}
@@ -427,7 +425,7 @@ export default function SettingsScreen() {
                     justifyContent: "center",
                   }}
                 >
-                  <Pencil size={16} color="#fff" />
+                  <Pencil size={16} color={Colors.textOnPrimary} />
                 </Pressable>
               </View>
 
@@ -453,7 +451,7 @@ export default function SettingsScreen() {
                     style={{
                       fontSize: 18,
                       fontWeight: "800",
-                      color: "#fff",
+                      color: Colors.textOnPrimary,
                       lineHeight: 22,
                     }}
                   >
@@ -484,7 +482,7 @@ export default function SettingsScreen() {
                     style={{
                       fontSize: 18,
                       fontWeight: "800",
-                      color: "#fff",
+                      color: Colors.textOnPrimary,
                       lineHeight: 22,
                     }}
                   >
@@ -508,7 +506,7 @@ export default function SettingsScreen() {
                     style={{
                       fontSize: 18,
                       fontWeight: "800",
-                      color: "#fff",
+                      color: Colors.textOnPrimary,
                       lineHeight: 22,
                     }}
                   >
@@ -538,8 +536,8 @@ export default function SettingsScreen() {
           {/* Thông tin người yêu */}
           <SettingsSection title="Thông tin người yêu">
             <InfoRow
-              icon={<User size={18} color="#ec4899" />}
-              iconBg="#fce7f3"
+              icon={<User size={18} color={Colors.primaryGradientEnd} />}
+              iconBg={Colors.backgroundSecondary}
               label="Tên gọi"
               value="Thái Học"
               hasBorderTop={false}
@@ -564,47 +562,52 @@ export default function SettingsScreen() {
             />
             <Pressable
               onPress={() => router.push("/settings/partner-info")}
-              style={({ pressed }) => ({
-                margin: 8,
-                marginTop: 6,
-                paddingVertical: 13,
-                borderRadius: 14,
-                alignItems: "center",
-                backgroundColor: pressed ? "#fee2e9" : "#fff1f4",
-              })}
               hitSlop={4}
             >
-              <Text
-                style={{ fontSize: 13, fontWeight: "700", color: PRIMARY }}
-              >
-                Chỉnh sửa thông tin người yêu
-              </Text>
+              {({ pressed }) => (
+                <View
+                  style={{
+                    margin: 8,
+                    marginTop: 6,
+                    paddingVertical: 13,
+                    borderRadius: 14,
+                    alignItems: "center",
+                    backgroundColor: pressed ? "#fee2e9" : "#fff1f4",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 13, fontWeight: "700", color: Colors.primary }}
+                  >
+                    Chỉnh sửa thông tin người yêu
+                  </Text>
+                </View>
+              )}
             </Pressable>
           </SettingsSection>
 
           {/* Tài khoản */}
           <SettingsSection title="Tài khoản">
             <NavRow
-              icon={<User size={18} color="#64748b" />}
+              icon={<User size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Thông tin cá nhân"
               onPress={() => router.push("/settings/personal-info")}
               hasBorderTop={false}
             />
             <NavRow
-              icon={<Lock size={18} color="#64748b" />}
+              icon={<Lock size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Đổi mật khẩu"
               onPress={() => router.push("/settings/security")}
             />
             <NavRow
-              icon={<Shield size={18} color="#64748b" />}
+              icon={<Shield size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Bảo mật"
               onPress={() => router.push("/settings/security")}
             />
             <NavRow
-              icon={<CloudUpload size={18} color="#64748b" />}
+              icon={<CloudUpload size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Sao lưu & đồng bộ"
               onPress={() => router.push("/settings/backup")}
@@ -614,7 +617,7 @@ export default function SettingsScreen() {
           {/* Thông báo */}
           <SettingsSection title="Thông báo">
             <ToggleRow
-              icon={<Bell size={18} color={PRIMARY} />}
+              icon={<Bell size={18} color={Colors.primary} />}
               iconBg="#fff1f4"
               label="Nhắc nhở ngày đặc biệt"
               value={notifySpecialDate}
@@ -622,21 +625,21 @@ export default function SettingsScreen() {
               hasBorderTop={false}
             />
             <ToggleRow
-              icon={<Sun size={18} color={PRIMARY} />}
+              icon={<Sun size={18} color={Colors.primary} />}
               iconBg="#fff1f4"
               label="Gợi ý hàng ngày"
               value={notifyDailyTip}
               onValueChange={setNotifyDailyTip}
             />
             <ToggleRow
-              icon={<Send size={18} color={PRIMARY} />}
+              icon={<Send size={18} color={Colors.primary} />}
               iconBg="#fff1f4"
               label="Thông báo Telegram"
               value={notifyTelegram}
               onValueChange={setNotifyTelegram}
             />
             <ToggleRow
-              icon={<Mail size={18} color={PRIMARY} />}
+              icon={<Mail size={18} color={Colors.primary} />}
               iconBg="#fff1f4"
               label="Thông báo Email"
               value={notifyEmail}
@@ -647,27 +650,27 @@ export default function SettingsScreen() {
           {/* Chung */}
           <SettingsSection title="Chung">
             <InfoRow
-              icon={<Sun size={18} color="#64748b" />}
+              icon={<Sun size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Giao diện"
               value="Sáng"
               hasBorderTop={false}
             />
             <InfoRow
-              icon={<Globe size={18} color="#64748b" />}
+              icon={<Globe size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Ngôn ngữ"
               value="Tiếng Việt"
             />
             <InfoRow
-              icon={<Database size={18} color="#64748b" />}
+              icon={<Database size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Bộ nhớ"
               value="124 MB"
-              valueColor="#94a3b8"
+              valueColor={Colors.textMuted}
             />
             <NavRow
-              icon={<Trash2 size={18} color="#64748b" />}
+              icon={<Trash2 size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Xoá dữ liệu cache"
               onPress={handleClearCache}
@@ -677,23 +680,23 @@ export default function SettingsScreen() {
           {/* Hỗ trợ */}
           <SettingsSection title="Hỗ trợ">
             <NavRow
-              icon={<HelpCircle size={18} color="#64748b" />}
+              icon={<HelpCircle size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Trung tâm trợ giúp"
               hasBorderTop={false}
             />
             <NavRow
-              icon={<MessageSquare size={18} color="#64748b" />}
+              icon={<MessageSquare size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Góp ý & phản hồi"
             />
             <NavRow
-              icon={<FileText size={18} color="#64748b" />}
+              icon={<FileText size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Chính sách bảo mật"
             />
             <NavRow
-              icon={<FileText size={18} color="#64748b" />}
+              icon={<FileText size={18} color={Colors.textSecondary} />}
               iconBg="#f1f5f9"
               label="Điều khoản sử dụng"
             />
@@ -705,7 +708,7 @@ export default function SettingsScreen() {
               borderRadius: 24,
               overflow: "hidden",
               marginBottom: 20,
-              shadowColor: "#f43f5e",
+              shadowColor: Colors.primary,
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.15,
               shadowRadius: 12,
@@ -727,13 +730,13 @@ export default function SettingsScreen() {
                 style={{
                   fontSize: 20,
                   fontWeight: "800",
-                  color: PRIMARY,
+                  color: Colors.primary,
                 }}
               >
                 MyLoveThaiHoc
               </Text>
               <Text
-                style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}
+                style={{ fontSize: 12, color: Colors.textMuted, marginTop: 4 }}
               >
                 Phiên bản 2.0.0 (Build 2026)
               </Text>
@@ -741,7 +744,7 @@ export default function SettingsScreen() {
                 style={{
                   fontSize: 13,
                   fontWeight: "500",
-                  color: "#64748b",
+                  color: Colors.textSecondary,
                   marginTop: 12,
                   fontStyle: "italic",
                 }}
@@ -752,25 +755,27 @@ export default function SettingsScreen() {
           </View>
 
           {/* ── Logout button ── */}
-          <Pressable
-            onPress={handleLogout}
-            hitSlop={4}
-            style={({ pressed }) => ({
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              paddingVertical: 16,
-              borderRadius: 16,
-              borderWidth: 2,
-              borderColor: "rgba(244,63,94,0.25)",
-              backgroundColor: pressed ? "#fff1f4" : "transparent",
-            })}
-          >
-            <LogOut size={18} color={PRIMARY} />
-            <Text style={{ fontSize: 15, fontWeight: "700", color: PRIMARY }}>
-              Đăng xuất
-            </Text>
+          <Pressable onPress={handleLogout} hitSlop={4}>
+            {({ pressed }) => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  paddingVertical: 16,
+                  borderRadius: 16,
+                  borderWidth: 2,
+                  borderColor: "rgba(244,63,94,0.25)",
+                  backgroundColor: pressed ? "#fff1f4" : "transparent",
+                }}
+              >
+                <LogOut size={18} color={Colors.primary} />
+                <Text style={{ fontSize: 15, fontWeight: "700", color: Colors.primary }}>
+                  Đăng xuất
+                </Text>
+              </View>
+            )}
           </Pressable>
         </View>
       </ScrollView>

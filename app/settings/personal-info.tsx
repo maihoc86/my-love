@@ -22,8 +22,7 @@ import { ArrowLeft, User } from "lucide-react-native";
 
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── FieldInput ───────────────────────────────────────────────
 
@@ -49,7 +48,7 @@ const FieldInput = memo(function FieldInput({
         style={{
           fontSize: 10,
           fontWeight: "700",
-          color: "#94a3b8",
+          color: Colors.textTertiary,
           textTransform: "uppercase",
           letterSpacing: 1.2,
           marginBottom: 6,
@@ -68,7 +67,7 @@ const FieldInput = memo(function FieldInput({
           backgroundColor: editable ? "#f8fafc" : "transparent",
           borderRadius: 14,
           borderWidth: editable ? 1.5 : 0,
-          borderColor: editable ? PRIMARY : "transparent",
+          borderColor: editable ? Colors.primary : "transparent",
         }}
         value={value}
         onChangeText={onChangeText}
@@ -151,7 +150,7 @@ export default function PersonalInfoScreen() {
   }, [fullName, phone, hideSaveBtn]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -166,7 +165,7 @@ export default function PersonalInfoScreen() {
             paddingVertical: 13,
             backgroundColor: "rgba(248,245,246,0.95)",
             borderBottomWidth: 1,
-            borderBottomColor: "rgba(244,63,94,0.08)",
+            borderBottomColor: Colors.primaryAlpha08,
           }}
         >
           <Pressable onPress={() => router.back()} hitSlop={10} style={{ width: 40 }}>
@@ -188,7 +187,7 @@ export default function PersonalInfoScreen() {
               style={{
                 fontSize: 14,
                 fontWeight: "600",
-                color: isEditing ? "#64748b" : PRIMARY,
+                color: isEditing ? "#64748b" : Colors.primary,
               }}
             >
               {isEditing ? "Hủy" : "Chỉnh sửa"}
@@ -208,7 +207,7 @@ export default function PersonalInfoScreen() {
               style={{
                 borderRadius: 20,
                 overflow: "hidden",
-                shadowColor: PRIMARY,
+                shadowColor: Colors.primary,
                 shadowOffset: { width: 0, height: 6 },
                 shadowOpacity: 0.2,
                 shadowRadius: 14,
@@ -216,7 +215,7 @@ export default function PersonalInfoScreen() {
               }}
             >
               <View
-                style={{ backgroundColor: PRIMARY, padding: 28, alignItems: "center" }}
+                style={{ backgroundColor: Colors.primary, padding: 28, alignItems: "center" }}
               >
                 {/* Purple gradient overlay */}
                 <View
@@ -246,10 +245,10 @@ export default function PersonalInfoScreen() {
                     overflow: "hidden",
                   }}
                 >
-                  <User size={36} color="#fff" />
+                  <User size={36} color={Colors.textOnPrimary} />
                 </View>
 
-                <Text style={{ fontSize: 18, fontWeight: "800", color: "#fff" }}>
+                <Text style={{ fontSize: 18, fontWeight: "800", color: Colors.textOnPrimary }}>
                   {fullName}
                 </Text>
                 <Text
@@ -269,7 +268,7 @@ export default function PersonalInfoScreen() {
           <View
             style={{
               marginHorizontal: 16,
-              backgroundColor: "#fff",
+              backgroundColor: Colors.surface,
               borderRadius: 20,
               padding: 20,
               shadowColor: "#000",
@@ -307,7 +306,7 @@ export default function PersonalInfoScreen() {
                 style={{
                   fontSize: 10,
                   fontWeight: "700",
-                  color: "#94a3b8",
+                  color: Colors.textTertiary,
                   textTransform: "uppercase",
                   letterSpacing: 1.2,
                   marginBottom: 6,
@@ -352,16 +351,16 @@ export default function PersonalInfoScreen() {
               paddingVertical: 16,
               borderRadius: 14,
               alignItems: "center",
-              backgroundColor: PRIMARY,
+              backgroundColor: Colors.primary,
               opacity: pressed ? 0.88 : 1,
-              shadowColor: PRIMARY,
+              shadowColor: Colors.primary,
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
               shadowRadius: 10,
               elevation: 6,
             })}
           >
-            <Text style={{ fontSize: 16, fontWeight: "700", color: "#fff" }}>
+            <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.textOnPrimary }}>
               Lưu thay đổi
             </Text>
           </Pressable>

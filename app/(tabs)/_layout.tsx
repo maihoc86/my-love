@@ -8,8 +8,7 @@ import {
   Calendar,
   Settings,
 } from "lucide-react-native";
-
-const PRIMARY = "#f43f5e";
+import { Colors } from "@/theme";
 
 // ─── Custom Add Tab Button ────────────────────────────────────
 
@@ -34,21 +33,21 @@ function AddTabButton({ onPress, accessibilityState }: BottomTabBarButtonProps) 
           width: 60,
           height: 60,
           borderRadius: 30,
-          backgroundColor: focused ? "#e11d48" : PRIMARY,
+          backgroundColor: focused ? Colors.primaryDark : Colors.primary,
           alignItems: "center",
           justifyContent: "center",
           // White ring border
           borderWidth: 4,
-          borderColor: "#ffffff",
+          borderColor: Colors.surface,
           // Shadow
-          shadowColor: PRIMARY,
+          shadowColor: Colors.primary,
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.45,
           shadowRadius: 12,
           elevation: 12,
         }}
       >
-        <Plus size={28} color="#ffffff" strokeWidth={2.5} />
+        <Plus size={28} color={Colors.surface} strokeWidth={2.5} />
       </View>
     </Pressable>
   );
@@ -61,11 +60,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: PRIMARY,
-        tabBarInactiveTintColor: "#9ca3af",
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textTertiary,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
-          borderTopColor: "rgba(244,63,94,0.08)",
+          backgroundColor: Colors.surface,
+          borderTopColor: Colors.primaryAlpha08,
           borderTopWidth: 1,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: -2 },

@@ -31,8 +31,7 @@ import {
 
 // ─── Constants ───────────────────────────────────────────────
 
-const PRIMARY = "#f43f5e";
-const BG = "#f8f5f6";
+import { Colors } from "@/theme";
 
 // ─── SectionHeader ────────────────────────────────────────────
 
@@ -42,7 +41,7 @@ const SectionHeader = memo(function SectionHeader({ title }: { title: string }) 
       style={{
         fontSize: 11,
         fontWeight: "700",
-        color: "#94a3b8",
+        color: Colors.textTertiary,
         textTransform: "uppercase",
         letterSpacing: 1.2,
         marginBottom: 8,
@@ -84,7 +83,7 @@ const ToggleRow = memo(function ToggleRow({
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: "rgba(244,63,94,0.08)",
+          backgroundColor: Colors.primaryAlpha08,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -94,14 +93,14 @@ const ToggleRow = memo(function ToggleRow({
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 15, fontWeight: "500", color: "#0f172a" }}>{label}</Text>
         {sublabel ? (
-          <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{sublabel}</Text>
+          <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>{sublabel}</Text>
         ) : null}
       </View>
       <Switch
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: "#e2e8f0", true: "rgba(244,63,94,0.4)" }}
-        thumbColor={value ? PRIMARY : "#f1f5f9"}
+        thumbColor={value ? Colors.primary : "#f1f5f9"}
         ios_backgroundColor="#e2e8f0"
       />
     </View>
@@ -124,45 +123,47 @@ const NavRow = memo(function NavRow({
   danger?: boolean;
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={4}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        gap: 12,
-        opacity: pressed ? 0.7 : 1,
-      })}
-    >
-      <View
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          backgroundColor: danger ? "rgba(239,68,68,0.08)" : "rgba(244,63,94,0.08)",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {icon}
-      </View>
-      <View style={{ flex: 1 }}>
-        <Text
+    <Pressable onPress={onPress} hitSlop={4}>
+      {({ pressed }) => (
+        <View
           style={{
-            fontSize: 15,
-            fontWeight: "500",
-            color: danger ? "#ef4444" : "#0f172a",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            gap: 12,
+            opacity: pressed ? 0.7 : 1,
           }}
         >
-          {label}
-        </Text>
-        {sublabel ? (
-          <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{sublabel}</Text>
-        ) : null}
-      </View>
-      <ChevronRight size={16} color={danger ? "#ef4444" : "#cbd5e1"} />
+          <View
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              backgroundColor: danger ? "rgba(239,68,68,0.08)" : Colors.primaryAlpha08,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "500",
+                color: danger ? Colors.error : "#0f172a",
+              }}
+            >
+              {label}
+            </Text>
+            {sublabel ? (
+              <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>{sublabel}</Text>
+            ) : null}
+          </View>
+          <ChevronRight size={16} color={danger ? Colors.error : "#cbd5e1"} />
+        </View>
+      )}
     </Pressable>
   );
 });
@@ -180,7 +181,7 @@ const Card = memo(function Card({ children }: { children: React.ReactNode }) {
     <View
       style={{
         marginHorizontal: 16,
-        backgroundColor: "#fff",
+        backgroundColor: Colors.surface,
         borderRadius: 20,
         overflow: "hidden",
         shadowColor: "#000",
@@ -246,7 +247,7 @@ export default function SecurityScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* ── Header ── */}
@@ -258,7 +259,7 @@ export default function SecurityScreen() {
           paddingVertical: 13,
           backgroundColor: "rgba(248,245,246,0.95)",
           borderBottomWidth: 1,
-          borderBottomColor: "rgba(244,63,94,0.08)",
+          borderBottomColor: Colors.primaryAlpha08,
         }}
       >
         <Pressable onPress={() => router.back()} hitSlop={10} style={{ width: 40 }}>
@@ -289,7 +290,7 @@ export default function SecurityScreen() {
         </View>
         <Card>
           <ToggleRow
-            icon={<Fingerprint size={18} color={PRIMARY} />}
+            icon={<Fingerprint size={18} color={Colors.primary} />}
             label="Sinh trắc học"
             sublabel="Mở khoá bằng Face ID / Touch ID"
             value={biometricEnabled}
@@ -297,7 +298,7 @@ export default function SecurityScreen() {
           />
           <Divider />
           <ToggleRow
-            icon={<Shield size={18} color={PRIMARY} />}
+            icon={<Shield size={18} color={Colors.primary} />}
             label="Xác thực 2 bước (OTP)"
             sublabel="Nhận mã OTP qua email mỗi lần đăng nhập"
             value={otpEnabled}
@@ -305,7 +306,7 @@ export default function SecurityScreen() {
           />
           <Divider />
           <NavRow
-            icon={<KeyRound size={18} color={PRIMARY} />}
+            icon={<KeyRound size={18} color={Colors.primary} />}
             label="Đổi mật khẩu"
             sublabel="Cập nhật mật khẩu đăng nhập"
             onPress={handleChangePassword}
@@ -332,12 +333,12 @@ export default function SecurityScreen() {
                 width: 36,
                 height: 36,
                 borderRadius: 10,
-                backgroundColor: "rgba(244,63,94,0.08)",
+                backgroundColor: Colors.primaryAlpha08,
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Monitor size={18} color={PRIMARY} />
+              <Monitor size={18} color={Colors.primary} />
             </View>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
@@ -359,46 +360,48 @@ export default function SecurityScreen() {
                   </Text>
                 </View>
               </View>
-              <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
+              <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>
                 Đăng nhập lần cuối: hôm nay
               </Text>
             </View>
           </View>
           <Divider />
           {/* Logout all other devices */}
-          <Pressable
-            onPress={handleLogoutAllDevices}
-            hitSlop={4}
-            style={({ pressed }) => ({
-              flexDirection: "row",
-              alignItems: "center",
-              paddingVertical: 14,
-              paddingHorizontal: 16,
-              gap: 12,
-              opacity: pressed ? 0.7 : 1,
-            })}
-          >
-            <View
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                backgroundColor: "rgba(249,115,22,0.08)",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <LogOut size={18} color="#f97316" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 15, fontWeight: "500", color: "#f97316" }}>
-                Đăng xuất tất cả thiết bị khác
-              </Text>
-              <Text style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>
-                Kết thúc tất cả phiên đăng nhập khác
-              </Text>
-            </View>
-            <ChevronRight size={16} color="#f97316" />
+          <Pressable onPress={handleLogoutAllDevices} hitSlop={4}>
+            {({ pressed }) => (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  gap: 12,
+                  opacity: pressed ? 0.7 : 1,
+                }}
+              >
+                <View
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    backgroundColor: "rgba(249,115,22,0.08)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LogOut size={18} color="#f97316" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 15, fontWeight: "500", color: "#f97316" }}>
+                    Đăng xuất tất cả thiết bị khác
+                  </Text>
+                  <Text style={{ fontSize: 12, color: Colors.textTertiary, marginTop: 2 }}>
+                    Kết thúc tất cả phiên đăng nhập khác
+                  </Text>
+                </View>
+                <ChevronRight size={16} color="#f97316" />
+              </View>
+            )}
           </Pressable>
         </Card>
 
@@ -408,7 +411,7 @@ export default function SecurityScreen() {
         </View>
         <Card>
           <NavRow
-            icon={<ShieldAlert size={18} color="#ef4444" />}
+            icon={<ShieldAlert size={18} color={Colors.error} />}
             label="Xoá tài khoản"
             sublabel="Xoá vĩnh viễn tài khoản và toàn bộ dữ liệu"
             onPress={handleDeleteAccount}
@@ -431,7 +434,7 @@ export default function SecurityScreen() {
             alignItems: "flex-start",
           }}
         >
-          <Lock size={14} color={PRIMARY} style={{ marginTop: 1 }} />
+          <Lock size={14} color={Colors.primary} style={{ marginTop: 1 }} />
           <Text style={{ flex: 1, fontSize: 12, color: "#64748b", lineHeight: 18 }}>
             Dữ liệu của bạn được mã hoá và bảo vệ. Chúng tôi không bao giờ chia sẻ thông tin cá
             nhân với bên thứ ba.

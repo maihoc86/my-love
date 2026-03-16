@@ -51,6 +51,11 @@
       "sourceType": "github",
       "computedHash": "6c14e4efb34a9c4759e8b959f82dec328f87dd89a022957c6737086984b9b106"
     },
+    "react-native": {
+      "source": "alinaqi/claude-bootstrap",
+      "sourceType": "github",
+      "computedHash": "315f817516cf15b67f0c3c915acc76d4acf42da1d97357b0d865990c2e3208ad"
+    },
     "react-native-best-practices": {
       "source": "callstackincubator/agent-skills",
       "sourceType": "github",
@@ -66,10 +71,20 @@
       "sourceType": "github",
       "computedHash": "58114c00f6fad065388af90270ce9a1c95c327a009889397525c92694afde12d"
     },
+    "stitch-ui-design": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "f24031bbbbff092ed6a05bd9bef17be9004cf19ccc2036759033fcb90d883b2f"
+    },
     "supabase-postgres-best-practices": {
       "source": "supabase/agent-skills",
       "sourceType": "github",
       "computedHash": "9c87c315aed143ee3b34bec8117100f5035e0df09e6b23e1ecc772cff434c9ad"
+    },
+    "testing-mobile-apps": {
+      "source": "jeremylongshore/claude-code-plugins-plus-skills",
+      "sourceType": "github",
+      "computedHash": "1dc495bd968130bb7c2140cf08d718e5eb7189bdc66948ff7a89d24cc2bd978c"
     },
     "upgrading-expo": {
       "source": "expo/skills",

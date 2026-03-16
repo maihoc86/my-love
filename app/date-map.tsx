@@ -1,15 +1,16 @@
 import React, { useCallback, useRef, useState } from 'react';
+import { Colors } from "@/theme";
 import {
   View,
   Text,
   Pressable,
   ScrollView,
   StyleSheet,
-  Animated,
+
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import MapboxGL from '@rnmapbox/maps';
+import { WebView } from 'react-native-webview';
 import {
   ChevronLeft,
   SlidersHorizontal,
@@ -25,12 +26,8 @@ import {
   Heart,
   PlusCircle,
 } from 'lucide-react-native';
-import { EKGIS_STYLE, MAPBOX_TOKEN, DEFAULT_CAMERA, formatDistance, haversineDistance } from '../src/lib/ekmap';
+import { EKGIS_API_KEY, DEFAULT_CAMERA } from '../src/lib/ekmap';
 import { POI, POICategory, CATEGORY_CONFIGS, getCategoryConfig } from '../src/types/map';
-
-// ─── Mapbox token init ───────────────────────────────────────────────────────
-
-MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 // ─── Mock POI data ───────────────────────────────────────────────────────────
 // TODO: Replace with Supabase fetch in production
@@ -111,57 +108,154 @@ const SYSTEM_POIS: POI[] = [
   },
 ];
 
-// ─── POI Marker ──────────────────────────────────────────────────────────────
+// ─── Category emoji map for markers ──────────────────────────────────────────
 
-function POIMarker({
-  poi,
-  isSelected,
-  onPress,
-}: {
-  poi: POI;
-  isSelected: boolean;
-  onPress: () => void;
-}) {
-  const cfg = getCategoryConfig(poi.category);
+const CATEGORY_EMOJI: Record<string, string> = {
+  restaurant: '🍜',
+  cafe: '☕',
+  cinema: '🎬',
+  date_spot: '💑',
+};
 
-  return (
-    <MapboxGL.PointAnnotation
-      id={`poi-${poi.id}`}
-      coordinate={[poi.lng, poi.lat]}
-      onSelected={onPress}
-    >
-      <Pressable onPress={onPress}>
-        <View
-          style={[
-            styles.markerOuter,
-            {
-              backgroundColor: isSelected ? cfg.color : cfg.bgColor,
-              borderColor: cfg.color,
-              width: isSelected ? 44 : 36,
-              height: isSelected ? 44 : 36,
-              borderRadius: isSelected ? 22 : 18,
-              shadowOpacity: isSelected ? 0.4 : 0.15,
-            },
-          ]}
-        >
-          <Text style={{ fontSize: isSelected ? 20 : 16 }}>{cfg.emoji}</Text>
-          {poi.isPartnerFavorite && (
-            <View style={styles.favBadge}>
-              <Heart size={7} color="#fff" fill="#fff" />
-            </View>
-          )}
-        </View>
-      </Pressable>
-    </MapboxGL.PointAnnotation>
-  );
+const CATEGORY_COLOR: Record<string, string> = {
+  restaurant: Colors.primary,
+  cafe: '#8b5cf6',
+  cinema: Colors.info,
+  date_spot: Colors.primaryGradientEnd,
+};
+
+// ─── MapLibre HTML ───────────────────────────────────────────────────────────
+
+function buildMapHTML(pois: POI[], center: [number, number], zoom: number): string {
+  const markers = pois.map((poi) => {
+    const emoji = CATEGORY_EMOJI[poi.category] || '📍';
+    const color = CATEGORY_COLOR[poi.category] || Colors.primary;
+    return `{id:"${poi.id}",lat:${poi.lat},lng:${poi.lng},emoji:"${emoji}",color:"${color}",fav:${poi.isPartnerFavorite ? 'true' : 'false'},name:"${poi.name.replace(/"/g, '\\"')}"}`;
+  });
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet"/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body,html{width:100%;height:100%;overflow:hidden}
+#map{width:100%;height:100%}
+.marker{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform 0.2s}
+.marker-inner{width:36px;height:36px;border-radius:18px;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 3px 6px rgba(0,0,0,0.15);transition:all 0.2s}
+.marker.selected .marker-inner{width:44px;height:44px;border-radius:22px;font-size:20px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
+.fav-badge{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#f43f5e;border-radius:50%;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:6px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+var pois = [${markers.join(',')}];
+var selectedId = pois.length > 0 ? pois[0].id : null;
+
+var map = new maplibregl.Map({
+  container:'map',
+  style:'https://api.ekgis.vn/v2/mapstyles/style/osmplus/bright/style.json?api_key=${EKGIS_API_KEY}',
+  center:[${center[0]},${center[1]}],
+  zoom:${zoom},
+  attributionControl:false
+});
+
+map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-left');
+
+var markers = {};
+
+function createMarkerEl(poi) {
+  var el = document.createElement('div');
+  el.className = 'marker' + (poi.id === selectedId ? ' selected' : '');
+  el.id = 'marker-' + poi.id;
+  var inner = document.createElement('div');
+  inner.className = 'marker-inner';
+  inner.style.borderColor = poi.color;
+  inner.style.backgroundColor = poi.id === selectedId ? poi.color : (poi.color + '20');
+  inner.textContent = poi.emoji;
+  el.appendChild(inner);
+  if (poi.fav) {
+    var badge = document.createElement('div');
+    badge.className = 'fav-badge';
+    badge.textContent = '♥';
+    el.appendChild(badge);
+  }
+  el.addEventListener('click', function() {
+    selectPOI(poi.id);
+    window.ReactNativeWebView.postMessage(JSON.stringify({type:'select',id:poi.id}));
+  });
+  return el;
+}
+
+function selectPOI(id) {
+  if (selectedId) {
+    var prev = document.getElementById('marker-' + selectedId);
+    if (prev) {
+      prev.classList.remove('selected');
+      var prevPoi = pois.find(function(p){return p.id===selectedId});
+      if (prevPoi) prev.querySelector('.marker-inner').style.backgroundColor = prevPoi.color + '20';
+    }
+  }
+  selectedId = id;
+  var cur = document.getElementById('marker-' + id);
+  if (cur) {
+    cur.classList.add('selected');
+    var curPoi = pois.find(function(p){return p.id===id});
+    if (curPoi) {
+      cur.querySelector('.marker-inner').style.backgroundColor = curPoi.color;
+      map.flyTo({center:[curPoi.lng,curPoi.lat],duration:600});
+    }
+  }
+}
+
+pois.forEach(function(poi) {
+  var el = createMarkerEl(poi);
+  var m = new maplibregl.Marker({element:el,anchor:'center'}).setLngLat([poi.lng,poi.lat]).addTo(map);
+  markers[poi.id] = m;
+});
+
+// Listen for commands from React Native
+window.addEventListener('message', function(e) {
+  try {
+    var msg = JSON.parse(e.data);
+    if (msg.type === 'flyTo') {
+      map.flyTo({center:[msg.lng,msg.lat],zoom:msg.zoom||14,duration:600});
+    } else if (msg.type === 'select') {
+      selectPOI(msg.id);
+    } else if (msg.type === 'zoomIn') {
+      map.zoomIn();
+    } else if (msg.type === 'zoomOut') {
+      map.zoomOut();
+    } else if (msg.type === 'locateMe') {
+      map.flyTo({center:[${center[0]},${center[1]}],zoom:${zoom},duration:600});
+    }
+  } catch(err) {}
+});
+
+document.addEventListener('message', function(e) {
+  try {
+    var msg = JSON.parse(e.data);
+    if (msg.type === 'flyTo') map.flyTo({center:[msg.lng,msg.lat],zoom:msg.zoom||14,duration:600});
+    else if (msg.type === 'select') selectPOI(msg.id);
+    else if (msg.type === 'zoomIn') map.zoomIn();
+    else if (msg.type === 'zoomOut') map.zoomOut();
+    else if (msg.type === 'locateMe') map.flyTo({center:[${center[0]},${center[1]}],zoom:${zoom},duration:600});
+  } catch(err) {}
+});
+</script>
+</body>
+</html>`;
 }
 
 // ─── Date Map Screen ─────────────────────────────────────────────────────────
 
 export default function DateMapScreen() {
   const router = useRouter();
-  const cameraRef = useRef<MapboxGL.Camera>(null);
-  const mapRef = useRef<MapboxGL.MapView>(null);
+  const webviewRef = useRef<WebView>(null);
 
   const [activeCategory, setActiveCategory] = useState<POICategory | 'all'>('all');
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(SYSTEM_POIS[0]);
@@ -174,20 +268,39 @@ export default function DateMapScreen() {
 
   const nearbyPOIs = filteredPOIs.filter((p) => p.id !== selectedPOI?.id).slice(0, 4);
 
-  // ── Fly to selected POI ──────────────────────────────────────────────────
+  const mapHTML = buildMapHTML(
+    filteredPOIs,
+    DEFAULT_CAMERA.centerCoordinate,
+    DEFAULT_CAMERA.zoomLevel
+  );
+
+  // ── Send command to WebView ────────────────────────────────────────────────
+
+  const sendToMap = useCallback((msg: object) => {
+    webviewRef.current?.postMessage(JSON.stringify(msg));
+  }, []);
+
+  // ── Select POI ─────────────────────────────────────────────────────────────
 
   const selectPOI = useCallback((poi: POI) => {
     setSelectedPOI(poi);
-    cameraRef.current?.flyTo([poi.lng, poi.lat], 600);
+    sendToMap({ type: 'flyTo', lng: poi.lng, lat: poi.lat, zoom: 15 });
+    sendToMap({ type: 'select', id: poi.id });
+  }, [sendToMap]);
+
+  // ── Handle messages from WebView ───────────────────────────────────────────
+
+  const handleMapMessage = useCallback((event: { nativeEvent: { data: string } }) => {
+    try {
+      const msg = JSON.parse(event.nativeEvent.data);
+      if (msg.type === 'select') {
+        const poi = SYSTEM_POIS.find((p) => p.id === msg.id);
+        if (poi) setSelectedPOI(poi);
+      }
+    } catch {}
   }, []);
 
-  // ── Locate me ────────────────────────────────────────────────────────────
-
-  const handleLocateMe = useCallback(() => {
-    cameraRef.current?.flyTo(DEFAULT_CAMERA.centerCoordinate, 600);
-  }, []);
-
-  // ── Bookmark ─────────────────────────────────────────────────────────────
+  // ── Bookmark ───────────────────────────────────────────────────────────────
 
   const toggleBookmark = useCallback((id: string) => {
     setBookmarkedIds((prev) => {
@@ -202,44 +315,27 @@ export default function DateMapScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* ── Map (full screen behind bottom sheet) ── */}
-      <MapboxGL.MapView
-        ref={mapRef}
+      {/* ── Map WebView (full screen behind bottom sheet) ── */}
+      <WebView
+        ref={webviewRef}
+        source={{ html: mapHTML }}
         style={StyleSheet.absoluteFill}
-        styleURL={EKGIS_STYLE.bright}
-        logoEnabled={false}
-        attributionEnabled={false}
-        compassEnabled={false}
-        scaleBarEnabled={false}
-      >
-        <MapboxGL.Camera
-          ref={cameraRef}
-          centerCoordinate={DEFAULT_CAMERA.centerCoordinate}
-          zoomLevel={DEFAULT_CAMERA.zoomLevel}
-          animationDuration={DEFAULT_CAMERA.animationDuration}
-        />
-
-        {/* User location dot */}
-        <MapboxGL.UserLocation
-          visible
-          renderMode={MapboxGL.UserLocationRenderMode.Native}
-        />
-
-        {/* POI markers */}
-        {filteredPOIs.map((poi) => (
-          <POIMarker
-            key={poi.id}
-            poi={poi}
-            isSelected={selectedPOI?.id === poi.id}
-            onPress={() => selectPOI(poi)}
-          />
-        ))}
-      </MapboxGL.MapView>
+        onMessage={handleMapMessage}
+        javaScriptEnabled
+        domStorageEnabled
+        scrollEnabled={false}
+        bounces={false}
+        overScrollMode="never"
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        originWhitelist={['*']}
+        mixedContentMode="always"
+      />
 
       {/* ── Safe-area container over map ── */}
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <SafeAreaView style={{ flex: 1 }} edges={['top']} pointerEvents="box-none">
         {/* ── Header ── */}
-        <View style={styles.header}>
+        <View style={styles.header} pointerEvents="box-none">
           <Pressable
             onPress={() => router.back()}
             hitSlop={10}
@@ -272,7 +368,7 @@ export default function DateMapScreen() {
             onPress={() => setActiveCategory('all')}
             style={[
               styles.filterPill,
-              { backgroundColor: activeCategory === 'all' ? '#f43f5e' : 'rgba(255,255,255,0.95)' },
+              { backgroundColor: activeCategory === 'all' ? Colors.primary : 'rgba(255,255,255,0.95)' },
             ]}
           >
             <Text
@@ -311,9 +407,9 @@ export default function DateMapScreen() {
         </ScrollView>
 
         {/* ── Map controls ── */}
-        <View style={styles.mapControls}>
+        <View style={styles.mapControls} pointerEvents="box-none">
           <Pressable
-            onPress={handleLocateMe}
+            onPress={() => sendToMap({ type: 'locateMe' })}
             style={styles.mapControlBtn}
             accessibilityLabel="Vị trí của tôi"
           >
@@ -322,9 +418,7 @@ export default function DateMapScreen() {
           <View style={[styles.mapControlBtn, styles.zoomGroup]}>
             <Pressable
               style={styles.zoomBtn}
-              onPress={() => {
-                /* TODO: zoom in via camera */
-              }}
+              onPress={() => sendToMap({ type: 'zoomIn' })}
               accessibilityLabel="Phóng to"
             >
               <Plus size={18} color="#374151" />
@@ -332,9 +426,7 @@ export default function DateMapScreen() {
             <View style={styles.zoomDivider} />
             <Pressable
               style={styles.zoomBtn}
-              onPress={() => {
-                /* TODO: zoom out via camera */
-              }}
+              onPress={() => sendToMap({ type: 'zoomOut' })}
               accessibilityLabel="Thu nhỏ"
             >
               <Minus size={18} color="#374151" />
@@ -343,7 +435,7 @@ export default function DateMapScreen() {
         </View>
 
         {/* ── Powered by eKMap watermark ── */}
-        <View style={styles.watermark}>
+        <View style={styles.watermark} pointerEvents="none">
           <Text style={styles.watermarkText}>Powered by eKMap</Text>
         </View>
 
@@ -355,7 +447,7 @@ export default function DateMapScreen() {
           ]}
           accessibilityLabel="Thêm địa điểm"
         >
-          <PlusCircle size={26} color="#fff" fill="#f43f5e" />
+          <PlusCircle size={26} color={Colors.textOnPrimary} fill={Colors.primary} />
         </Pressable>
 
         {/* ── Bottom Sheet ── */}
@@ -370,7 +462,7 @@ export default function DateMapScreen() {
                 <Sparkles size={15} color="#8b5cf6" />
                 <Text style={styles.aiBadgeText}>
                   AI gợi ý:{' '}
-                  <Text style={{ fontWeight: '700', color: '#1f2937' }}>Thái Hoc</Text>{' '}
+                  <Text style={{ fontWeight: '700', color: Colors.textPrimary }}>Thái Hoc</Text>{' '}
                   thích quán có view đẹp, yên tĩnh để trò chuyện.
                 </Text>
               </View>
@@ -449,7 +541,7 @@ function SelectedSpotCard({
             )}
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 3 }}>
-            <Text style={{ fontSize: 11, color: '#9ca3af' }}>📍</Text>
+            <Text style={{ fontSize: 11, color: Colors.textTertiary }}>📍</Text>
             <Text style={styles.addressText} numberOfLines={1}>
               {poi.address}
             </Text>
@@ -473,8 +565,8 @@ function SelectedSpotCard({
       >
         {poi.isPartnerFavorite && (
           <View style={[styles.tag, { backgroundColor: '#fff1f2', borderColor: '#fecdd3' }]}>
-            <Heart size={11} color="#f43f5e" fill="#f43f5e" />
-            <Text style={[styles.tagText, { color: '#f43f5e' }]}>Em thích</Text>
+            <Heart size={11} color={Colors.primary} fill={Colors.primary} />
+            <Text style={[styles.tagText, { color: Colors.primary }]}>Em thích</Text>
           </View>
         )}
         {poi.tags.filter((t) => t !== 'Em thích').map((tag) => (
@@ -490,7 +582,7 @@ function SelectedSpotCard({
           style={({ pressed }) => [styles.actionPrimary, { opacity: pressed ? 0.85 : 1 }]}
           accessibilityLabel="Dẫn đường"
         >
-          <Navigation size={16} color="#fff" />
+          <Navigation size={16} color={Colors.textOnPrimary} />
           <Text style={styles.actionPrimaryText}>Dẫn đường</Text>
         </Pressable>
 
@@ -499,14 +591,14 @@ function SelectedSpotCard({
           style={({ pressed }) => [
             styles.actionSecondary,
             { opacity: pressed ? 0.75 : 1 },
-            isBookmarked && { backgroundColor: '#fce7f3', borderColor: '#fda4af' },
+            isBookmarked && { backgroundColor: Colors.backgroundSecondary, borderColor: '#fda4af' },
           ]}
           accessibilityLabel="Lưu"
         >
           <Bookmark
             size={18}
-            color={isBookmarked ? '#f43f5e' : '#6b7280'}
-            fill={isBookmarked ? '#f43f5e' : 'transparent'}
+            color={isBookmarked ? Colors.primary : Colors.textSecondary}
+            fill={isBookmarked ? Colors.primary : 'transparent'}
           />
         </Pressable>
 
@@ -564,7 +656,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -576,7 +668,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#1f2937',
+    color: Colors.textPrimary,
   },
 
   // Filter
@@ -611,7 +703,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -621,7 +713,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   zoomGroup: {
-    height: 'auto',
+    height: 'auto' as any,
     flexDirection: 'column',
   },
   zoomBtn: {
@@ -632,7 +724,7 @@ const styles = StyleSheet.create({
   },
   zoomDivider: {
     height: 1,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.borderLight,
     width: '100%',
   },
 
@@ -644,7 +736,7 @@ const styles = StyleSheet.create({
   },
   watermarkText: {
     fontSize: 10,
-    color: '#6b7280',
+    color: Colors.textSecondary,
     backgroundColor: 'rgba(255,255,255,0.7)',
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -659,10 +751,10 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#f43f5e',
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#f43f5e',
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.4,
     shadowRadius: 12,
@@ -676,7 +768,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 340,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     shadowColor: '#000',
@@ -689,7 +781,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 5,
     borderRadius: 3,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: Colors.border,
     alignSelf: 'center',
     marginTop: 12,
     marginBottom: 16,
@@ -709,7 +801,7 @@ const styles = StyleSheet.create({
   },
   aiBadgeText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: Colors.textSecondary,
     lineHeight: 18,
     flex: 1,
   },
@@ -718,7 +810,7 @@ const styles = StyleSheet.create({
   spotName: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#1f2937',
+    color: Colors.textPrimary,
     flex: 1,
     marginRight: 8,
   },
@@ -737,7 +829,7 @@ const styles = StyleSheet.create({
   ratingText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#1f2937',
+    color: Colors.textPrimary,
   },
   metaDot: {
     color: '#d1d5db',
@@ -745,22 +837,22 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 13,
-    color: '#6b7280',
+    color: Colors.textSecondary,
   },
   addressText: {
     fontSize: 12,
-    color: '#9ca3af',
+    color: Colors.textTertiary,
     flex: 1,
   },
 
   // Note box
   noteBox: {
-    backgroundColor: '#fdf2f8',
+    backgroundColor: Colors.background,
     borderRadius: 12,
     padding: 10,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#fce7f3',
+    borderColor: Colors.backgroundSecondary,
   },
   noteText: {
     fontSize: 12,
@@ -773,9 +865,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: '#f9fafb',
+    backgroundColor: Colors.surfaceSecondary,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.border,
     borderRadius: 24,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -793,10 +885,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#f43f5e',
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     paddingVertical: 14,
-    shadowColor: '#f43f5e',
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -805,15 +897,15 @@ const styles = StyleSheet.create({
   actionPrimaryText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#ffffff',
+    color: Colors.surface,
   },
   actionSecondary: {
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#f9fafb',
+    backgroundColor: Colors.surfaceSecondary,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: Colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -821,13 +913,13 @@ const styles = StyleSheet.create({
   // Nearby
   divider: {
     height: 1,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: Colors.borderLight,
     marginVertical: 16,
   },
   nearbySectionTitle: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#9ca3af',
+    color: Colors.textTertiary,
     letterSpacing: 0.8,
     marginBottom: 12,
   },
@@ -837,7 +929,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#f9fafb',
+    borderBottomColor: Colors.surfaceSecondary,
   },
   nearbyIcon: {
     width: 44,
@@ -849,35 +941,11 @@ const styles = StyleSheet.create({
   nearbyName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1f2937',
+    color: Colors.textPrimary,
     marginBottom: 2,
   },
   nearbyMeta: {
     fontSize: 12,
-    color: '#9ca3af',
-  },
-
-  // Marker
-  markerOuter: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
-    elevation: 5,
-  },
-  favBadge: {
-    position: 'absolute',
-    top: -3,
-    right: -3,
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: '#f43f5e',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: '#fff',
+    color: Colors.textTertiary,
   },
 });

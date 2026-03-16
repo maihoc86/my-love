@@ -1,4 +1,5 @@
 import React from "react";
+import { Colors } from "@/theme";
 import { View, Text, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -15,10 +16,10 @@ const CATEGORIES_DATA = [
 ];
 
 const SENTIMENTS = [
-  { key: "love", label: "Yêu thích", pct: 50, color: "#f43f5e" },
-  { key: "like", label: "Thích", pct: 25, color: "#fb7185" },
+  { key: "love", label: "Yêu thích", pct: 50, color: Colors.primary },
+  { key: "like", label: "Thích", pct: 25, color: Colors.primaryLight },
   { key: "neutral", label: "Bình thường", pct: 11, color: "#fda4af" },
-  { key: "hate", label: "Ghét / Dị ứng", pct: 14, color: "#ef4444" },
+  { key: "hate", label: "Ghét / Dị ứng", pct: 14, color: Colors.error },
 ];
 
 const TOTAL_ENTRIES = 56;
@@ -30,7 +31,7 @@ export default function InsightScreen() {
   const radius = 100;
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: "#fdf2f8" }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: Colors.background }}>
       <ScrollView bounces={false}>
         {/* Header */}
         <View className="flex-row items-center px-4 py-3">
@@ -52,16 +53,16 @@ export default function InsightScreen() {
           className="mx-4 mb-4 px-4 py-3 rounded-xl flex-row justify-around"
           style={{ backgroundColor: "#fff" }}
         >
-          <Text className="text-xs font-semibold" style={{ color: "#6b7280" }}>
-            <Text style={{ color: "#f43f5e", fontWeight: "800" }}>{TOTAL_ENTRIES}</Text> ghi chú
+          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
+            <Text style={{ color: Colors.primary, fontWeight: "800" }}>{TOTAL_ENTRIES}</Text> ghi chú
           </Text>
           <Text className="text-xs" style={{ color: "#d1d5db" }}>·</Text>
-          <Text className="text-xs font-semibold" style={{ color: "#6b7280" }}>
+          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
             <Text style={{ color: "#8b5cf6", fontWeight: "800" }}>11</Text> danh mục
           </Text>
           <Text className="text-xs" style={{ color: "#d1d5db" }}>·</Text>
-          <Text className="text-xs font-semibold" style={{ color: "#6b7280" }}>
-            <Text style={{ color: "#10b981", fontWeight: "800" }}>5</Text> cảm xúc
+          <Text className="text-xs font-semibold" style={{ color: Colors.textSecondary }}>
+            <Text style={{ color: Colors.success, fontWeight: "800" }}>5</Text> cảm xúc
           </Text>
         </View>
 
@@ -94,7 +95,7 @@ export default function InsightScreen() {
             })}
 
             {/* Center node */}
-            <Circle cx={cx} cy={cy} r={32} fill="#f43f5e" />
+            <Circle cx={cx} cy={cy} r={32} fill={Colors.primary} />
             <SvgText
               x={cx}
               y={cy - 4}
@@ -128,7 +129,7 @@ export default function InsightScreen() {
                     cy={y}
                     r={size}
                     fill={cat.key === "allergy" ? "#fef2f2" : "#fff1f2"}
-                    stroke={cat.key === "allergy" ? "#ef4444" : "#fda4af"}
+                    stroke={cat.key === "allergy" ? Colors.error : "#fda4af"}
                     strokeWidth={2}
                   />
                   <SvgText
@@ -215,7 +216,7 @@ export default function InsightScreen() {
             <Text className="text-xs font-semibold mb-1" style={{ color: "#8b5cf6" }}>
               💡 Gợi ý hẹn hò
             </Text>
-            <Text className="text-xs leading-5" style={{ color: "#6b7280" }}>
+            <Text className="text-xs leading-5" style={{ color: Colors.textSecondary }}>
               Thử đưa em đi quán cafe view sông Hồng vào cuối tuần, gọi trà sữa trà xanh
               (em thích!) và mang theo cuốn sách mới.
             </Text>

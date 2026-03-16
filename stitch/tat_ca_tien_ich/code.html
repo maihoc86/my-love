@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#f43f5e",
+              "background-light": "#f8f5f6",
+              "background-dark": "#221013",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-slate-100">
+<!-- Header Sticky -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between px-4 h-16">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">chevron_left</span>
+</button>
+<h1 class="text-[18px] font-bold tracking-tight">Tất cả tiện ích</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-700 dark:text-slate-300">search</span>
+</button>
+</div>
+</header>
+<main class="max-w-md mx-auto pb-24">
+<!-- Search Bar -->
+<div class="px-4 py-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-slate-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 text-sm transition-all outline-none" placeholder="Tìm tiện ích..." type="text"/>
+</div>
+</div>
+<!-- Featured Utilities Grid -->
+<div class="px-4 space-y-4">
+<h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 px-1">Tiện ích chính</h2>
+<div class="grid grid-cols-2 gap-4">
+<!-- AI Chat -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col items-start gap-3">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-rose-500 text-[10px] font-bold text-white rounded-full">HOT</div>
+<div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">AI Chat</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Trò chuyện với AI về người yêu</p>
+</div>
+</div>
+<!-- Bản đồ hẹn hò -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col items-start gap-3">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-[10px] font-bold text-white rounded-full">MỚI</div>
+<div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">map</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Bản đồ hẹn hò</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Khám phá địa điểm hẹn hò</p>
+</div>
+</div>
+<!-- Đếm ngày yêu -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col items-start gap-3">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-rose-500 text-[10px] font-bold text-white rounded-full">HOT</div>
+<div class="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Đếm ngày yêu</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Đếm ngược ngày kỷ niệm</p>
+</div>
+</div>
+<!-- Insight 360 -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col items-start gap-3">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-[10px] font-bold text-white rounded-full">MỚI</div>
+<div class="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">psychology</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Insight 360</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Phân tích sâu về người yêu</p>
+</div>
+</div>
+<!-- Ghi âm tình yêu -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 relative overflow-hidden flex flex-col items-start gap-3">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-[10px] font-bold text-white rounded-full">MỚI</div>
+<div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">mic</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Ghi âm tình yêu</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Lưu giữ giọng nói yêu thương</p>
+</div>
+</div>
+<!-- Album ảnh -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3">
+<div class="w-10 h-10 bg-sky-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">image</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Album ảnh</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Bộ sưu tập khoảnh khắc</p>
+</div>
+</div>
+<!-- Nhắc nhở -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3">
+<div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Nhắc nhở</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Không quên ngày quan trọng</p>
+</div>
+</div>
+<!-- Ngày đặc biệt -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3">
+<div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Ngày đặc biệt</h3>
+<p class="text-xs text-slate-500 leading-tight mt-1">Quản lý sự kiện hai đứa</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Coming Soon Section -->
+<div class="px-4 mt-8 space-y-4">
+<h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 px-1">Sắp ra mắt</h2>
+<div class="grid grid-cols-2 gap-4 opacity-50 grayscale cursor-not-allowed">
+<!-- Nhật ký tình yêu -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3 relative overflow-hidden">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-500 text-[8px] font-bold text-white rounded-full">SẮP RA MẮT</div>
+<div class="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">book</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Nhật ký tình yêu</h3>
+</div>
+</div>
+<!-- Quiz tình yêu -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3 relative overflow-hidden">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-500 text-[8px] font-bold text-white rounded-full">SẮP RA MẮT</div>
+<div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">help</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Quiz tình yêu</h3>
+</div>
+</div>
+<!-- Wishlist -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-800 flex flex-col items-start gap-3 relative overflow-hidden">
+<div class="absolute top-2 right-2 px-2 py-0.5 bg-slate-500 text-[8px] font-bold text-white rounded-full">SẮP RA MẮT</div>
+<div class="w-10 h-10 bg-rose-600 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">redeem</span>
+</div>
+<div>
+<h3 class="font-bold text-sm">Wishlist</h3>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Example derived from shared component) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-background-dark/95 border-t border-slate-100 dark:border-slate-800 backdrop-blur-md px-4 pb-6 pt-2 max-w-md mx-auto">
+<div class="flex items-center justify-between">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined !fill-none">home</span>
+<span class="text-[10px] font-medium">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="text-[10px] font-medium">Tiện ích</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined !fill-none">favorite</span>
+<span class="text-[10px] font-medium">Kỷ niệm</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined !fill-none">chat</span>
+<span class="text-[10px] font-medium">Tin nhắn</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined !fill-none">person</span>
+<span class="text-[10px] font-medium">Cá nhân</span>
+</a>
+</div>
+</nav>
+</body></html>
