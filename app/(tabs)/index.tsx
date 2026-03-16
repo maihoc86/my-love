@@ -528,9 +528,9 @@ export default function DashboardScreen() {
     [router]
   );
 
-  const handleEntryPress = useCallback((_id: string) => {
-    // TODO: navigate to entry detail screen
-  }, []);
+  const handleEntryPress = useCallback((id: string) => {
+    router.push(`/entries/${id}`);
+  }, [router]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>

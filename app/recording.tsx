@@ -7,6 +7,7 @@ import { X, Mic, Send } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { speechToText } from '@/lib/openrouter';
+import { logger } from '@/lib/logger';
 
 // ─── Waveform bar config ────────────────────────────────────────────────────────
 const NUM_BARS = 24;
@@ -40,6 +41,7 @@ export default function RecordingScreen() {
           return;
         }
         setPermissionGranted(true);
+        logger.info('Recording', 'Mic permission granted');
 
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: true,
@@ -74,8 +76,9 @@ export default function RecordingScreen() {
         });
         recordingRef.current = recording;
         setIsRecording(true);
+        logger.info('Recording', 'Recording started (WAV, 44.1kHz, mono)');
       } catch (err) {
-        console.error('[Recording] Init error:', err);
+        logger.error('Recording', 'Init error', err instanceof Error ? err.message : err);
         Alert.alert('Lỗi', 'Không thể bắt đầu ghi âm. Vui lòng thử lại.');
         router.back();
       }
@@ -133,14 +136,25 @@ export default function RecordingScreen() {
   };
 
   const handleStopAndSend = useCallback(async () => {
-    if (!recordingRef.current || isTranscribing) return;
+    logger.info('Recording', 'Send button pressed', {
+      hasRecording: !!recordingRef.current,
+      isTranscribing,
+      isRecording,
+    });
+
+    if (!recordingRef.current || isTranscribing) {
+      logger.warn('Recording', 'Send blocked — no recording or already transcribing');
+      return;
+    }
 
     setIsRecording(false);
     setIsTranscribing(true);
+    logger.info('Recording', 'Stopped recording, starting transcription', { durationSec: seconds });
 
     try {
       await recordingRef.current.stopAndUnloadAsync();
       const uri = recordingRef.current.getURI();
+      logger.info('Recording', 'Audio file URI', uri);
       recordingRef.current = null;
 
       if (!uri) {
@@ -152,7 +166,7 @@ export default function RecordingScreen() {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      console.log('[Recording] Audio base64 length:', audioBase64.length);
+      logger.info('Recording', 'Audio file read as base64', { length: audioBase64.length });
 
       const transcribedText = await speechToText(audioBase64, 'wav');
 
@@ -166,14 +180,14 @@ export default function RecordingScreen() {
         router.setParams({ voiceText: transcribedText });
       }, 100);
     } catch (err) {
-      console.error('[Recording] Transcribe error:', err);
+      logger.error('Recording', 'Transcribe error', err instanceof Error ? err.message : err);
       Alert.alert(
         'Lỗi chuyển giọng nói',
         err instanceof Error ? err.message : 'Không thể chuyển giọng nói thành văn bản.',
         [{ text: 'OK', onPress: () => router.back() }]
       );
     }
-  }, [isTranscribing, router]);
+  }, [isTranscribing, isRecording, seconds, router]);
 
   const handleCancel = useCallback(async () => {
     if (recordingRef.current) {
@@ -193,7 +207,7 @@ export default function RecordingScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
         {/* ── Header ── */}
         <View
           style={{
@@ -306,72 +320,68 @@ export default function RecordingScreen() {
               color: Colors.textPrimary,
               letterSpacing: 1,
               fontVariant: ['tabular-nums'],
-              marginBottom: isTranscribing ? 24 : 0,
+              marginBottom: 48,
             }}
           >
             {formatTime(seconds)}
           </Text>
-        </View>
 
-        {/* ── Bottom Actions ── */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 32,
-            paddingBottom: 32,
-            gap: 24,
-          }}
-        >
-          {/* Cancel */}
-          <Pressable
-            onPress={handleCancel}
-            disabled={isTranscribing}
-            style={({ pressed }) => ({
-              width: 56,
-              height: 56,
-              borderRadius: 28,
+          {/* Actions — inline in content */}
+          <View
+            style={{
+              flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: Colors.surfaceSecondary,
-              borderWidth: 1,
-              borderColor: Colors.border,
-              opacity: isTranscribing ? 0.4 : pressed ? 0.7 : 1,
-            })}
-            accessibilityLabel="Hủy ghi âm"
-            accessibilityRole="button"
+              gap: 32,
+            }}
           >
-            <X size={22} color={Colors.textSecondary} />
-          </Pressable>
+            {/* Cancel */}
+            <Pressable
+              onPress={handleCancel}
+              style={({ pressed }) => ({
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: Colors.surfaceSecondary,
+                borderWidth: 1,
+                borderColor: Colors.border,
+                opacity: isTranscribing ? 0.4 : pressed ? 0.7 : 1,
+              })}
+              accessibilityLabel="Hủy ghi âm"
+              accessibilityRole="button"
+            >
+              <X size={22} color={Colors.textSecondary} />
+            </Pressable>
 
-          {/* Send */}
-          <Pressable
-            onPress={handleStopAndSend}
-            disabled={isTranscribing || !isRecording}
-            style={({ pressed }) => ({
-              width: 72,
-              height: 72,
-              borderRadius: 36,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: isTranscribing ? Colors.aiPurple : Colors.primary,
-              opacity: isTranscribing ? 0.7 : pressed ? 0.85 : 1,
-              shadowColor: isTranscribing ? Colors.aiPurple : Colors.primary,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 12,
-              elevation: 6,
-            })}
-            accessibilityLabel="Dừng và gửi"
-            accessibilityRole="button"
-          >
-            {isTranscribing ? (
-              <ActivityIndicator size="small" color={Colors.textOnPrimary} />
-            ) : (
-              <Send size={26} color={Colors.textOnPrimary} />
-            )}
-          </Pressable>
+            {/* Send */}
+            <Pressable
+              onPress={handleStopAndSend}
+              style={({ pressed }) => ({
+                width: 72,
+                height: 72,
+                borderRadius: 36,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+                opacity: isTranscribing ? 0.7 : pressed ? 0.85 : 1,
+                shadowColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 12,
+                elevation: 6,
+              })}
+              accessibilityLabel="Dừng và gửi"
+              accessibilityRole="button"
+            >
+              {isTranscribing ? (
+                <ActivityIndicator size="small" color={Colors.textOnPrimary} />
+              ) : (
+                <Send size={26} color={Colors.textOnPrimary} />
+              )}
+            </Pressable>
+          </View>
         </View>
       </SafeAreaView>
     </View>

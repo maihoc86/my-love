@@ -4,11 +4,12 @@
 
 import type { Entry, ParsedEntry } from '@/types';
 import { LOVER_NAME } from '@/lib/constants';
+import { logger } from '@/lib/logger';
 
 const OPENROUTER_API_KEY = process.env.EXPO_PUBLIC_OPENROUTER_API_KEY ?? '';
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const MODEL = 'anthropic/claude-sonnet-4';
-const AUDIO_MODEL = 'openai/gpt-4o-audio-preview';
+const STT_MODEL = 'google/gemini-2.5-flash';
 
 // --- Audio types ---
 
@@ -402,7 +403,7 @@ export async function* streamTTS(
       'X-Title': 'AI Love',
     },
     body: JSON.stringify({
-      model: AUDIO_MODEL,
+      model: STT_MODEL,
       modalities: ['text', 'audio'],
       audio: { voice, format },
       stream: true,
@@ -468,7 +469,7 @@ export async function speechToText(
   audioBase64: string,
   format: 'wav' | 'mp3' = 'wav'
 ): Promise<string> {
-  console.log('[STT] Sending audio to OpenRouter, format:', format, 'base64 length:', audioBase64.length);
+  logger.info('STT', 'Sending audio to OpenRouter', { format, base64Length: audioBase64.length });
 
   const response = await fetch(OPENROUTER_BASE_URL, {
     method: 'POST',
@@ -479,20 +480,19 @@ export async function speechToText(
       'X-Title': 'AI Love',
     },
     body: JSON.stringify({
-      model: AUDIO_MODEL,
+      model: STT_MODEL,
       messages: [
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: 'Please transcribe this audio file into Vietnamese text. Only return the transcribed text, nothing else.',
+              text: 'Hãy chuyển đổi audio này thành văn bản tiếng Việt. Chỉ trả về nội dung đã chuyển đổi, không thêm gì khác.',
             },
             {
-              type: 'input_audio',
-              input_audio: {
-                data: audioBase64,
-                format,
+              type: 'image_url',
+              image_url: {
+                url: `data:audio/${format};base64,${audioBase64}`,
               },
             },
           ],
@@ -505,20 +505,20 @@ export async function speechToText(
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('[STT] API error:', response.status, errorText);
+    logger.error('STT', `API error (${response.status})`, errorText);
     throw new Error(`OpenRouter STT lỗi (${response.status}): ${errorText}`);
   }
 
   const data: OpenRouterResponse = await response.json();
-  console.log('[STT] Response received, choices:', data.choices?.length);
+  logger.info('STT', 'Response received', { choices: data.choices?.length });
   const content = data.choices?.[0]?.message?.content;
 
   if (!content) {
-    console.error('[STT] No content in response:', JSON.stringify(data));
+    logger.error('STT', 'No content in response', data);
     throw new Error('Không nhận được kết quả chuyển giọng nói');
   }
 
-  console.log('[STT] Transcribed text:', content.trim().substring(0, 100));
+  logger.info('STT', 'Transcribed successfully', content.trim().substring(0, 100));
   return content.trim();
 }
 
@@ -545,7 +545,7 @@ export async function* streamVoiceChat(
       'X-Title': 'AI Love',
     },
     body: JSON.stringify({
-      model: AUDIO_MODEL,
+      model: STT_MODEL,
       modalities: ['text', 'audio'],
       audio: { voice, format },
       stream: true,

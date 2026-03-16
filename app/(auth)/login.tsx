@@ -509,47 +509,55 @@ export default function LoginScreen() {
                 <Pressable
                   onPress={() => setStep("password")}
                   style={({ pressed }) => ({
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: 48,
                     paddingVertical: 14,
+                    paddingHorizontal: 20,
                     borderRadius: 16,
                     borderWidth: 1.5,
-                    borderColor: Colors.border,
+                    borderColor: pressed ? Colors.textMuted : "#D0C9E0",
                     marginBottom: 12,
                     backgroundColor: pressed ? Colors.surfaceSecondary : Colors.surface,
+                    gap: 8,
                   })}
                   accessibilityLabel="Đăng nhập bằng mật khẩu"
                   accessibilityRole="button"
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                    <Lock size={18} color={Colors.textSecondary} />
-                    <Text
-                      style={{ fontSize: 14, fontWeight: "600", color: Colors.textSecondary, marginLeft: 8 }}
-                    >
-                      Đăng nhập bằng mật khẩu
-                    </Text>
-                  </View>
+                  <Lock size={18} color={Colors.textSecondary} />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary }}
+                  >
+                    Đăng nhập bằng mật khẩu
+                  </Text>
                 </Pressable>
 
                 {/* Google login */}
                 <Pressable
                   onPress={() => {}}
                   style={({ pressed }) => ({
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: 48,
                     paddingVertical: 14,
+                    paddingHorizontal: 20,
                     borderRadius: 16,
                     borderWidth: 1.5,
-                    borderColor: Colors.border,
-                    backgroundColor: pressed ? Colors.surfaceSecondary : Colors.surfaceSecondary,
+                    borderColor: pressed ? Colors.textMuted : "#D0C9E0",
+                    backgroundColor: pressed ? Colors.surfaceSecondary : Colors.surface,
+                    gap: 10,
                   })}
                   accessibilityLabel="Tiếp tục với Google"
                   accessibilityRole="button"
                 >
-                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-                    <GoogleIcon />
-                    <Text
-                      style={{ fontSize: 14, fontWeight: "600", color: Colors.textSecondary, marginLeft: 10 }}
-                    >
-                      Tiếp tục với Google
-                    </Text>
-                  </View>
+                  <GoogleIcon />
+                  <Text
+                    style={{ fontSize: 14, fontWeight: "600", color: Colors.textPrimary }}
+                  >
+                    Tiếp tục với Google
+                  </Text>
                 </Pressable>
 
                 {/* Register link */}

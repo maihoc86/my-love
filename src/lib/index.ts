@@ -7,3 +7,4 @@ export { APP_NAME, APP_VERSION, LOVER_NAME, Colors, CategoryIcons, SentimentEmoj
 export { supabase, fetchEntries, addEntry, deleteEntry, fetchSpecialDates, addSpecialDate, deleteSpecialDate } from './supabase';
 export { parseUserInput, streamAIConfirmation, streamChatCompletion, getDailySuggestions, streamDailySuggestions } from './openrouter';
 export { sendMessage as sendTelegramMessage, sendReminder as sendTelegramReminder } from './telegram';
+export { logger } from './logger';

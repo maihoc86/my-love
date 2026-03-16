@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
+import DevLogViewer from "@/components/DevLogViewer";
 import {
   Animated,
   Dimensions,
@@ -173,6 +174,8 @@ export default function RootLayout() {
       {nativeSplashHidden && !splashDone && (
         <AppSplash onDone={() => setSplashDone(true)} />
       )}
+      {/* Dev-only log viewer (hidden in production) */}
+      <DevLogViewer />
     </>
   );
 }
