@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: "rgba(255,255,255,0.85)",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(244,63,94,0.1)",
+    borderBottomColor: "rgba(255,45,85,0.1)",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

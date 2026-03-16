@@ -1,5 +1,5 @@
 // ============================================================
-// Security Screen - MyLoveThaiHoc
+// Security Screen - AI Love
 // SCR-05.3 — stitch/b_o_m_t_mylovethaihoc/code.html
 // ============================================================
 
@@ -99,7 +99,7 @@ const ToggleRow = memo(function ToggleRow({
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: "#e2e8f0", true: "rgba(244,63,94,0.4)" }}
+        trackColor={{ false: "#e2e8f0", true: "rgba(255,45,85,0.4)" }}
         thumbColor={value ? Colors.primary : "#f1f5f9"}
         ios_backgroundColor="#e2e8f0"
       />
@@ -425,10 +425,10 @@ export default function SecurityScreen() {
             marginHorizontal: 16,
             marginTop: 20,
             padding: 14,
-            backgroundColor: "rgba(244,63,94,0.05)",
+            backgroundColor: "rgba(255,45,85,0.05)",
             borderRadius: 14,
             borderWidth: 1,
-            borderColor: "rgba(244,63,94,0.1)",
+            borderColor: "rgba(255,45,85,0.1)",
             flexDirection: "row",
             gap: 10,
             alignItems: "flex-start",

@@ -147,7 +147,7 @@ body,html{width:100%;height:100%;overflow:hidden}
 .marker{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform 0.2s}
 .marker-inner{width:36px;height:36px;border-radius:18px;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 3px 6px rgba(0,0,0,0.15);transition:all 0.2s}
 .marker.selected .marker-inner{width:44px;height:44px;border-radius:22px;font-size:20px;box-shadow:0 4px 12px rgba(0,0,0,0.25)}
-.fav-badge{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#f43f5e;border-radius:50%;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:6px}
+.fav-badge{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:#FF2D55;border-radius:50%;border:1.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:6px}
 </style>
 </head>
 <body>
@@ -591,7 +591,7 @@ function SelectedSpotCard({
           style={({ pressed }) => [
             styles.actionSecondary,
             { opacity: pressed ? 0.75 : 1 },
-            isBookmarked && { backgroundColor: Colors.backgroundSecondary, borderColor: '#fda4af' },
+            isBookmarked && { backgroundColor: Colors.backgroundSecondary, borderColor: '#FF6B8A' },
           ]}
           accessibilityLabel="Lưu"
         >

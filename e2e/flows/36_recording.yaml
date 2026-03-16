@@ -1,0 +1,45 @@
+# ============================================================
+# E2E: Recording & Voice Note Screens
+# Route: /recording, /voice-note
+# Tags: features, voice
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+  - voice
+---
+
+- launchApp
+
+# Navigate to voice recording via dashboard
+- scrollUntilVisible:
+    element: "Ghi âm"
+    direction: DOWN
+    optional: true
+- tapOn:
+    text: "Ghi âm"
+    optional: true
+
+# --- Verify Recording Screen ---
+- assertVisible:
+    text: ".*[Gg]hi âm.*"
+    optional: true
+
+# --- Record Button ---
+# Note: Don't actually record (needs microphone permission)
+- assertVisible:
+    accessibilityLabel: "Dừng và gửi"
+    optional: true
+- assertVisible:
+    accessibilityLabel: "Hủy"
+    optional: true
+
+# --- Close ---
+- tapOn:
+    accessibilityLabel: "Đóng"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: recording

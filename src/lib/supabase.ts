@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Supabase Client & Data Helpers
+// AI Love - Supabase Client & Data Helpers
 // ============================================================
 
 import AsyncStorage from '@react-native-async-storage/async-storage';

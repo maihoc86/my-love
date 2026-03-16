@@ -1,5 +1,5 @@
 // ============================================================
-// Partner Info Screen - MyLoveThaiHoc
+// Partner Info Screen - AI Love
 // SCR-05.1 — stitch/ch_nh_s_a_th_ng_tin_ng_i_y_u/code.html
 // ============================================================
 
@@ -199,7 +199,7 @@ export default function PartnerInfoScreen() {
                   width: 96,
                   height: 96,
                   borderRadius: 48,
-                  backgroundColor: "rgba(244,63,94,0.1)",
+                  backgroundColor: "rgba(255,45,85,0.1)",
                   alignItems: "center",
                   justifyContent: "center",
                   borderWidth: 2,
@@ -211,7 +211,7 @@ export default function PartnerInfoScreen() {
                   elevation: 4,
                 }}
               >
-                <User size={40} color="rgba(244,63,94,0.4)" />
+                <User size={40} color="rgba(255,45,85,0.4)" />
               </View>
               {/* Camera overlay */}
               <Pressable

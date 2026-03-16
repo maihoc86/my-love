@@ -2,7 +2,16 @@
 
 ## Project Overview
 
-MyLoveThaiHoc - Personal mobile app ghi nhận thông tin về người yêu (Thái Hoc).
+AI Love - Trợ lý tình yêu AI thông minh. Mobile app ghi nhận thông tin về người yêu, hỗ trợ bởi AI.
+
+**Brand Identity (Nano Banana Pro)**:
+- **Logo**: "AI" (golden `#FFB800`) + "Love" (coral `#FF2D55`)
+- **Slogan**: "Yêu thương thông minh hơn mỗi ngày ✨"
+- **Primary**: `#FF2D55` (Hot Coral Pink) — love, passion
+- **Secondary/AI**: `#7B61FF` (Electric Violet) — intelligence, premium
+- **Accent**: `#FFB800` (Golden Banana) — joy, warmth
+- **Background**: `#FFFBF5` (Warm Ivory) — cozy, inviting
+- **Text**: `#1A1033` (Deep Midnight) — violet-tinted, distinctive
 
 **Tech stack**: React Native 0.81.5 + Expo SDK 54 + Expo Router 6 + TypeScript + Supabase + OpenRouter AI + Telegram Bot.
 
@@ -12,10 +21,10 @@ MyLoveThaiHoc - Personal mobile app ghi nhận thông tin về người yêu (Th
 
 ```
 app/
-├── _layout.tsx              # Root layout + splash screen
+├── _layout.tsx              # Root layout + animated splash (AI Love branding)
 ├── index.tsx                # Landing/redirect
 ├── onboarding.tsx           # Onboarding 5-step (Welcome → Name → Birthday → Anniversary → Avatar)
-├── (auth)/                  # Auth flow
+├── (auth)/                  # Auth flow (OTP-first)
 ├── (tabs)/                  # Main tab navigator
 │   ├── _layout.tsx          # Tab bar (5 tabs: Trang chủ → AI Chat → + Thêm → Lịch → Cài đặt)
 │   ├── index.tsx            # Dashboard (SCR-01)
@@ -32,7 +41,7 @@ app/
 │   ├── personal-info.tsx    # Thông tin cá nhân (SCR-05.1)
 │   ├── partner-info.tsx     # Thông tin người yêu (SCR-05.2)
 │   ├── security.tsx         # Bảo mật (SCR-05.3)
-│   └── backup.tsx           # Sao lưu (SCR-05.4)
+│   └── backup.tsx           # Sao lưu — Đám mây AI Love (SCR-05.4)
 ├── album.tsx                # Album ảnh
 ├── chat-history.tsx         # Lịch sử chat
 ├── daily-reminder.tsx       # Nhắc nhở hàng ngày
@@ -53,13 +62,13 @@ app/
 - **FlatList**: Dùng cho danh sách (không dùng ScrollView cho list)
 - **Animation**: `Animated.Value` + spring/timing (không dùng thư viện ngoài)
 
-### Design System
+### Design System (Nano Banana Pro)
 
 **Centralized trong `src/theme/`** — KHÔNG hardcode colors trong screens.
 
 ```
 src/theme/
-├── colors.ts       # All color tokens (primary, semantic, text, border...)
+├── colors.ts       # All color tokens (Nano Banana Pro palette)
 ├── spacing.ts      # Spacing scale, radius presets, layout constants
 ├── typography.ts   # Font sizes, weights, line heights
 ├── shadows.ts      # Shadow presets (sm, md, lg, fab, tabBar)
@@ -67,10 +76,32 @@ src/theme/
 ```
 
 - **Import**: `import { Colors, Shadows, Spacing } from '@/theme'`
-- **Primary**: `Colors.primary` (#f43f5e rose-500)
+- **Primary**: `Colors.primary` (`#FF2D55` Hot Coral Pink)
+- **Secondary**: `Colors.aiPurple` (`#7B61FF` Electric Violet)
+- **Accent**: `Colors.accent` (`#FFB800` Golden Banana)
+- **Background**: `Colors.background` (`#FFFBF5` Warm Ivory)
+- **Gradient hero**: `Colors.primary` → `Colors.aiPurple` (love → AI)
+- **Gradient warm**: `Colors.primaryGradientStart` → `Colors.primaryGradientEnd`
 - **Icons**: `lucide-react-native` (single source)
 - **Tab bar**: FAB circular button ở giữa (nút Thêm), `Layout.fabElevation`
 - **Touch target**: Min 48dp (`Layout.minTouchTarget`)
+
+#### Color Tokens Quick Reference
+
+| Token | Hex | Dùng cho |
+|-------|-----|----------|
+| `primary` | `#FF2D55` | CTA, active tabs, FAB, accent |
+| `primaryLight` | `#FF6B8A` | Disabled buttons, light variant |
+| `primaryDark` | `#E6003D` | Hover/press states |
+| `aiPurple` | `#7B61FF` | AI features, chat, secondary accent |
+| `accent` | `#FFB800` | Logo "AI" text, golden highlights, joy |
+| `background` | `#FFFBF5` | App background |
+| `backgroundSecondary` | `#FFF0E6` | Section backgrounds |
+| `surface` | `#ffffff` | Cards, modals |
+| `textPrimary` | `#1A1033` | Main text |
+| `textSecondary` | `#5C5478` | Secondary text |
+| `textMuted` | `#B5ADCC` | Hints, placeholders |
+| `border` | `#E8E4F0` | Soft lavender borders |
 
 ### Shared Components
 
@@ -178,13 +209,13 @@ Tài liệu đầy đủ: `docs/STORE_GUIDELINES.md`
 #### 2. Permissions — Chỉ request khi cần
 
 ```tsx
-// ✅ ĐÚNG — Chỉ request permission khi user thực sự dùng feature
+// ĐÚNG — Chỉ request permission khi user thực sự dùng feature
 const requestCamera = async () => {
   const { status } = await Camera.requestPermissionsAsync();
   if (status !== "granted") { /* handle gracefully */ }
 };
 
-// ❌ SAI — Request tất cả permissions khi mở app
+// SAI — Request tất cả permissions khi mở app
 ```
 
 **Info.plist keys** (chỉ khai báo cho features thực sự dùng — khai báo thừa = reject):
@@ -221,13 +252,15 @@ const requestCamera = async () => {
 // app.json
 {
   "expo": {
+    "name": "AI Love",
+    "scheme": "ailove",
     "ios": {
-      "bundleIdentifier": "com.tienphongcds.mylovethaihoc",
-      "buildNumber": "1"  // Phải tăng mỗi lần submit
+      "bundleIdentifier": "com.tienphongcds.ailove",
+      "buildNumber": "1"
     },
     "android": {
-      "package": "com.tienphongcds.mylovethaihoc",
-      "versionCode": 1    // Phải tăng mỗi lần submit
+      "package": "com.tienphongcds.ailove",
+      "versionCode": 1
     }
   }
 }
@@ -241,8 +274,8 @@ const requestCamera = async () => {
 
 | File | Nội dung |
 |------|----------|
-| `docs/BRD.md` | Business Requirements Document (v2.3.0) |
-| `docs/SRS.md` | Software Requirements Specification (v2.3.0) |
+| `docs/BRD.md` | Business Requirements Document |
+| `docs/SRS.md` | Software Requirements Specification |
 | `docs/user-stories.json` | User Stories (JSON format) |
 | `docs/STORE_GUIDELINES.md` | Quy định Google Play & App Store đầy đủ |
 | `docs/STITCH_PROMPT.md` | Google Stitch prompts |

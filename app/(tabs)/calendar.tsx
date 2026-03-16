@@ -1,5 +1,5 @@
 // ============================================================
-// Calendar / Special Dates Screen - MyLoveThaiHoc
+// Calendar / Special Dates Screen - AI Love
 // Rebuilt v2.0 — based on stitch/l_ch_s_ki_n_c_p_nh_t/code.html
 // + BRD v2.0 + SRS v2.0 (FR-CAL-001/002/003)
 // ============================================================

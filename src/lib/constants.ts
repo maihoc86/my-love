@@ -1,13 +1,14 @@
 // ============================================================
-// MyLoveThaiHoc - App Constants
+// AI Love - App Constants
 // Colors are re-exported from @/theme for backward compatibility.
 // New code should import directly from '@/theme'.
 // ============================================================
 
 export { Colors } from '../theme/colors';
 
-export const APP_NAME = 'MyLoveThaiHoc';
+export const APP_NAME = 'AI Love';
 export const APP_VERSION = '2.0.0';
+export const APP_SLOGAN = 'Yêu thương thông minh hơn mỗi ngày ✨';
 export const LOVER_NAME = 'Thái Hoc';
 
 // ─── Category Icons (single source of truth) ─────────────────
@@ -42,14 +43,14 @@ export const CategoryBgColors: Record<string, string> = {
   food: '#fff7ed',
   place: '#eff6ff',
   hobby: '#f0fdf4',
-  date: '#fdf2f8',
+  date: '#FFF0E6',
   gift: '#fef3c7',
   trait: '#faf5ff',
   allergy: '#fef2f2',
   style: '#fdf4ff',
   music: '#ecfdf5',
   movie: '#eef2ff',
-  other: '#f9fafb',
+  other: '#FAF7F2',
 };
 
 // ─── Smart Placeholders per Category ─────────────────────────

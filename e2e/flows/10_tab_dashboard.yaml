@@ -1,0 +1,78 @@
+# ============================================================
+# E2E: Dashboard / Home Tab
+# Route: /(tabs)/index
+# Tags: tabs, smoke, dashboard
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - tabs
+  - smoke
+  - dashboard
+---
+
+- launchApp
+
+# --- Verify Tab Bar ---
+- assertVisible: "Trang chủ"
+- assertVisible: "AI Chat"
+- assertVisible: "Lịch"
+- assertVisible: "Cài đặt"
+- assertVisible:
+    accessibilityLabel: "Thêm"
+
+# --- Hero Card ---
+- assertVisible: "Thái Hoc của bạn"
+- assertVisible: "kỉ niệm tuyệt vời"
+
+# --- Sắp tới Section ---
+- assertVisible: "Sắp tới"
+- assertVisible: "Xem tất cả"
+
+# Verify upcoming date cards exist
+- assertVisible:
+    text: ".*[Ss]inh nhật.*"
+    optional: true
+
+# --- Tiện ích Section ---
+- scrollUntilVisible:
+    element: "Tiện ích"
+    direction: DOWN
+- assertVisible: "Tiện ích"
+
+# Verify utility tiles
+- assertVisible: "AI Chat"
+- assertVisible:
+    text: "Bản đồ"
+    optional: true
+- assertVisible:
+    text: "Đếm ngày"
+    optional: true
+
+# --- Ghi chép gần đây Section ---
+- scrollUntilVisible:
+    element: "Ghi chép gần đây"
+    direction: DOWN
+- assertVisible: "Ghi chép gần đây"
+
+# Verify recent entries exist
+- assertVisible:
+    text: ".*[Pp]hở bò.*"
+    optional: true
+
+# --- Tap utility tile to navigate ---
+- scrollUntilVisible:
+    element: "AI Chat"
+    direction: UP
+- tapOn:
+    text: "AI Chat"
+    index: 0
+
+# Should navigate to chat tab
+- assertVisible:
+    text: ".*[Xx]in chào.*"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: tab_dashboard

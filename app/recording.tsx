@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Colors } from "@/theme";
-import { View, Text, Pressable, Animated } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Colors } from '@/theme';
+import { View, Text, Pressable, Animated, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { X, Send } from 'lucide-react-native';
+import { Audio } from 'expo-av';
+import { speechToText } from '@/lib/openrouter';
 
 // ─── Waveform bar heights (fixed, matches stitch) ─────────────────────────────
 const BAR_HEIGHTS = [16, 32, 48, 64, 40, 56, 24];
@@ -14,7 +16,10 @@ const BAR_HEIGHTS = [16, 32, 48, 64, 40, 56, 24];
 export default function RecordingScreen() {
   const router = useRouter();
   const [seconds, setSeconds] = useState(0);
-  const [isRecording, setIsRecording] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const recordingRef = useRef<Audio.Recording | null>(null);
 
   // Pulsing ring animations
   const ring1 = useRef(new Animated.Value(1)).current;
@@ -22,6 +27,48 @@ export default function RecordingScreen() {
 
   // Waveform bar animations
   const bars = useRef(BAR_HEIGHTS.map(() => new Animated.Value(1))).current;
+
+  // Request permission and start recording on mount
+  useEffect(() => {
+    const initRecording = async () => {
+      try {
+        const { status } = await Audio.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Cần quyền micro',
+            'Vui lòng cho phép ứng dụng truy cập micro để ghi âm.',
+            [{ text: 'OK', onPress: () => router.back() }]
+          );
+          return;
+        }
+        setPermissionGranted(true);
+
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+
+        const { recording } = await Audio.Recording.createAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        recordingRef.current = recording;
+        setIsRecording(true);
+      } catch (err) {
+        console.error('[Recording] Init error:', err);
+        Alert.alert('Lỗi', 'Không thể bắt đầu ghi âm. Vui lòng thử lại.');
+        router.back();
+      }
+    };
+
+    initRecording();
+
+    return () => {
+      // Cleanup: stop recording if component unmounts
+      if (recordingRef.current) {
+        recordingRef.current.stopAndUnloadAsync().catch(() => {});
+      }
+    };
+  }, []);
 
   // Timer
   useEffect(() => {
@@ -74,15 +121,70 @@ export default function RecordingScreen() {
     return `${m}:${sec}`;
   };
 
-  const handleStopAndSend = () => {
+  const handleStopAndSend = useCallback(async () => {
+    if (!recordingRef.current || isTranscribing) return;
+
     setIsRecording(false);
-    // TODO: transcribe audio → send to AI Chat
-    setTimeout(() => router.back(), 400);
-  };
+    setIsTranscribing(true);
+
+    try {
+      await recordingRef.current.stopAndUnloadAsync();
+      const uri = recordingRef.current.getURI();
+      recordingRef.current = null;
+
+      if (!uri) {
+        throw new Error('Không tìm thấy file ghi âm');
+      }
+
+      // Read audio file as base64
+      const audioBase64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Transcribe via OpenRouter STT
+      const transcribedText = await speechToText(audioBase64, 'mp3');
+
+      // Reset audio mode
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+      });
+
+      // Navigate back to chat with the transcribed text
+      router.back();
+      // Use setTimeout to ensure navigation completes before setting params
+      setTimeout(() => {
+        router.setParams({ voiceText: transcribedText });
+      }, 100);
+    } catch (err) {
+      console.error('[Recording] Transcribe error:', err);
+      Alert.alert(
+        'Lỗi chuyển giọng nói',
+        err instanceof Error ? err.message : 'Không thể chuyển giọng nói thành văn bản.',
+        [{ text: 'OK', onPress: () => router.back() }]
+      );
+    }
+  }, [isTranscribing, router]);
+
+  const handleCancel = useCallback(async () => {
+    if (recordingRef.current) {
+      try {
+        await recordingRef.current.stopAndUnloadAsync();
+      } catch {
+        // ignore
+      }
+      recordingRef.current = null;
+    }
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+    });
+    router.back();
+  }, [router]);
 
   return (
     <LinearGradient
-      colors={[Colors.surface, 'rgba(244,63,94,0.05)']}
+      colors={[Colors.surface, 'rgba(255,45,85,0.05)']}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={{ flex: 1 }}
@@ -99,7 +201,7 @@ export default function RecordingScreen() {
           }}
         >
           <Pressable
-            onPress={() => router.back()}
+            onPress={handleCancel}
             hitSlop={12}
             style={({ pressed }) => ({
               width: 48,
@@ -109,12 +211,13 @@ export default function RecordingScreen() {
               opacity: pressed ? 0.6 : 1,
             })}
             accessibilityLabel="Đóng"
+            accessibilityRole="button"
           >
-            <X size={24} color="#1f2937" />
+            <X size={24} color={Colors.textPrimary} />
           </Pressable>
 
           <Text style={{ fontSize: 17, fontWeight: '700', color: Colors.textPrimary }}>
-            MyLoveThaiHoc
+            AI Love
           </Text>
 
           {/* Spacer to balance header */}
@@ -127,7 +230,7 @@ export default function RecordingScreen() {
           {/* Status badge */}
           <View
             style={{
-              backgroundColor: 'rgba(244,63,94,0.1)',
+              backgroundColor: 'rgba(255,45,85,0.1)',
               paddingHorizontal: 16,
               paddingVertical: 6,
               borderRadius: 24,
@@ -143,7 +246,7 @@ export default function RecordingScreen() {
                 letterSpacing: 1.5,
               }}
             >
-              {isRecording ? 'Đang lắng nghe...' : 'Đã dừng'}
+              {isTranscribing ? 'Đang chuyển thành văn bản...' : isRecording ? 'Đang lắng nghe...' : 'Đã dừng'}
             </Text>
           </View>
 
@@ -157,7 +260,9 @@ export default function RecordingScreen() {
               textAlign: 'center',
             }}
           >
-            AI sẽ tự động chuyển thành văn bản
+            {isTranscribing
+              ? 'OpenRouter AI đang xử lý giọng nói của bạn'
+              : 'AI sẽ tự động chuyển thành văn bản'}
           </Text>
 
           {/* Visualizer: rings + mic + waveform */}
@@ -169,7 +274,7 @@ export default function RecordingScreen() {
                 width: 256,
                 height: 256,
                 borderRadius: 128,
-                backgroundColor: 'rgba(244,63,94,0.08)',
+                backgroundColor: isTranscribing ? 'rgba(123,97,255,0.08)' : 'rgba(255,45,85,0.08)',
                 transform: [{ scale: ring1 }],
               }}
             />
@@ -180,14 +285,14 @@ export default function RecordingScreen() {
                 width: 192,
                 height: 192,
                 borderRadius: 96,
-                backgroundColor: Colors.primaryAlpha15,
+                backgroundColor: isTranscribing ? 'rgba(123,97,255,0.15)' : Colors.primaryAlpha15,
                 transform: [{ scale: ring2 }],
               }}
             />
 
             {/* Mic circle — gradient rose → purple */}
             <LinearGradient
-              colors={[Colors.primary, '#8b5cf6']}
+              colors={isTranscribing ? ['#7B61FF', '#5B3FDF'] : [Colors.primary, '#7B61FF']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{
@@ -196,46 +301,50 @@ export default function RecordingScreen() {
                 borderRadius: 64,
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: Colors.primary,
+                shadowColor: isTranscribing ? '#7B61FF' : Colors.primary,
                 shadowOffset: { width: 0, height: 8 },
                 shadowOpacity: 0.35,
                 shadowRadius: 20,
                 elevation: 10,
               }}
             >
-              <Text style={{ fontSize: 48, color: Colors.surface }}>🎙</Text>
+              <Text style={{ fontSize: 48, color: Colors.surface }}>
+                {isTranscribing ? '🤖' : '🎙'}
+              </Text>
             </LinearGradient>
 
             {/* Waveform bars — absolutely below the mic area */}
-            <View
-              style={{
-                position: 'absolute',
-                bottom: -64,
-                flexDirection: 'row',
-                alignItems: 'flex-end',
-                gap: 6,
-              }}
-            >
-              {BAR_HEIGHTS.map((h, i) => (
-                <Animated.View
-                  key={i}
-                  style={{
-                    width: 6,
-                    height: h,
-                    borderRadius: 3,
-                    backgroundColor: Colors.primary,
-                    opacity: bars[i].interpolate({
-                      inputRange: [0.4, 1],
-                      outputRange: [
-                        0.3 + i * 0.1,
-                        0.5 + i * 0.07,
-                      ],
-                    }),
-                    transform: [{ scaleY: isRecording ? bars[i] : new Animated.Value(0.3) }],
-                  }}
-                />
-              ))}
-            </View>
+            {!isTranscribing && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: -64,
+                  flexDirection: 'row',
+                  alignItems: 'flex-end',
+                  gap: 6,
+                }}
+              >
+                {BAR_HEIGHTS.map((h, i) => (
+                  <Animated.View
+                    key={i}
+                    style={{
+                      width: 6,
+                      height: h,
+                      borderRadius: 3,
+                      backgroundColor: Colors.primary,
+                      opacity: bars[i].interpolate({
+                        inputRange: [0.4, 1],
+                        outputRange: [
+                          0.3 + i * 0.1,
+                          0.5 + i * 0.07,
+                        ],
+                      }),
+                      transform: [{ scaleY: isRecording ? bars[i] : new Animated.Value(0.3) }],
+                    }}
+                  />
+                ))}
+              </View>
+            )}
           </View>
 
           {/* Timer */}
@@ -256,11 +365,13 @@ export default function RecordingScreen() {
             {/* Dừng & Gửi — gradient */}
             <Pressable
               onPress={handleStopAndSend}
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+              disabled={isTranscribing || !isRecording}
+              style={({ pressed }) => ({ opacity: pressed ? 0.85 : isTranscribing ? 0.6 : 1 })}
               accessibilityLabel="Dừng và gửi"
+              accessibilityRole="button"
             >
               <LinearGradient
-                colors={[Colors.primary, '#8b5cf6']}
+                colors={[Colors.primary, '#7B61FF']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={{
@@ -279,22 +390,25 @@ export default function RecordingScreen() {
               >
                 <Send size={18} color="#ffffff" />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.surface }}>
-                  Dừng &amp; Gửi
+                  {isTranscribing ? 'Đang xử lý...' : 'Dừng & Gửi'}
                 </Text>
               </LinearGradient>
             </Pressable>
 
             {/* Hủy — slate-100 bg */}
             <Pressable
-              onPress={() => router.back()}
+              onPress={handleCancel}
+              disabled={isTranscribing}
               style={({ pressed }) => ({
                 backgroundColor: pressed ? Colors.border : Colors.surfaceSecondary,
                 paddingVertical: 16,
                 borderRadius: 14,
                 alignItems: 'center',
                 justifyContent: 'center',
+                opacity: isTranscribing ? 0.5 : 1,
               })}
               accessibilityLabel="Hủy"
+              accessibilityRole="button"
             >
               <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.textSecondary }}>
                 Hủy
@@ -312,7 +426,7 @@ export default function RecordingScreen() {
             width: 160,
             height: 160,
             borderRadius: 80,
-            backgroundColor: 'rgba(139,92,246,0.06)',
+            backgroundColor: 'rgba(123,97,255,0.06)',
           }}
         />
         <View
@@ -323,7 +437,7 @@ export default function RecordingScreen() {
             width: 160,
             height: 160,
             borderRadius: 80,
-            backgroundColor: 'rgba(244,63,94,0.06)',
+            backgroundColor: 'rgba(255,45,85,0.06)',
           }}
         />
       </SafeAreaView>

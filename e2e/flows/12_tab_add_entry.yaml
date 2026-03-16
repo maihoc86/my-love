@@ -1,0 +1,77 @@
+# ============================================================
+# E2E: Add Entry Tab (FAB)
+# Route: /(tabs)/add
+# Tags: tabs, smoke, entry
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - tabs
+  - smoke
+  - entry
+---
+
+- launchApp
+
+# Tap FAB (center tab button)
+- tapOn:
+    accessibilityLabel: "Thêm"
+
+# --- Verify Add Screen ---
+- assertVisible: "Ghi chú mới"
+
+# --- Category Grid ---
+- assertVisible: "Danh mục"
+- assertVisible: "Đồ ăn"
+- assertVisible: "Địa điểm"
+- assertVisible: "Sở thích"
+- assertVisible: "Hẹn hò"
+- assertVisible: "Quà tặng"
+
+# Select a category
+- tapOn: "Đồ ăn"
+
+# --- Sentiment Picker ---
+- assertVisible:
+    text: "Cảm xúc"
+    optional: true
+
+# Select sentiment
+- tapOn:
+    text: "❤️"
+    optional: true
+
+# --- Title Input ---
+- tapOn:
+    text: ".*[Tt]hái Hoc thích ăn.*"
+    optional: true
+- inputText: "Phở bò tái nạm"
+
+# --- Detail Input ---
+- tapOn:
+    text: ".*[Cc]hi tiết.*"
+    optional: true
+- inputText: "Quán phở Thìn Bờ Hồ, ăn mỗi sáng thứ 7"
+
+# --- Event Date Toggle ---
+- scrollUntilVisible:
+    element: "Ngày sự kiện"
+    direction: DOWN
+    optional: true
+
+# --- Recurring Toggle ---
+- scrollUntilVisible:
+    element: "Lặp lại hàng năm"
+    direction: DOWN
+    optional: true
+
+# --- Submit ---
+- scrollUntilVisible:
+    element: "Lưu ghi chú"
+    direction: DOWN
+    optional: true
+- tapOn:
+    text: "Lưu ghi chú"
+    optional: true
+
+# Screenshot
+- takeScreenshot: tab_add_entry

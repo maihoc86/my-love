@@ -1,5 +1,5 @@
 // ============================================================
-// Dashboard Screen - MyLoveThaiHoc
+// Dashboard Screen - AI Love
 // Rebuilt v2.0 — based on stitch/trang_ch_ch_nh_s_a_nh_b_a/code.html
 // + BRD v2.0 + SRS v2.0 + User Stories
 // ============================================================

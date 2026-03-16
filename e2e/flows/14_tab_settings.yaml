@@ -1,0 +1,92 @@
+# ============================================================
+# E2E: Settings Tab + Navigation to Sub-screens
+# Route: /(tabs)/settings
+# Tags: tabs, smoke, settings
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - tabs
+  - smoke
+  - settings
+---
+
+- launchApp
+
+# Navigate to Settings tab
+- tapOn: "Cài đặt"
+
+# --- Verify Settings Screen ---
+- assertVisible:
+    text: ".*[Cc]ài đặt.*"
+
+# --- User Profile Section ---
+- assertVisible:
+    text: ".*Nguyễn Văn A.*"
+    optional: true
+- assertVisible:
+    text: ".*nguyenvana@gmail.com.*"
+    optional: true
+
+# --- Stats ---
+- assertVisible:
+    text: ".*ghi chú.*"
+    optional: true
+
+# --- Navigation Rows ---
+# Personal Info
+- assertVisible: "Thông tin cá nhân"
+- tapOn: "Thông tin cá nhân"
+- assertVisible:
+    text: ".*[Tt]hông tin cá nhân.*"
+- takeScreenshot: settings_personal_info
+- back
+
+# Partner Info
+- assertVisible: "Thông tin người yêu"
+- tapOn: "Thông tin người yêu"
+- assertVisible:
+    text: ".*[Tt]hông tin người yêu.*"
+- takeScreenshot: settings_partner_info
+- back
+
+# Security
+- scrollUntilVisible:
+    element: "Bảo mật"
+    direction: DOWN
+- tapOn: "Bảo mật"
+- assertVisible:
+    text: ".*[Bb]ảo mật.*"
+- takeScreenshot: settings_security
+- back
+
+# Backup
+- scrollUntilVisible:
+    element: "Sao lưu"
+    direction: DOWN
+- tapOn:
+    text: "Sao lưu"
+    optional: true
+- assertVisible:
+    text: ".*[Ss]ao lưu.*"
+    optional: true
+- takeScreenshot: settings_backup
+- back:
+    optional: true
+
+# --- Toggle Settings ---
+- scrollUntilVisible:
+    element: "Thông báo"
+    direction: DOWN
+    optional: true
+
+# --- Logout Button ---
+- scrollUntilVisible:
+    element: "Đăng xuất"
+    direction: DOWN
+    optional: true
+- assertVisible:
+    text: "Đăng xuất"
+    optional: true
+
+# Screenshot
+- takeScreenshot: tab_settings

@@ -1,5 +1,5 @@
 // ============================================================
-// Settings Screen - MyLoveThaiHoc
+// Settings Screen - AI Love
 // Rebuilt v2.0 — based on stitch/c_i_t_ng_i_d_ng/code.html
 // + BRD v2.0 + SRS v2.0 (FR-SET-001/002/003)
 // ============================================================
@@ -213,7 +213,7 @@ const ToggleRow = memo(function ToggleRow({
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: "#e2e8f0", true: "#fda4af" }}
+        trackColor={{ false: "#e2e8f0", true: "#FF6B8A" }}
         thumbColor={value ? Colors.primary : Colors.surfaceSecondary}
         accessibilityLabel={label}
         accessibilityRole="switch"
@@ -727,23 +727,19 @@ export default function SettingsScreen() {
           >
             <View
               style={{
-                backgroundColor: "rgba(244,63,94,0.07)",
+                backgroundColor: Colors.primaryAlpha05,
                 paddingVertical: 32,
                 paddingHorizontal: 24,
                 alignItems: "center",
                 borderWidth: 1,
-                borderColor: "rgba(244,63,94,0.12)",
+                borderColor: Colors.primaryAlpha10,
                 borderRadius: 24,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: "800",
-                  color: Colors.primary,
-                }}
-              >
-                MyLoveThaiHoc
+              <Text style={{ fontSize: 22, fontWeight: "800" }}>
+                <Text style={{ color: Colors.accent }}>AI</Text>
+                {" "}
+                <Text style={{ color: Colors.primary }}>Love</Text>
               </Text>
               <Text
                 style={{ fontSize: 12, color: Colors.textMuted, marginTop: 4 }}
@@ -759,7 +755,7 @@ export default function SettingsScreen() {
                   fontStyle: "italic",
                 }}
               >
-                Made with love for Thái Học 💕
+                Yêu thương thông minh hơn mỗi ngày ✨
               </Text>
             </View>
           </View>
@@ -777,7 +773,7 @@ export default function SettingsScreen() {
                   paddingVertical: 16,
                   borderRadius: 16,
                   borderWidth: 2,
-                  borderColor: "rgba(244,63,94,0.25)",
+                  borderColor: "rgba(255,45,85,0.25)",
                   backgroundColor: pressed ? "#fff1f4" : "transparent",
                 }}
               >

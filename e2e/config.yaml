@@ -1,0 +1,22 @@
+# ============================================================
+# Maestro E2E Test Configuration - MyLoveThaiHoc
+# ============================================================
+
+# App identifiers
+appId:
+  ios: com.cds.mylovethaihoc
+  android: com.cds.mylovethaihoc
+
+# Default settings
+name: MyLoveThaiHoc E2E Tests
+
+# Environment variables for test data
+env:
+  TEST_PHONE: "0912345678"
+  TEST_PASSWORD: "Test@1234"
+  TEST_OTP: "123456"
+  LOVER_NAME: "Thái Hoc"
+
+# Tags for selective test runs
+# Usage: maestro test e2e/flows/ --include-tags=smoke
+# Usage: maestro test e2e/flows/ --include-tags=auth

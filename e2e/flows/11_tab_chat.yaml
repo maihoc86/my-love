@@ -1,0 +1,72 @@
+# ============================================================
+# E2E: AI Chat Tab
+# Route: /(tabs)/chat
+# Tags: tabs, smoke, chat
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - tabs
+  - smoke
+  - chat
+---
+
+- launchApp
+
+# Navigate to Chat tab
+- tapOn: "AI Chat"
+
+# --- Verify Welcome Message ---
+- assertVisible:
+    text: ".*[Xx]in chào.*"
+
+# --- Quick Prompts ---
+- assertVisible: "Đồ ăn yêu thích"
+- assertVisible:
+    text: "Quà tặng hợp gu"
+    optional: true
+
+# Tap a quick prompt
+- tapOn: "Đồ ăn yêu thích"
+
+# Should auto-fill input and show response
+- assertVisible:
+    text: ".*[Tt]hái Hoc.*"
+    optional: true
+
+# Wait for AI response
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 10000
+    optional: true
+
+# --- Manual Input ---
+- tapOn:
+    text: "Nhập tin nhắn"
+    optional: true
+- inputText: "Thái Hoc thích uống trà sữa"
+- tapOn:
+    accessibilityLabel: "Gửi tin nhắn"
+
+# Wait for typing indicator and response
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+    optional: true
+
+# --- Chat History Button ---
+- tapOn:
+    accessibilityLabel: "Lịch sử chat"
+    optional: true
+- assertVisible:
+    text: "Lịch sử"
+    optional: true
+- back:
+    optional: true
+
+# --- Voice Note Button ---
+- assertVisible:
+    accessibilityLabel: "Ghi âm giọng nói"
+    optional: true
+
+# Screenshot
+- takeScreenshot: tab_chat

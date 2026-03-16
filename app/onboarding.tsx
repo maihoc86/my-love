@@ -1,5 +1,5 @@
 // ============================================================
-// Onboarding Screen - MyLoveThaiHoc
+// Onboarding Screen - AI Love
 // 5-step flow: Welcome → Name → Birthday → Anniversary → Avatar
 // Based on stitch/onboarding_*/code.html prototypes
 // ============================================================
@@ -229,11 +229,12 @@ const StepWelcome = React.memo(({ onNext }: { onNext: () => void }) => {
           >
             <Heart size={48} color="#fff" fill="#fff" />
           </View>
-          <Text style={{ color: "#fff", fontSize: FontSize["4xl"], fontWeight: FontWeight.extrabold, letterSpacing: -0.5 }}>
-            MyLoveThaiHoc
+          <Text style={{ fontSize: FontSize["4xl"], fontWeight: FontWeight.extrabold, letterSpacing: -0.5 }}>
+            <Text style={{ color: "#FFD54F" }}>AI</Text>
+            <Text style={{ color: "#fff" }}> Love</Text>
           </Text>
           <Text style={{ color: "rgba(255,255,255,0.7)", fontSize: FontSize.md, marginTop: 4 }}>
-            Ghi nhớ mọi điều về em
+            Yêu thương thông minh hơn mỗi ngày
           </Text>
         </Animated.View>
       </View>
@@ -257,23 +258,23 @@ const StepWelcome = React.memo(({ onNext }: { onNext: () => void }) => {
             Chào mừng bạn! 💕
           </Text>
           <Text style={{ fontSize: FontSize.md, color: "#64748b", marginTop: 8, textAlign: "center", lineHeight: 22 }}>
-            MyLoveThaiHoc giúp bạn ghi nhận và trân trọng mọi khoảnh khắc bên người bạn yêu thương
+            AI Love giúp bạn ghi nhận và trân trọng mọi khoảnh khắc bên người bạn yêu thương
           </Text>
         </View>
 
         {/* Feature pills */}
         <View style={{ flexDirection: "row", justifyContent: "center", gap: 8, marginBottom: 24 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(244,63,94,0.08)", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: Colors.primaryAlpha08, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
             <Text style={{ fontSize: 14 }}>📝</Text>
             <Text style={{ fontSize: FontSize.xs, fontWeight: FontWeight.semibold, color: PRIMARY }}>Ghi chú</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(139,92,246,0.08)", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: Colors.aiPurpleAlpha10, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
             <Text style={{ fontSize: 14 }}>💬</Text>
-            <Text style={{ fontSize: FontSize.xs, fontWeight: FontWeight.semibold, color: "#8b5cf6" }}>AI Chat</Text>
+            <Text style={{ fontSize: FontSize.xs, fontWeight: FontWeight.semibold, color: Colors.aiPurple }}>AI Chat</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: "rgba(236,72,153,0.08)", paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, backgroundColor: Colors.accentAlpha08, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}>
             <Text style={{ fontSize: 14 }}>📅</Text>
-            <Text style={{ fontSize: FontSize.xs, fontWeight: FontWeight.semibold, color: "#ec4899" }}>Lịch kỷ niệm</Text>
+            <Text style={{ fontSize: FontSize.xs, fontWeight: FontWeight.semibold, color: Colors.accentDark }}>Lịch kỷ niệm</Text>
           </View>
         </View>
 
@@ -435,7 +436,7 @@ function StepPartnerName({
               paddingVertical: 16,
               borderRadius: 16,
               alignItems: "center",
-              backgroundColor: canContinue ? PRIMARY : "#fda4af",
+              backgroundColor: canContinue ? PRIMARY : '#FF6B8A',
               ...Shadows.fab,
               shadowOpacity: canContinue ? 0.28 : 0,
             }}
@@ -583,9 +584,9 @@ function StepBirthday({
               {zodiac && (
                 <View
                   style={{
-                    backgroundColor: "rgba(244,63,94,0.06)",
+                    backgroundColor: "rgba(255,45,85,0.06)",
                     borderWidth: 1,
-                    borderColor: "rgba(244,63,94,0.12)",
+                    borderColor: "rgba(255,45,85,0.12)",
                     borderRadius: 16,
                     padding: 16,
                     flexDirection: "row",
@@ -805,9 +806,9 @@ function StepAnniversary({
               {counter && counter.days > 0 && (
                 <View
                   style={{
-                    backgroundColor: "rgba(244,63,94,0.04)",
+                    backgroundColor: "rgba(255,45,85,0.04)",
                     borderWidth: 1,
-                    borderColor: "rgba(244,63,94,0.1)",
+                    borderColor: "rgba(255,45,85,0.1)",
                     borderRadius: 20,
                     padding: 20,
                     alignItems: "center",
@@ -960,13 +961,13 @@ function StepAvatar({
                 borderRadius: 70,
                 borderWidth: 3,
                 borderStyle: "dashed",
-                borderColor: "rgba(244,63,94,0.3)",
-                backgroundColor: "rgba(244,63,94,0.04)",
+                borderColor: "rgba(255,45,85,0.3)",
+                backgroundColor: "rgba(255,45,85,0.04)",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <ImagePlus size={44} color="rgba(244,63,94,0.4)" />
+              <ImagePlus size={44} color="rgba(255,45,85,0.4)" />
             </View>
 
             {/* Camera overlay */}

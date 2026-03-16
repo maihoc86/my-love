@@ -1,6 +1,21 @@
-# MyLoveThaiHoc
+# AI Love
 
-Ứng dụng mobile cá nhân giúp ghi nhận, quản lý mọi thông tin về người yêu (Thái Hoc) — từ sở thích ăn uống, địa điểm yêu thích, đến ngày kỷ niệm, album ảnh hẹn hò, và gợi ý AI hàng ngày.
+> Yêu thương thông minh hơn mỗi ngày ✨
+
+Ứng dụng mobile trợ lý tình yêu AI — giúp ghi nhận, quản lý mọi thông tin về người yêu: sở thích ăn uống, địa điểm yêu thích, ngày kỷ niệm, album ảnh hẹn hò, và gợi ý AI thông minh hàng ngày.
+
+## Brand Identity (Nano Banana Pro)
+
+| Element | Value |
+|---------|-------|
+| **Logo** | **AI** (golden `#FFB800`) + **Love** (coral `#FF2D55`) |
+| **Slogan** | Yêu thương thông minh hơn mỗi ngày ✨ |
+| **Primary** | `#FF2D55` Hot Coral Pink |
+| **Secondary** | `#7B61FF` Electric Violet |
+| **Accent** | `#FFB800` Golden Banana |
+| **Background** | `#FFFBF5` Warm Ivory |
+| **Text** | `#1A1033` Deep Midnight (violet-tinted) |
+| **Style** | Premium warm · nano details · banana accent energy |
 
 ## Tính năng
 
@@ -31,26 +46,30 @@
 
 | Screen | Mô tả |
 |--------|--------|
-| **Login** | Email/phone + password, Google OAuth, OTP |
+| **Login** | Phone OTP (primary) + password fallback + Google OAuth |
 | **Register** | Phone + email + OTP verification + password |
 | **Forgot Password** | 3-step: nhập phone → verify OTP → đặt mật khẩu mới |
+
+### Onboarding
+
+5-step flow: Welcome → Partner Name → Birthday → Anniversary → Avatar
 
 ## Tech Stack
 
 | Thành phần | Công nghệ |
 |------------|-----------|
-| Framework | React Native 0.83 + Expo SDK 55 |
-| Language | TypeScript |
-| Routing | Expo Router (file-based) |
-| Styling | NativeWind (Tailwind CSS for RN) |
-| Animations | react-native-reanimated 3 |
-| Lists | @shopify/flash-list |
+| Framework | React Native 0.81.5 + Expo SDK 54 |
+| Language | TypeScript (strict mode) |
+| Routing | Expo Router 6 (file-based) |
+| Design System | Centralized `src/theme/` (Nano Banana Pro) |
+| Animations | `Animated` API (spring/timing) |
 | Database | Supabase (PostgreSQL + Auth + Storage) |
 | AI | OpenRouter API (Claude Sonnet) |
 | Voice | expo-av + OpenRouter Whisper |
 | Maps | eKMap SDK |
 | Notifications | Telegram Bot API + Expo Notifications |
 | Secure Storage | expo-secure-store |
+| Icons | lucide-react-native |
 
 ## Kiến trúc
 
@@ -75,59 +94,71 @@
   │Supabase││OpenRt││Telegr ││eKMap   │
   │Cloud   ││API   ││Bot API││Server  │
   │PG+Auth ││Claude││       ││        │
-  │+Storage││+Whisp││       ││        │
+  │+Storage││      ││       ││        │
   └────────┘└──────┘└───────┘└────────┘
 ```
 
 ## Cấu trúc dự án
 
 ```
-MyLoveThaiHoc-Mobile/
-├── app/                          # Expo Router
-│   ├── (auth)/                   # Auth screens (no tab bar)
-│   │   ├── login.tsx
-│   │   ├── register.tsx
-│   │   └── forgot-password.tsx
-│   ├── (tabs)/                   # Main app (5-tab bar)
+ai-love-mobile/
+├── app/                          # Expo Router (file-based)
+│   ├── _layout.tsx               # Root layout + animated splash
+│   ├── index.tsx                 # Landing/redirect
+│   ├── onboarding.tsx            # 5-step onboarding
+│   ├── (auth)/                   # Auth screens
+│   │   ├── login.tsx             # OTP-first login
+│   │   ├── register.tsx          # Registration
+│   │   └── forgot-password.tsx   # Password recovery
+│   ├── (tabs)/                   # Main app (5-tab bar + FAB)
+│   │   ├── _layout.tsx           # Tab bar with central FAB
 │   │   ├── index.tsx             # Dashboard
 │   │   ├── add.tsx               # Add Entry
 │   │   ├── chat.tsx              # AI Chat
 │   │   ├── calendar.tsx          # Calendar
 │   │   └── settings.tsx          # Settings
+│   ├── entries/                  # Entry screens
+│   │   ├── all.tsx               # All notes
+│   │   └── [id].tsx              # Entry detail
+│   ├── settings/                 # Settings sub-screens
+│   │   ├── personal-info.tsx
+│   │   ├── partner-info.tsx
+│   │   ├── security.tsx
+│   │   └── backup.tsx
 │   ├── date-map.tsx              # Bản đồ hẹn hò
-│   ├── navigation.tsx            # Dẫn đường
 │   ├── album.tsx                 # Album ảnh
 │   ├── love-counter.tsx          # Đếm ngày yêu
 │   ├── insight.tsx               # Insight 360°
 │   ├── voice-note.tsx            # Ghi chú giọng nói
+│   ├── recording.tsx             # Ghi âm
 │   ├── chat-history.tsx          # Lịch sử chat
 │   └── daily-reminder.tsx        # Nhắc nhở
 ├── src/
+│   ├── theme/                    # Design System (Nano Banana Pro)
+│   │   ├── colors.ts             # Color tokens
+│   │   ├── spacing.ts            # Spacing & layout
+│   │   ├── typography.ts         # Font system
+│   │   ├── shadows.ts            # Shadow presets
+│   │   └── index.ts              # Barrel export
 │   ├── components/               # Shared UI components
-│   │   ├── BottomTabBar.tsx
-│   │   ├── MiniAppGrid.tsx
-│   │   ├── NeuronMap.tsx
+│   │   ├── ui/                   # Base primitives
+│   │   ├── ChatBubble.tsx
+│   │   ├── EntryCard.tsx
 │   │   ├── CountdownRing.tsx
-│   │   ├── WaveformBars.tsx
-│   │   ├── PhotoGrid.tsx
 │   │   └── ...
 │   ├── hooks/                    # Custom hooks
 │   │   ├── useAuth.ts
 │   │   ├── useEntries.ts
-│   │   ├── useVoiceRecorder.ts
-│   │   ├── useLoveCounter.ts
-│   │   └── ...
+│   │   └── useSpecialDates.ts
 │   ├── lib/                      # Service clients
 │   │   ├── supabase.ts
 │   │   ├── openrouter.ts
 │   │   ├── telegram.ts
-│   │   ├── ekmap.ts
-│   │   └── speech.ts
-│   ├── types/
-│   └── theme/
-├── assets/
-├── docs/                         # Documentation (BRD, SRS, User Stories)
-└── stitch 2/                     # UI Design reference (15 screens)
+│   │   └── constants.ts
+│   └── types/
+├── assets/                       # App icon, splash, favicons
+├── docs/                         # BRD, SRS, User Stories, Store Guidelines
+└── stitch/                       # UI Design prototypes (Google Stitch)
 ```
 
 ## Cài đặt & Chạy
@@ -135,7 +166,7 @@ MyLoveThaiHoc-Mobile/
 ### Yêu cầu
 
 - Node.js >= 18
-- npm hoặc yarn
+- npm
 - Expo CLI (`npx expo`)
 - iOS Simulator (macOS) hoặc Android Emulator
 
@@ -143,7 +174,7 @@ MyLoveThaiHoc-Mobile/
 
 ```bash
 git clone <repo-url>
-cd MyLoveThaiHoc-Mobile
+cd ai-love-mobile
 npm install --legacy-peer-deps
 ```
 
@@ -166,13 +197,13 @@ Tạo các bảng trong Supabase Dashboard:
 
 | Table | Mô tả |
 |-------|--------|
-| **users** | Profile, lover info, love_start_date (managed by Supabase Auth) |
+| **users** | Profile, lover info, love_start_date |
 | **entries** | Ghi chú (category, title, detail, sentiment, tags) |
 | **special_dates** | Ngày đặc biệt (sinh nhật, kỷ niệm) |
 | **ai_logs** | Lịch sử chat AI |
-| **voice_notes** | Ghi chú giọng nói (audio_url, transcript, status) |
-| **photos** | Ảnh hẹn hò (image_url, event_title, category) |
-| **saved_places** | Địa điểm yêu thích (name, lat/lng, category, rating) |
+| **voice_notes** | Ghi chú giọng nói (audio_url, transcript) |
+| **photos** | Ảnh hẹn hò (image_url, event_title) |
+| **saved_places** | Địa điểm yêu thích (name, lat/lng, category) |
 | **chat_sessions** | Phiên chat (type, messages, entries_saved) |
 
 > Chi tiết schema xem tại [docs/SRS.md](docs/SRS.md#3-data-model)
@@ -188,48 +219,40 @@ npm run ios
 
 # Android
 npm run android
+
+# TypeScript check
+npm run ts:check
+
+# Lint
+npm run lint
 ```
 
 ## Tài liệu
 
-| Tài liệu | Version | Mô tả |
-|-----------|---------|--------|
-| [BRD](docs/BRD.md) | v2.0 | Business Requirements — 17 modules, 7 objectives |
-| [SRS](docs/SRS.md) | v2.0 | Software Requirements — 16 screens, 8 tables, 7 API specs |
-| [User Stories](docs/USER_STORIES.md) | v2.0 | 13 epics, 37 stories, 118 story points |
-| [Prototype](docs/PROTOTYPE.md) | v1.0 | Wireframe descriptions |
-| [UI Review](docs/STITCH2_UI_REVIEW.md) | v1.0 | Stitch 2 UI/UX evaluation (8.3/10) |
+| Tài liệu | Mô tả |
+|-----------|--------|
+| [BRD](docs/BRD.md) | Business Requirements Document |
+| [SRS](docs/SRS.md) | Software Requirements Specification |
+| [User Stories](docs/user-stories.json) | User Stories (JSON) |
+| [Store Guidelines](docs/STORE_GUIDELINES.md) | Quy định Google Play & App Store |
+| [Stitch Prompts](docs/STITCH_PROMPT.md) | Google Stitch UI prompts |
 
-## Sprint Planning
+## App Configuration
 
-| Sprint | Focus | Points |
-|--------|-------|--------|
-| Sprint 1 (5 days) | Auth + Core CRUD + Dashboard | 44 |
-| Sprint 2 (5 days) | AI Chat + Voice + Settings | 25 |
-| Sprint 3 (5 days) | Maps + Album + Love Counter | 25 |
-| Sprint 4 (5 days) | Insight + Reminder + History | 24 |
-
-**Total: 118 story points / 4 sprints / 20 working days**
-
-## Design Reference
-
-15 screens UI đã được generate bằng Google Stitch, lưu tại `stitch 2/`:
-
-```
-Auth:       Login, Register (OTP), Forgot Password
-Tabs:       Dashboard, Add Entry, AI Chat, Calendar, Settings
-Sub:        Date Map, Navigation, Album, Insight 360°,
-            Voice Note, Recording State, Chat History
-```
-
-> Đánh giá UI/UX: **8.3/10** — Chi tiết tại [STITCH2_UI_REVIEW.md](docs/STITCH2_UI_REVIEW.md)
+| Key | Value |
+|-----|-------|
+| **Package name** | `ai-love-mobile` |
+| **iOS Bundle ID** | `com.tienphongcds.ailove` |
+| **Android Package** | `com.tienphongcds.ailove` |
+| **URI Scheme** | `ailove` |
+| **Version** | 2.0.0 |
 
 ## Compatibility
 
 - iOS >= 15.0
 - Android >= API 24 (Android 7.0)
-- Expo SDK 55+
-- React Native 0.83+
+- Expo SDK 54
+- React Native 0.81.5
 
 ## License
 

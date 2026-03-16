@@ -1,5 +1,5 @@
 // ============================================================
-// Forgot Password Screen - MyLoveThaiHoc
+// Forgot Password Screen - AI Love
 // Rebuilt v2.0 — based on stitch/qu_n_m_t_kh_u_mylovethaihoc/code.html
 // + BRD v2.0 Epic 4 + SRS FR-AUTH-003 (3-step reset flow)
 // ============================================================
@@ -35,7 +35,7 @@ import { Colors } from "@/theme";
 
 const PRIMARY = Colors.primary;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const HEADER_HEIGHT = SCREEN_HEIGHT * 0.22;
+const HEADER_HEIGHT = SCREEN_HEIGHT * 0.28;
 
 type Step = 1 | 2 | 3;
 
@@ -90,19 +90,19 @@ const OtpBoxes = memo(function OtpBoxes({
   };
 
   return (
-    <View style={{ flexDirection: "row", gap: 8 }}>
+    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       {otp.map((digit, idx) => (
         <TextInput
           key={idx}
           ref={(r) => { refs.current[idx] = r; }}
           style={{
-            flex: 1,
-            height: 54,
+            width: 48,
+            height: 52,
             textAlign: "center",
             fontSize: 22,
             fontWeight: "700",
-            borderRadius: 12,
-            borderWidth: 2,
+            borderRadius: 14,
+            borderWidth: 1.5,
             borderColor: digit ? PRIMARY : Colors.border,
             backgroundColor: digit ? Colors.primaryAlpha05 : Colors.surfaceSecondary,
             color: Colors.textPrimary,
@@ -112,6 +112,7 @@ const OtpBoxes = memo(function OtpBoxes({
           value={digit}
           onChangeText={(v) => handleChange(v, idx)}
           onKeyPress={(e) => handleKeyPress(e, idx)}
+          accessibilityLabel={`Mã OTP ô ${idx + 1}`}
         />
       ))}
     </View>
@@ -246,14 +247,14 @@ export default function ForgotPasswordScreen() {
   }, [step, router]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} edges={["top"]}>
       <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: PRIMARY }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <StatusBar barStyle="light-content" />
         <ScrollView
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: Colors.background }}
           bounces={false}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -266,7 +267,7 @@ export default function ForgotPasswordScreen() {
               overflow: "hidden",
               alignItems: "center",
               justifyContent: "flex-end",
-              paddingBottom: 20,
+              paddingBottom: 44,
             }}
           >
             {/* Decorative circles */}
@@ -632,16 +633,18 @@ export default function ForgotPasswordScreen() {
             onPress={() => router.replace("/(auth)/login")}
             accessibilityLabel="Quay lại đăng nhập"
             accessibilityRole="link"
+            hitSlop={12}
             style={{
               alignItems: "center",
-              marginBottom: 32,
+              marginTop: 8,
+              marginBottom: 40,
               flexDirection: "row",
               justifyContent: "center",
               gap: 6,
             }}
           >
-            <ChevronLeft size={16} color={Colors.textSecondary} />
-            <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.textSecondary }}>
+            <ChevronLeft size={16} color={Colors.primary} />
+            <Text style={{ fontSize: 14, fontWeight: "600", color: Colors.primary }}>
               Quay lại đăng nhập
             </Text>
           </Pressable>

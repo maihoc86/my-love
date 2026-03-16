@@ -16,7 +16,6 @@ SplashScreen.preventAutoHideAsync();
 
 const { width, height } = Dimensions.get("window");
 import { Colors } from "@/theme";
-const PRIMARY = Colors.primary;
 
 // ─── Custom Animated Splash ───────────────────────────────────
 
@@ -67,12 +66,12 @@ function AppSplash({ onDone }: { onDone: () => void }) {
         height,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#fdf2f8",
+        backgroundColor: Colors.background,
         zIndex: 999,
         opacity: screenOpacity,
       }}
     >
-      {/* Decorative background circles */}
+      {/* Decorative background circles — Nano Banana Pro warm tones */}
       <View
         style={{
           position: "absolute",
@@ -81,7 +80,7 @@ function AppSplash({ onDone }: { onDone: () => void }) {
           width: 200,
           height: 200,
           borderRadius: 100,
-          backgroundColor: "rgba(244,63,94,0.06)",
+          backgroundColor: "rgba(255,45,85,0.06)",
         }}
       />
       <View
@@ -92,7 +91,7 @@ function AppSplash({ onDone }: { onDone: () => void }) {
           width: 240,
           height: 240,
           borderRadius: 120,
-          backgroundColor: "rgba(244,63,94,0.04)",
+          backgroundColor: "rgba(123,97,255,0.04)",
         }}
       />
       <View
@@ -103,7 +102,7 @@ function AppSplash({ onDone }: { onDone: () => void }) {
           width: 100,
           height: 100,
           borderRadius: 50,
-          backgroundColor: "rgba(244,63,94,0.05)",
+          backgroundColor: "rgba(255,184,0,0.06)",
         }}
       />
 
@@ -127,13 +126,14 @@ function AppSplash({ onDone }: { onDone: () => void }) {
         />
         <Text
           style={{
-            fontSize: 28,
+            fontSize: 32,
             fontWeight: "800",
-            color: PRIMARY,
             letterSpacing: -0.5,
           }}
         >
-          MyLove<Text style={{ color: "#9333ea" }}>ThaiHoc</Text>
+          <Text style={{ color: Colors.accent }}>AI</Text>
+          {" "}
+          <Text style={{ color: Colors.primary }}>Love</Text>
         </Text>
       </Animated.View>
 
@@ -143,12 +143,12 @@ function AppSplash({ onDone }: { onDone: () => void }) {
           marginTop: 10,
           fontSize: 14,
           fontWeight: "500",
-          color: "#9ca3af",
+          color: Colors.textMuted,
           opacity: taglineOpacity,
           letterSpacing: 0.3,
         }}
       >
-        Ghi nhớ mọi điều về em 💕
+        Yêu thương thông minh hơn mỗi ngày ✨
       </Animated.Text>
     </Animated.View>
   );

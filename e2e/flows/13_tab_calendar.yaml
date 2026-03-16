@@ -1,0 +1,76 @@
+# ============================================================
+# E2E: Calendar / Special Dates Tab
+# Route: /(tabs)/calendar
+# Tags: tabs, calendar
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - tabs
+  - calendar
+---
+
+- launchApp
+
+# Navigate to Calendar tab
+- tapOn: "Lịch"
+
+# --- Verify Calendar Screen ---
+- assertVisible: "Ngày đặc biệt"
+
+# --- Category Tabs ---
+- assertVisible: "Tất cả"
+- assertVisible:
+    text: "Sinh nhật"
+    optional: true
+- assertVisible:
+    text: "Kỷ niệm"
+    optional: true
+- assertVisible:
+    text: "Ngày lễ"
+    optional: true
+
+# --- Date Cards ---
+- assertVisible:
+    text: ".*[Ss]inh nhật Thái.*"
+    optional: true
+- assertVisible:
+    text: ".*[Kk]ỷ niệm.*"
+    optional: true
+
+# --- Filter by Category ---
+- tapOn:
+    text: "Sinh nhật"
+    optional: true
+
+# Should filter to only birthday entries
+- assertVisible:
+    text: ".*[Ss]inh nhật.*"
+    optional: true
+
+# Reset to all
+- tapOn: "Tất cả"
+
+# --- Countdown Ring ---
+# Verify countdown is visible on cards
+- assertVisible:
+    text: ".*ngày.*"
+    optional: true
+
+# --- Add Date Button ---
+- tapOn:
+    text: ".*[Tt]hêm.*"
+    optional: true
+- assertVisible:
+    text: ".*[Nn]gày mới.*"
+    optional: true
+- back:
+    optional: true
+
+# --- Delete Date (if available) ---
+# Long press or tap trash icon
+- assertVisible:
+    text: "🗑"
+    optional: true
+
+# Screenshot
+- takeScreenshot: tab_calendar

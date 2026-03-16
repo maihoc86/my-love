@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Design System: Typography
+// AI Love - Design System: Typography
 // ============================================================
 
 export const FontSize = {

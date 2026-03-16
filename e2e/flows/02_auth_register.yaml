@@ -1,0 +1,40 @@
+# ============================================================
+# E2E: Auth - Register Screen
+# Route: /(auth)/register
+# Tags: auth
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - auth
+---
+
+- launchApp:
+    clearState: true
+
+# Navigate to register from login
+- assertVisible: "Đăng nhập"
+- scrollUntilVisible:
+    element: "Đăng ký"
+    direction: DOWN
+- tapOn: "Đăng ký"
+
+# Verify register screen
+- assertVisible: "Tạo tài khoản"
+
+# Fill registration form
+- tapOn: "Số điện thoại"
+- inputText: ${TEST_PHONE}
+
+# Verify OTP step
+- tapOn: "Tiếp tục"
+- assertVisible:
+    text: ".*[Mm]ã xác nhận.*"
+    optional: true
+
+# Enter OTP
+- inputText:
+    text: ${TEST_OTP}
+    optional: true
+
+# Screenshot
+- takeScreenshot: auth_register

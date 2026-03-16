@@ -1,0 +1,64 @@
+# ============================================================
+# E2E: Date Map Screen
+# Route: /date-map
+# Tags: features, map
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+  - map
+---
+
+- launchApp
+
+# Navigate via dashboard
+- scrollUntilVisible:
+    element: "Bản đồ"
+    direction: DOWN
+- tapOn:
+    text: "Bản đồ"
+    optional: true
+
+# --- Verify Map Screen ---
+- assertVisible:
+    text: ".*[Bb]ản đồ.*"
+    optional: true
+
+# --- Map Controls ---
+- assertVisible:
+    accessibilityLabel: "Quay lại"
+    optional: true
+- assertVisible:
+    accessibilityLabel: "Bộ lọc"
+    optional: true
+- assertVisible:
+    accessibilityLabel: "Phóng to"
+    optional: true
+- assertVisible:
+    accessibilityLabel: "Thu nhỏ"
+    optional: true
+
+# --- Add POI Button ---
+- assertVisible:
+    accessibilityLabel: "Thêm địa điểm"
+    optional: true
+
+# --- Category Filter ---
+- tapOn:
+    accessibilityLabel: "Bộ lọc"
+    optional: true
+- assertVisible:
+    text: ".*[Nn]hà hàng.*"
+    optional: true
+- back:
+    optional: true
+
+# --- Back Navigation ---
+- tapOn:
+    accessibilityLabel: "Quay lại"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: date_map

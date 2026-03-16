@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Design System: Spacing & Layout
+// AI Love - Design System: Spacing & Layout
 // ============================================================
 
 /** Spacing scale (4px base) */

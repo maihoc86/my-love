@@ -1,0 +1,40 @@
+# ============================================================
+# E2E: Daily Reminder Screen
+# Route: /daily-reminder
+# Tags: features
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+---
+
+- launchApp
+
+# Navigate via dashboard
+- scrollUntilVisible:
+    element: "Nhắc nhở"
+    direction: DOWN
+- tapOn:
+    text: "Nhắc nhở"
+    optional: true
+
+# --- Verify Reminder Screen ---
+- assertVisible:
+    text: ".*[Nn]hắc nhở.*"
+    optional: true
+
+# --- Toggle Notifications ---
+- assertVisible:
+    text: ".*[Tt]hông báo.*"
+    optional: true
+
+# --- Time Picker ---
+- assertVisible:
+    text: ".*[Gg]iờ.*"
+    optional: true
+
+# --- Back ---
+- back
+
+# Screenshot
+- takeScreenshot: daily_reminder

@@ -1,5 +1,5 @@
 // ============================================================
-// Register Screen - MyLoveThaiHoc
+// Register Screen - AI Love
 // Rebuilt v2.0 — based on stitch/ng_k_otp_mylovethaihoc/code.html
 // + BRD v2.0 Epic 4 + SRS FR-AUTH-002 (OTP registration flow)
 // ============================================================

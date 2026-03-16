@@ -1,0 +1,69 @@
+# ============================================================
+# E2E: All Utilities Screen
+# Route: /all-utilities
+# Tags: utilities
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - utilities
+---
+
+- launchApp
+
+# Navigate: Dashboard → Tiện ích → Xem tất cả
+- scrollUntilVisible:
+    element: "Tiện ích"
+    direction: DOWN
+- tapOn:
+    text: "Xem tất cả"
+    index: 0
+
+# --- Verify All Utilities Screen ---
+- assertVisible:
+    text: ".*[Tt]iện ích.*"
+
+# --- Search ---
+- tapOn:
+    text: ".*[Tt]ìm.*"
+    optional: true
+- inputText: "chat"
+- assertVisible:
+    text: "AI Chat"
+    optional: true
+- clearText
+- hideKeyboard
+
+# --- Verify Utility Cards ---
+- assertVisible: "AI Chat"
+- assertVisible:
+    text: "Bản đồ"
+    optional: true
+- scrollUntilVisible:
+    element: "Đếm ngày"
+    direction: DOWN
+    optional: true
+- scrollUntilVisible:
+    element: "Album ảnh"
+    direction: DOWN
+    optional: true
+- scrollUntilVisible:
+    element: "Nhắc nhở"
+    direction: DOWN
+    optional: true
+
+# --- Tap to Navigate ---
+- scrollUntilVisible:
+    element: "Đếm ngày"
+    direction: UP
+    optional: true
+- tapOn:
+    text: "Đếm ngày"
+    optional: true
+- assertVisible:
+    text: ".*[Đđ]ếm ngày.*"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: all_utilities

@@ -1,0 +1,75 @@
+# ============================================================
+# E2E: Auth - Login Screen
+# Route: /(auth)/login
+# Tags: auth, smoke
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - auth
+  - smoke
+---
+
+# App launches to login screen
+- launchApp:
+    clearState: true
+
+# Verify login screen renders
+- assertVisible: "Đăng nhập"
+
+# --- OTP Login Flow ---
+- assertVisible: "Số điện thoại"
+- tapOn: "Số điện thoại"
+- inputText: ${TEST_PHONE}
+
+# Tap send OTP button
+- tapOn: "Gửi mã OTP"
+
+# Should show OTP input screen
+- assertVisible: "Nhập mã xác nhận"
+
+# Enter OTP digits
+- inputText: ${TEST_OTP}
+
+# --- Password Fallback ---
+# Go back and test password login
+- tapOn: "Đăng nhập bằng mật khẩu"
+- assertVisible: "Mật khẩu"
+- tapOn: "Mật khẩu"
+- inputText: ${TEST_PASSWORD}
+
+# Test show/hide password toggle
+- tapOn:
+    accessibilityLabel: ".*[Hh]iện.*mật khẩu.*"
+    optional: true
+
+# Tap login button
+- tapOn: "Đăng nhập"
+
+# --- Social Login Buttons ---
+# Verify social buttons exist (don't tap - they need real credentials)
+- scrollUntilVisible:
+    element: "Google"
+    direction: DOWN
+    timeout: 3000
+    optional: true
+
+# --- Navigate to Register ---
+- scrollUntilVisible:
+    element: "Đăng ký"
+    direction: DOWN
+- tapOn: "Đăng ký"
+- assertVisible: "Tạo tài khoản"
+- back
+
+# --- Navigate to Forgot Password ---
+- tapOn:
+    text: "Quên mật khẩu"
+    optional: true
+- assertVisible:
+    text: "Quên mật khẩu"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot for visual verification
+- takeScreenshot: auth_login_final

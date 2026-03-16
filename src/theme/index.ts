@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Design System
+// AI Love - Design System
 // Usage: import { Colors, Spacing, Shadows } from '@/theme';
 // ============================================================
 

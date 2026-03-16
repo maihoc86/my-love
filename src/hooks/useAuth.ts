@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - useAuth Hook (Placeholder for v1)
+// AI Love - useAuth Hook (Placeholder for v1)
 // ============================================================
 
 import { useCallback, useState } from 'react';

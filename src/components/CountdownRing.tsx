@@ -10,7 +10,7 @@ function getRingColor(daysLeft: number): string {
   if (daysLeft === 0) return '#10b981';
   if (daysLeft <= 3) return '#ef4444';
   if (daysLeft <= 7) return '#f97316';
-  return '#f43f5e';
+  return '#FF2D55';
 }
 
 export default function CountdownRing({ daysLeft, size = 80 }: CountdownRingProps) {

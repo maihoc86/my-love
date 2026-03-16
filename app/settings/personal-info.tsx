@@ -1,5 +1,5 @@
 // ============================================================
-// Personal Info Screen - MyLoveThaiHoc
+// Personal Info Screen - AI Love
 // SCR-05.2 — stitch/th_ng_tin_c_nh_n_mylovethaihoc/code.html
 // ============================================================
 

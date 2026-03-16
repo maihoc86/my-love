@@ -1,5 +1,5 @@
 // ============================================================
-// All Notes Screen - MyLoveThaiHoc
+// All Notes Screen - AI Love
 // SCR-02.1 — stitch/tat_ca_ghi_chu/code.html
 // ============================================================
 

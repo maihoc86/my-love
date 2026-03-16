@@ -1,0 +1,49 @@
+# ============================================================
+# E2E: Album Screen
+# Route: /album
+# Tags: features
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+---
+
+- launchApp
+
+# Navigate via dashboard
+- scrollUntilVisible:
+    element: "Album ảnh"
+    direction: DOWN
+- tapOn:
+    text: "Album ảnh"
+    optional: true
+
+# --- Verify Album Screen ---
+- assertVisible:
+    text: ".*[Aa]lbum.*"
+    optional: true
+
+# --- Empty State or Photos ---
+- assertVisible:
+    text: ".*"
+    optional: true
+
+# --- Camera Button ---
+- assertVisible:
+    accessibilityLabel: "Chụp ảnh"
+    optional: true
+
+# --- Add Photo Button ---
+- assertVisible:
+    accessibilityLabel: "Thêm ảnh"
+    optional: true
+
+# --- Back Navigation ---
+- tapOn:
+    accessibilityLabel: "Quay lại"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: album

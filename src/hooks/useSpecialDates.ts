@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - useSpecialDates Hook
+// AI Love - useSpecialDates Hook
 // ============================================================
 
 import { useCallback, useEffect, useMemo, useState } from 'react';

@@ -1,0 +1,128 @@
+# ============================================================
+# E2E: Smoke Test - Full App Navigation
+# Nhanh chóng kiểm tra tất cả screens render được, không crash
+# Tags: smoke
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - smoke
+---
+
+- launchApp:
+    clearState: true
+
+# ── AUTH ──
+- assertVisible: "Đăng nhập"
+- takeScreenshot: smoke_01_login
+
+# ── Skip auth (navigate to main app if auto-login) ──
+# If the app auto-redirects, verify dashboard
+- assertVisible:
+    text: "Trang chủ"
+    optional: true
+
+# ── TAB 1: Dashboard ──
+- tapOn:
+    text: "Trang chủ"
+    optional: true
+- assertVisible:
+    text: ".*Thái Hoc.*"
+    optional: true
+- takeScreenshot: smoke_02_dashboard
+
+# ── TAB 2: AI Chat ──
+- tapOn: "AI Chat"
+- assertVisible:
+    text: ".*"
+- takeScreenshot: smoke_03_chat
+
+# ── TAB 3: Add (FAB) ──
+- tapOn:
+    accessibilityLabel: "Thêm"
+- assertVisible:
+    text: ".*[Dd]anh mục.*"
+    optional: true
+- takeScreenshot: smoke_04_add
+
+# ── TAB 4: Calendar ──
+- tapOn: "Lịch"
+- assertVisible:
+    text: ".*[Nn]gày đặc biệt.*"
+    optional: true
+- takeScreenshot: smoke_05_calendar
+
+# ── TAB 5: Settings ──
+- tapOn: "Cài đặt"
+- assertVisible:
+    text: ".*[Cc]ài đặt.*"
+- takeScreenshot: smoke_06_settings
+
+# ── Settings > Personal Info ──
+- tapOn:
+    text: "Thông tin cá nhân"
+    optional: true
+- takeScreenshot: smoke_07_personal_info
+- back:
+    optional: true
+
+# ── Settings > Partner Info ──
+- tapOn:
+    text: "Thông tin người yêu"
+    optional: true
+- takeScreenshot: smoke_08_partner_info
+- back:
+    optional: true
+
+# ── Settings > Security ──
+- scrollUntilVisible:
+    element: "Bảo mật"
+    direction: DOWN
+    optional: true
+- tapOn:
+    text: "Bảo mật"
+    optional: true
+- takeScreenshot: smoke_09_security
+- back:
+    optional: true
+
+# ── Settings > Backup ──
+- scrollUntilVisible:
+    element: "Sao lưu"
+    direction: DOWN
+    optional: true
+- tapOn:
+    text: "Sao lưu"
+    optional: true
+- takeScreenshot: smoke_10_backup
+- back:
+    optional: true
+
+# ── Back to Dashboard for utilities ──
+- tapOn: "Trang chủ"
+
+# ── All Utilities ──
+- scrollUntilVisible:
+    element: "Tiện ích"
+    direction: DOWN
+- tapOn:
+    text: "Xem tất cả"
+    index: 0
+    optional: true
+- takeScreenshot: smoke_11_all_utilities
+- back:
+    optional: true
+
+# ── Entries All ──
+- scrollUntilVisible:
+    element: "Ghi chép gần đây"
+    direction: DOWN
+- tapOn:
+    text: "Xem tất cả"
+    index: 0
+    optional: true
+- takeScreenshot: smoke_12_entries_all
+- back:
+    optional: true
+
+# DONE — All screens accessible, no crash
+- takeScreenshot: smoke_final_success

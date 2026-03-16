@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Design System: Shadows
+// AI Love - Design System: Shadows (Nano Banana Pro)
 // ============================================================
 
 import { Platform, ViewStyle } from 'react-native';
@@ -39,8 +39,8 @@ export const Shadows = {
   md: shadow(2, 0.08, 10, 4),
   /** Modals, FAB */
   lg: shadow(4, 0.12, 16, 8),
-  /** FAB with primary color glow */
-  fab: shadow(6, 0.45, 12, 12, '#f43f5e'),
+  /** FAB with primary color glow (Hot Coral Pink) */
+  fab: shadow(6, 0.45, 12, 12, '#FF2D55'),
   /** Tab bar shadow */
   tabBar: shadow(-2, 0.06, 12, 12),
 } as const;

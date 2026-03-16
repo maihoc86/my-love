@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - Telegram Bot API Client
+// AI Love - Telegram Bot API Client
 // ============================================================
 
 const TELEGRAM_BOT_TOKEN = process.env.EXPO_PUBLIC_TELEGRAM_BOT_TOKEN ?? '';

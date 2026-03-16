@@ -1,5 +1,5 @@
 // ============================================================
-// Add Entry Screen - MyLoveThaiHoc
+// Add Entry Screen - AI Love
 // Rebuilt v2.0 — based on stitch/th_m_ghi_ch_c_p_nh_t/code.html
 // + BRD v2.0 + SRS v2.0 + User Stories (US-003, US-004, US-005)
 // ============================================================
@@ -168,7 +168,7 @@ const SentimentPicker = memo(function SentimentPicker({
                   width: 56,
                   height: 56,
                   borderRadius: 28,
-                  backgroundColor: isActive ? "rgba(244,63,94,0.06)" : Colors.surface,
+                  backgroundColor: isActive ? "rgba(255,45,85,0.06)" : Colors.surface,
                   borderWidth: isActive ? 2 : 1.5,
                   borderColor: isActive ? Colors.primary : Colors.border,
                   alignItems: "center",
@@ -309,7 +309,7 @@ export default function AddEntryScreen() {
                   backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
-                  borderColor: title.trim() ? Colors.primary : "rgba(244,63,94,0.2)",
+                  borderColor: title.trim() ? Colors.primary : "rgba(255,45,85,0.2)",
                   paddingHorizontal: 14,
                 }}
               >
@@ -351,7 +351,7 @@ export default function AddEntryScreen() {
                   backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
-                  borderColor: "rgba(244,63,94,0.2)",
+                  borderColor: "rgba(255,45,85,0.2)",
                   paddingHorizontal: 14,
                   paddingVertical: 12,
                   fontSize: 15,
@@ -407,7 +407,7 @@ export default function AddEntryScreen() {
                   backgroundColor: Colors.surface,
                   borderRadius: 14,
                   borderWidth: 1.5,
-                  borderColor: "rgba(244,63,94,0.2)",
+                  borderColor: "rgba(255,45,85,0.2)",
                   paddingHorizontal: 14,
                   paddingVertical: 13,
                   fontSize: 15,

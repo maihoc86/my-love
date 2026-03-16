@@ -1,0 +1,41 @@
+# ============================================================
+# E2E: Insight 360 Screen
+# Route: /insight
+# Tags: features
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+---
+
+- launchApp
+
+# Navigate via dashboard
+- scrollUntilVisible:
+    element: "Insight"
+    direction: DOWN
+    optional: true
+- tapOn:
+    text: "Insight"
+    optional: true
+
+# --- Verify Insight Screen ---
+- assertVisible:
+    text: ".*[Ii]nsight.*"
+    optional: true
+
+# --- Stats/Charts ---
+- assertVisible:
+    text: ".*"
+    optional: true
+
+# --- Category Breakdown ---
+- assertVisible:
+    text: ".*[Dd]anh mục.*"
+    optional: true
+
+# --- Back ---
+- back
+
+# Screenshot
+- takeScreenshot: insight

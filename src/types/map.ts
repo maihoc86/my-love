@@ -43,10 +43,10 @@ export interface POICategoryConfig {
 // ─── Category Configs ────────────────────────────────────────────────────────
 
 export const CATEGORY_CONFIGS: POICategoryConfig[] = [
-  { key: 'restaurant',    label: 'Quán ăn',     emoji: '🍜', color: '#f43f5e', bgColor: '#fff1f2' },
+  { key: 'restaurant',    label: 'Quán ăn',     emoji: '🍜', color: '#FF2D55', bgColor: '#fff1f2' },
   { key: 'cafe',          label: 'Cà phê',       emoji: '☕', color: '#f97316', bgColor: '#fff7ed' },
-  { key: 'cinema',        label: 'Rạp phim',     emoji: '🎬', color: '#8b5cf6', bgColor: '#f5f3ff' },
-  { key: 'date_spot',     label: 'Hẹn hò',       emoji: '💑', color: '#ec4899', bgColor: '#fdf2f8' },
+  { key: 'cinema',        label: 'Rạp phim',     emoji: '🎬', color: '#7B61FF', bgColor: '#F3F0F8' },
+  { key: 'date_spot',     label: 'Hẹn hò',       emoji: '💑', color: '#FF6B9D', bgColor: '#FFF0E6' },
   { key: 'mall',          label: 'TTTM',          emoji: '🏬', color: '#3b82f6', bgColor: '#eff6ff' },
   { key: 'park',          label: 'Công viên',    emoji: '🌳', color: '#10b981', bgColor: '#ecfdf5' },
   { key: 'homestay',      label: 'Homestay',     emoji: '🏠', color: '#f59e0b', bgColor: '#fffbeb' },

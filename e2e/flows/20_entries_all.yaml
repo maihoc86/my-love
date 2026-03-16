@@ -1,0 +1,66 @@
+# ============================================================
+# E2E: All Entries Screen
+# Route: /entries/all
+# Tags: entries
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - entries
+---
+
+- launchApp
+
+# Navigate: Dashboard → Ghi chép gần đây → Xem tất cả
+- scrollUntilVisible:
+    element: "Ghi chép gần đây"
+    direction: DOWN
+- tapOn:
+    text: "Xem tất cả"
+    index: 0
+    optional: true
+
+# Or navigate via entries/all direct
+- assertVisible:
+    text: ".*[Gg]hi chú.*"
+    optional: true
+
+# --- Search ---
+- tapOn:
+    text: ".*[Tt]ìm kiếm.*"
+    optional: true
+- inputText: "phở"
+- assertVisible:
+    text: ".*[Pp]hở.*"
+    optional: true
+
+# Clear search
+- clearText
+- hideKeyboard
+
+# --- Filter by Category ---
+- tapOn:
+    text: "Tất cả"
+    optional: true
+- tapOn:
+    text: "Món ăn"
+    optional: true
+
+# --- Sort Order ---
+- tapOn:
+    text: ".*[Mm]ới nhất.*"
+    optional: true
+
+# --- Entry Card Interaction ---
+- tapOn:
+    text: ".*[Pp]hở bò.*"
+    optional: true
+
+# Should navigate to entry detail
+- assertVisible:
+    text: ".*[Cc]hi tiết.*"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: entries_all

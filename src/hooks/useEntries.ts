@@ -1,5 +1,5 @@
 // ============================================================
-// MyLoveThaiHoc - useEntries Hook
+// AI Love - useEntries Hook
 // ============================================================
 
 import { useCallback, useEffect, useState } from 'react';

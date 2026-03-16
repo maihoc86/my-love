@@ -1,0 +1,39 @@
+# ============================================================
+# E2E: Love Counter Screen
+# Route: /love-counter
+# Tags: features
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+---
+
+- launchApp
+
+# Navigate via dashboard utility tile
+- scrollUntilVisible:
+    element: "Đếm ngày"
+    direction: DOWN
+- tapOn: "Đếm ngày"
+
+# --- Verify Counter Screen ---
+- assertVisible:
+    text: ".*[Đđ]ếm ngày.*"
+
+# Verify counter displays
+- assertVisible:
+    text: ".*ngày.*"
+    optional: true
+- assertVisible:
+    text: ".*yêu nhau.*"
+    optional: true
+
+# --- Back Navigation ---
+- tapOn:
+    accessibilityLabel: "Quay lại"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: love_counter

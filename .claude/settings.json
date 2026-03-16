@@ -14,20 +14,26 @@
   },
 
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "type": "command",
-        "command": "bash .claude/hooks/typecheck.sh",
-        "timeout": 30
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "type": "command",
-        "command": "bash .claude/hooks/pre-commit-check.sh",
-        "timeout": 10
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/pre-commit-check.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/typecheck.sh"
+          }
+        ]
       }
     ]
   }

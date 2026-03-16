@@ -1,5 +1,5 @@
 // ============================================================
-// Backup & Sync Screen - MyLoveThaiHoc
+// Backup & Sync Screen - AI Love
 // SCR-05.4 — stitch/sao_l_u_ng_b_mylovethaihoc/code.html
 // ============================================================
 
@@ -128,7 +128,7 @@ const ToggleRow = memo(function ToggleRow({
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: "#e2e8f0", true: "rgba(244,63,94,0.4)" }}
+        trackColor={{ false: "#e2e8f0", true: "rgba(255,45,85,0.4)" }}
         thumbColor={value ? Colors.primary : "#f1f5f9"}
         ios_backgroundColor="#e2e8f0"
       />
@@ -324,7 +324,7 @@ export default function BackupScreen() {
                 right: 0,
                 width: "50%",
                 height: "100%",
-                backgroundColor: "#9333ea",
+                backgroundColor: "#5B3FE0",
                 opacity: 0.45,
               }}
             />
@@ -343,7 +343,7 @@ export default function BackupScreen() {
               </View>
               <View>
                 <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.surface }}>
-                  Đám mây MyLove
+                  Đám mây AI Love
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
                   <CheckCircle size={12} color="rgba(255,255,255,0.8)" />
@@ -452,10 +452,10 @@ export default function BackupScreen() {
             marginHorizontal: 16,
             marginTop: 20,
             padding: 14,
-            backgroundColor: "rgba(244,63,94,0.05)",
+            backgroundColor: "rgba(255,45,85,0.05)",
             borderRadius: 14,
             borderWidth: 1,
-            borderColor: "rgba(244,63,94,0.1)",
+            borderColor: "rgba(255,45,85,0.1)",
             flexDirection: "row",
             gap: 10,
             alignItems: "flex-start",

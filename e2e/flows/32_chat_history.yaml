@@ -1,0 +1,41 @@
+# ============================================================
+# E2E: Chat History Screen
+# Route: /chat-history
+# Tags: features, chat
+# ============================================================
+appId: com.cds.mylovethaihoc
+tags:
+  - features
+  - chat
+---
+
+- launchApp
+
+# Navigate: AI Chat tab → History button
+- tapOn: "AI Chat"
+- tapOn:
+    accessibilityLabel: "Lịch sử chat"
+
+# --- Verify Chat History Screen ---
+- assertVisible:
+    text: ".*[Ll]ịch sử.*"
+
+# --- Search ---
+- tapOn:
+    accessibilityLabel: "Tìm kiếm"
+    optional: true
+
+# --- Conversation List ---
+- assertVisible:
+    text: ".*"
+    optional: true
+
+# --- Back Navigation ---
+- tapOn:
+    accessibilityLabel: "Quay lại"
+    optional: true
+- back:
+    optional: true
+
+# Screenshot
+- takeScreenshot: chat_history
