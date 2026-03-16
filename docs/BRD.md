@@ -229,9 +229,11 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 - AI tổng quan: phân tích tự động + gợi ý hẹn hò
 
 ### FR12: Voice Input & Note
-- Ghi chú giọng nói (nhấn giữ mic)
-- AI speech-to-text tự động (tiếng Việt)
-- Parse voice content thành structured entries
+- Ghi chú giọng nói (nhấn nút mic → màn hình recording toàn trang)
+- AI speech-to-text qua OpenRouter Audio API (gpt-4o-audio-preview): ghi âm WAV → base64 → transcribe tiếng Việt
+- Text transcribed hiển thị trong ô chat input để user review → bấm Gửi
+- AI text-to-speech (TTS) cho phản hồi AI: nút "Nghe" trên mỗi AI message → OpenRouter TTS (voice: nova, format: mp3)
+- Parse voice content thành structured entries (giống AI Chat flow)
 - Lịch sử recordings với waveform preview
 - Playback, trạng thái: đã lưu / chờ lưu
 
@@ -282,7 +284,8 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 | **Notifications** | Telegram Bot API + Expo Notifications | Dual channel |
 | **Storage** | AsyncStorage + Supabase | Offline cache + cloud sync |
 | **Maps** | eKMap SDK | Vietnamese map data, custom pins |
-| **Voice** | expo-av + OpenRouter Whisper | Recording + transcription |
+| **Voice STT** | expo-av + OpenRouter Audio API (gpt-4o-audio-preview) | Recording WAV + speech-to-text |
+| **Voice TTS** | OpenRouter Audio API (gpt-4o-audio-preview) | Text-to-speech cho AI responses |
 | **Auth** | Supabase Auth | Email, Google, OTP |
 | **Image** | expo-image-picker + Supabase Storage | Upload + cloud storage |
 | **Animations** | react-native-reanimated 3 | 60fps GPU-accelerated |
@@ -355,3 +358,4 @@ Xây dựng ứng dụng mobile (iOS + Android) với các khả năng:
 | 2.1.0 | 2026-03-15 | CTO | Added Settings sub-screens: M5.1 Partner Info, M5.2 Personal Info, M5.3 Security, M5.4 Backup & Sync. Updated FR6 requirements. |
 | 2.2.0 | 2026-03-15 | CTO | Phase 4 implementation: M7 Date Map, M9 Photo Album, M11 Insight 360°. Refined FR8 (Map), FR9 (Album), FR11 (Insight) với chi tiết UI/UX từ Stitch designs. Thêm user stories. Các màn hình được redesign theo stitch: map 55% height + bottom sheet overlay, neuron map SVG với floating animation, album stats single card + mixed photo grid. |
 | 2.3.0 | 2026-03-15 | CTO | Added M2.1 - All Notes screen: full-screen list với real-time search, filter chips (11 categories), sort, empty state, FAB. Thêm FR1.1. Xoá "Lưu ý quan trọng" khỏi Dashboard. Splash screen với expo-splash-screen. |
+| 2.4.0 | 2026-03-16 | CTO | Voice Chat: STT qua OpenRouter Audio API (gpt-4o-audio-preview, WAV format), TTS cho AI responses (voice nova, mp3). Recording screen: expo-av ghi âm WAV → base64 → transcribe → hiện text trong chat input. Chat screen: nút "Nghe" phát giọng AI. Gemini STT backup (src/lib/gemini.ts). Updated FR12, tech stack. |

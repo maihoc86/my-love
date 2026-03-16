@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Colors } from '@/theme';
-import { View, Text, Pressable, Animated, Alert } from 'react-native';
+import { View, Text, Pressable, Animated, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { X, Send } from 'lucide-react-native';
+import { X, Mic, Send } from 'lucide-react-native';
 import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
 import { speechToText } from '@/lib/openrouter';
 
-// ─── Waveform bar heights (fixed, matches stitch) ─────────────────────────────
-const BAR_HEIGHTS = [16, 32, 48, 64, 40, 56, 24];
-
-// ─── Recording Screen ──────────────────────────────────────────────────────────
+// ─── Waveform bar config ────────────────────────────────────────────────────────
+const NUM_BARS = 24;
+const BAR_SEEDS = Array.from({ length: NUM_BARS }, (_, i) => 8 + Math.sin(i * 0.7) * 12 + Math.random() * 8);
 
 export default function RecordingScreen() {
   const router = useRouter();
@@ -21,12 +20,11 @@ export default function RecordingScreen() {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const recordingRef = useRef<Audio.Recording | null>(null);
 
-  // Pulsing ring animations
-  const ring1 = useRef(new Animated.Value(1)).current;
-  const ring2 = useRef(new Animated.Value(1)).current;
+  // Mic pulse animation
+  const pulse = useRef(new Animated.Value(1)).current;
 
   // Waveform bar animations
-  const bars = useRef(BAR_HEIGHTS.map(() => new Animated.Value(1))).current;
+  const bars = useRef(BAR_SEEDS.map(() => new Animated.Value(0.5))).current;
 
   // Request permission and start recording on mount
   useEffect(() => {
@@ -48,9 +46,32 @@ export default function RecordingScreen() {
           playsInSilentModeIOS: true,
         });
 
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RecordingOptionsPresets.HIGH_QUALITY
-        );
+        const { recording } = await Audio.Recording.createAsync({
+          isMeteringEnabled: true,
+          android: {
+            extension: '.wav',
+            outputFormat: Audio.AndroidOutputFormat.DEFAULT,
+            audioEncoder: Audio.AndroidAudioEncoder.DEFAULT,
+            sampleRate: 44100,
+            numberOfChannels: 1,
+            bitRate: 128000,
+          },
+          ios: {
+            extension: '.wav',
+            outputFormat: Audio.IOSOutputFormat.LINEARPCM,
+            audioQuality: Audio.IOSAudioQuality.MAX,
+            sampleRate: 44100,
+            numberOfChannels: 1,
+            bitRate: 128000,
+            linearPCMBitDepth: 16,
+            linearPCMIsBigEndian: false,
+            linearPCMIsFloat: false,
+          },
+          web: {
+            mimeType: 'audio/wav',
+            bitsPerSecond: 128000,
+          },
+        });
         recordingRef.current = recording;
         setIsRecording(true);
       } catch (err) {
@@ -63,7 +84,6 @@ export default function RecordingScreen() {
     initRecording();
 
     return () => {
-      // Cleanup: stop recording if component unmounts
       if (recordingRef.current) {
         recordingRef.current.stopAndUnloadAsync().catch(() => {});
       }
@@ -77,37 +97,28 @@ export default function RecordingScreen() {
     return () => clearInterval(id);
   }, [isRecording]);
 
-  // Pulsing ring loop
+  // Mic pulse animation
   useEffect(() => {
     if (!isRecording) return;
-
-    const pulse = (anim: Animated.Value, delay: number) =>
-      Animated.loop(
-        Animated.sequence([
-          Animated.delay(delay),
-          Animated.timing(anim, { toValue: 1.08, duration: 900, useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 1, duration: 900, useNativeDriver: true }),
-        ])
-      );
-
-    const a1 = pulse(ring1, 0);
-    const a2 = pulse(ring2, 450);
-    a1.start();
-    a2.start();
-    return () => { a1.stop(); a2.stop(); };
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1.15, duration: 800, useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 800, useNativeDriver: true }),
+      ])
+    );
+    anim.start();
+    return () => anim.stop();
   }, [isRecording]);
 
-  // Waveform bar animation loop
+  // Waveform bar animation
   useEffect(() => {
     if (!isRecording) return;
-
     const anims = bars.map((bar, i) =>
       Animated.loop(
         Animated.sequence([
-          Animated.delay(i * 80),
-          Animated.timing(bar, { toValue: 0.4, duration: 300 + i * 40, useNativeDriver: true }),
-          Animated.timing(bar, { toValue: 1, duration: 300 + i * 40, useNativeDriver: true }),
-          Animated.delay(200),
+          Animated.delay(i * 50),
+          Animated.timing(bar, { toValue: 0.3 + Math.random() * 0.7, duration: 200 + Math.random() * 200, useNativeDriver: true }),
+          Animated.timing(bar, { toValue: 0.5, duration: 200 + Math.random() * 200, useNativeDriver: true }),
         ])
       )
     );
@@ -136,23 +147,21 @@ export default function RecordingScreen() {
         throw new Error('Không tìm thấy file ghi âm');
       }
 
-      // Read audio file as base64
+      // Read audio file as base64 using expo-file-system (reliable on React Native)
       const audioBase64 = await FileSystem.readAsStringAsync(uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
-      // Transcribe via OpenRouter STT
-      const transcribedText = await speechToText(audioBase64, 'mp3');
+      console.log('[Recording] Audio base64 length:', audioBase64.length);
 
-      // Reset audio mode
+      const transcribedText = await speechToText(audioBase64, 'wav');
+
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         playsInSilentModeIOS: true,
       });
 
-      // Navigate back to chat with the transcribed text
       router.back();
-      // Use setTimeout to ensure navigation completes before setting params
       setTimeout(() => {
         router.setParams({ voiceText: transcribedText });
       }, 100);
@@ -183,21 +192,16 @@ export default function RecordingScreen() {
   }, [router]);
 
   return (
-    <LinearGradient
-      colors={[Colors.surface, 'rgba(255,45,85,0.05)']}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={{ flex: 1 }}
-    >
-      <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         {/* ── Header ── */}
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            paddingHorizontal: 4,
-            paddingTop: 4,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
           }}
         >
           <Pressable
@@ -216,231 +220,160 @@ export default function RecordingScreen() {
             <X size={24} color={Colors.textPrimary} />
           </Pressable>
 
-          <Text style={{ fontSize: 17, fontWeight: '700', color: Colors.textPrimary }}>
-            AI Love
+          <Text style={{ fontSize: 17, fontWeight: '600', color: Colors.textPrimary }}>
+            Ghi âm
           </Text>
 
-          {/* Spacer to balance header */}
           <View style={{ width: 48 }} />
         </View>
 
-        {/* ── Content ── */}
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}>
+        {/* ── Main Content ── */}
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
 
-          {/* Status badge */}
-          <View
-            style={{
-              backgroundColor: 'rgba(255,45,85,0.1)',
-              paddingHorizontal: 16,
-              paddingVertical: 6,
-              borderRadius: 24,
-              marginBottom: 12,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '700',
-                color: Colors.primary,
-                textTransform: 'uppercase',
-                letterSpacing: 1.5,
-              }}
-            >
-              {isTranscribing ? 'Đang chuyển thành văn bản...' : isRecording ? 'Đang lắng nghe...' : 'Đã dừng'}
-            </Text>
-          </View>
-
-          {/* Subtitle */}
+          {/* Status text */}
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: '500',
-              color: Colors.textSecondary,
-              marginBottom: 48,
+              color: isTranscribing ? Colors.aiPurple : Colors.textSecondary,
+              marginBottom: 40,
               textAlign: 'center',
             }}
           >
             {isTranscribing
-              ? 'OpenRouter AI đang xử lý giọng nói của bạn'
-              : 'AI sẽ tự động chuyển thành văn bản'}
+              ? 'Đang chuyển thành văn bản...'
+              : 'Hãy nói, AI sẽ tự động nhận diện'}
           </Text>
 
-          {/* Visualizer: rings + mic + waveform */}
-          <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 48 }}>
-            {/* Outer pulsing ring */}
-            <Animated.View
-              style={{
-                position: 'absolute',
-                width: 256,
-                height: 256,
-                borderRadius: 128,
-                backgroundColor: isTranscribing ? 'rgba(123,97,255,0.08)' : 'rgba(255,45,85,0.08)',
-                transform: [{ scale: ring1 }],
-              }}
-            />
-            {/* Inner pulsing ring */}
-            <Animated.View
-              style={{
-                position: 'absolute',
-                width: 192,
-                height: 192,
-                borderRadius: 96,
-                backgroundColor: isTranscribing ? 'rgba(123,97,255,0.15)' : Colors.primaryAlpha15,
-                transform: [{ scale: ring2 }],
-              }}
-            />
+          {/* Mic circle with subtle pulse */}
+          <Animated.View
+            style={{
+              width: 88,
+              height: 88,
+              borderRadius: 44,
+              backgroundColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: 32,
+              transform: [{ scale: isRecording ? pulse : 1 }],
+              shadowColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.25,
+              shadowRadius: 12,
+              elevation: 6,
+            }}
+          >
+            {isTranscribing ? (
+              <ActivityIndicator size="small" color={Colors.textOnPrimary} />
+            ) : (
+              <Mic size={32} color={Colors.textOnPrimary} />
+            )}
+          </Animated.View>
 
-            {/* Mic circle — gradient rose → purple */}
-            <LinearGradient
-              colors={isTranscribing ? ['#7B61FF', '#5B3FDF'] : [Colors.primary, '#7B61FF']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+          {/* Waveform */}
+          {!isTranscribing && (
+            <View
               style={{
-                width: 128,
-                height: 128,
-                borderRadius: 64,
+                flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: isTranscribing ? '#7B61FF' : Colors.primary,
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.35,
-                shadowRadius: 20,
-                elevation: 10,
+                gap: 3,
+                marginBottom: 24,
+                height: 32,
               }}
             >
-              <Text style={{ fontSize: 48, color: Colors.surface }}>
-                {isTranscribing ? '🤖' : '🎙'}
-              </Text>
-            </LinearGradient>
-
-            {/* Waveform bars — absolutely below the mic area */}
-            {!isTranscribing && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: -64,
-                  flexDirection: 'row',
-                  alignItems: 'flex-end',
-                  gap: 6,
-                }}
-              >
-                {BAR_HEIGHTS.map((h, i) => (
-                  <Animated.View
-                    key={i}
-                    style={{
-                      width: 6,
-                      height: h,
-                      borderRadius: 3,
-                      backgroundColor: Colors.primary,
-                      opacity: bars[i].interpolate({
-                        inputRange: [0.4, 1],
-                        outputRange: [
-                          0.3 + i * 0.1,
-                          0.5 + i * 0.07,
-                        ],
-                      }),
-                      transform: [{ scaleY: isRecording ? bars[i] : new Animated.Value(0.3) }],
-                    }}
-                  />
-                ))}
-              </View>
-            )}
-          </View>
+              {BAR_SEEDS.map((h, i) => (
+                <Animated.View
+                  key={i}
+                  style={{
+                    width: 3,
+                    borderRadius: 2,
+                    backgroundColor: Colors.primary,
+                    height: h,
+                    opacity: 0.6,
+                    transform: [{ scaleY: isRecording ? bars[i] : 0.3 }],
+                  }}
+                />
+              ))}
+            </View>
+          )}
 
           {/* Timer */}
           <Text
             style={{
-              fontSize: 56,
-              fontWeight: '800',
+              fontSize: 40,
+              fontWeight: '700',
               color: Colors.textPrimary,
-              letterSpacing: -1,
-              marginBottom: 48,
+              letterSpacing: 1,
+              fontVariant: ['tabular-nums'],
+              marginBottom: isTranscribing ? 24 : 0,
             }}
           >
             {formatTime(seconds)}
           </Text>
-
-          {/* Action buttons — vertical stacked */}
-          <View style={{ width: '100%', gap: 12 }}>
-            {/* Dừng & Gửi — gradient */}
-            <Pressable
-              onPress={handleStopAndSend}
-              disabled={isTranscribing || !isRecording}
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : isTranscribing ? 0.6 : 1 })}
-              accessibilityLabel="Dừng và gửi"
-              accessibilityRole="button"
-            >
-              <LinearGradient
-                colors={[Colors.primary, '#7B61FF']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 16,
-                  borderRadius: 14,
-                  gap: 8,
-                  shadowColor: Colors.primary,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 12,
-                  elevation: 6,
-                }}
-              >
-                <Send size={18} color="#ffffff" />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.surface }}>
-                  {isTranscribing ? 'Đang xử lý...' : 'Dừng & Gửi'}
-                </Text>
-              </LinearGradient>
-            </Pressable>
-
-            {/* Hủy — slate-100 bg */}
-            <Pressable
-              onPress={handleCancel}
-              disabled={isTranscribing}
-              style={({ pressed }) => ({
-                backgroundColor: pressed ? Colors.border : Colors.surfaceSecondary,
-                paddingVertical: 16,
-                borderRadius: 14,
-                alignItems: 'center',
-                justifyContent: 'center',
-                opacity: isTranscribing ? 0.5 : 1,
-              })}
-              accessibilityLabel="Hủy"
-              accessibilityRole="button"
-            >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: Colors.textSecondary }}>
-                Hủy
-              </Text>
-            </Pressable>
-          </View>
         </View>
 
-        {/* Decorative blur circles */}
+        {/* ── Bottom Actions ── */}
         <View
           style={{
-            position: 'absolute',
-            top: 80,
-            right: -50,
-            width: 160,
-            height: 160,
-            borderRadius: 80,
-            backgroundColor: 'rgba(123,97,255,0.06)',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: 32,
+            paddingBottom: 32,
+            gap: 24,
           }}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 80,
-            left: -50,
-            width: 160,
-            height: 160,
-            borderRadius: 80,
-            backgroundColor: 'rgba(255,45,85,0.06)',
-          }}
-        />
+        >
+          {/* Cancel */}
+          <Pressable
+            onPress={handleCancel}
+            disabled={isTranscribing}
+            style={({ pressed }) => ({
+              width: 56,
+              height: 56,
+              borderRadius: 28,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: Colors.surfaceSecondary,
+              borderWidth: 1,
+              borderColor: Colors.border,
+              opacity: isTranscribing ? 0.4 : pressed ? 0.7 : 1,
+            })}
+            accessibilityLabel="Hủy ghi âm"
+            accessibilityRole="button"
+          >
+            <X size={22} color={Colors.textSecondary} />
+          </Pressable>
+
+          {/* Send */}
+          <Pressable
+            onPress={handleStopAndSend}
+            disabled={isTranscribing || !isRecording}
+            style={({ pressed }) => ({
+              width: 72,
+              height: 72,
+              borderRadius: 36,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+              opacity: isTranscribing ? 0.7 : pressed ? 0.85 : 1,
+              shadowColor: isTranscribing ? Colors.aiPurple : Colors.primary,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 12,
+              elevation: 6,
+            })}
+            accessibilityLabel="Dừng và gửi"
+            accessibilityRole="button"
+          >
+            {isTranscribing ? (
+              <ActivityIndicator size="small" color={Colors.textOnPrimary} />
+            ) : (
+              <Send size={26} color={Colors.textOnPrimary} />
+            )}
+          </Pressable>
+        </View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }

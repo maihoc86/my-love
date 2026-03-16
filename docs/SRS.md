@@ -157,8 +157,10 @@ MyLoveThaiHoc-Mobile/
 | Icons | lucide-react-native | 0.x |
 | Storage | @react-native-async-storage | 2.x |
 | Maps | eKMap SDK | latest |
-| Voice | expo-av | 14.x |
-| Speech-to-Text | OpenRouter Whisper | v1 |
+| Voice Recording | expo-av | 15.x |
+| Speech-to-Text | OpenRouter Audio API (gpt-4o-audio-preview) | v1 |
+| Text-to-Speech | OpenRouter Audio API (gpt-4o-audio-preview) | v1 |
+| STT Backup | Google Gemini API (gemini-2.0-flash) | v1beta |
 | Auth | Supabase Auth | 2.x |
 | Image Storage | Supabase Storage | 2.x |
 | Image Picker | expo-image-picker | 15.x |
@@ -432,7 +434,9 @@ type FilterState = {
 | FR-C10 | Role labels "Assistant" / "Bạn" trên mỗi message | P1 |
 | FR-C11 | Voice input button (mic, purple) bên trái text input | P0 |
 | FR-C12 | Voice recording state: pulsing mic, waveform, timer, Dừng & Gửi / Hủy | P0 |
-| FR-C13 | Speech-to-text → auto send to AI for parsing | P0 |
+| FR-C13 | Speech-to-text → text hiện trong input field để user review → bấm Gửi | P0 |
+| FR-C16 | Nút "Nghe" (Volume2 icon) trên mỗi AI message → TTS playback qua OpenRouter | P1 |
+| FR-C17 | TTS: voice "nova", format mp3, base64 audio → expo-av Sound playback | P1 |
 | FR-C14 | Chat history button (clock icon) → navigate to Chat History | P0 |
 | FR-C15 | Hint text: "Nhấn giữ 🎙 để nói tiếng Việt" | P1 |
 
@@ -853,17 +857,48 @@ Response: SpecialDate
 
 ### 5.7. Voice Processing
 
-**Endpoint**: `POST https://openrouter.ai/api/v1/audio/transcriptions`
+#### 5.7.1. Speech-to-Text (STT)
 
-```
-Body: FormData {
-  file: audio_blob,
-  model: "openai/whisper-large-v3",
-  language: "vi"
+**Endpoint**: `POST https://openrouter.ai/api/v1/chat/completions`
+
+```json
+{
+  "model": "openai/gpt-4o-audio-preview",
+  "messages": [{
+    "role": "user",
+    "content": [
+      { "type": "text", "text": "Please transcribe this audio file into Vietnamese text." },
+      { "type": "input_audio", "input_audio": { "data": "<base64_wav>", "format": "wav" } }
+    ]
+  }],
+  "temperature": 0.1,
+  "max_tokens": 1024
 }
 ```
 
-**Response**: Transcribed text in Vietnamese → sent to AI Chat for parsing
+**Recording**: expo-av ghi âm WAV (Linear PCM, 44100Hz, mono, 16-bit) → base64 encode → gửi API
+**Response**: Transcribed Vietnamese text → hiện trong chat input field → user review → bấm Gửi
+
+**Backup STT (Gemini)**: `POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
+- Hỗ trợ M4A/AAC natively, dùng khi OpenRouter STT gặp lỗi format
+
+#### 5.7.2. Text-to-Speech (TTS)
+
+**Endpoint**: `POST https://openrouter.ai/api/v1/chat/completions`
+
+```json
+{
+  "model": "openai/gpt-4o-audio-preview",
+  "modalities": ["text", "audio"],
+  "audio": { "voice": "nova", "format": "mp3" },
+  "stream": true,
+  "messages": [...]
+}
+```
+
+**Response**: SSE stream với `delta.audio` (base64 mp3 chunks) + `delta.transcript` (text)
+**Playback**: Collect base64 chunks → data URI → expo-av Sound.createAsync → playAsync
+**UI**: Nút "Nghe" (Volume2 icon) trên mỗi AI message, "Đang phát..." khi playing
 
 ---
 
@@ -965,6 +1000,8 @@ Body: FormData {
 | Photo upload fails | Toast "Tải ảnh thất bại" + retry | Compress image, retry |
 | Map load fails | Fallback to list view | Check network, retry |
 | Voice recording fails | Toast "Không thể ghi âm" | Check mic permission |
+| STT transcription fails | Alert "Lỗi chuyển giọng nói" + back to chat | Log error, fallback Gemini STT |
+| TTS playback fails | Alert "Lỗi phát giọng nói" | Log error, text-only fallback |
 | GPS unavailable | Use last known location | Request permission, manual location |
 
 ---
@@ -977,3 +1014,4 @@ Body: FormData {
 | 2.0.0 | 2026-03-14 | CTO | Major update: 16 screens, auth flow, date map, album, love counter, insight 360°, voice note, daily reminder, chat history. Updated architecture, data model, API specs. |
 | 2.1.0 | 2026-03-15 | CTO | Added SCR-05.1 Partner Info, SCR-05.2 Personal Info, SCR-05.3 Security, SCR-05.4 Backup. Added routes: app/settings/. |
 | 2.2.0 | 2026-03-15 | CTO | Phase 4 implementation: Refined SCR-09 Date Map (layout stitch: map 52% + bottom sheet overlay, AI badge, drag handle, nearby list), SCR-11 Album (single stats card, mixed/triple grid, colored placeholder cells), SCR-13 Insight 360° (pill summary badge, organic node positions, gradient AI card, float animation spec). Added user_stories.md reference. |
+| 2.4.0 | 2026-03-16 | CTO | Voice Chat implementation: Updated §5.7 Voice Processing with STT (OpenRouter gpt-4o-audio-preview, WAV input) + TTS (audio modality, voice nova, mp3 output). Added FR-C16, FR-C17 (TTS playback). Updated FR-C13 (STT → input field review). Added Gemini STT backup. Updated tech stack: expo-av 15.x, OpenRouter Audio API, Gemini API. Added error handling for STT/TTS failures. |

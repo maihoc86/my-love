@@ -13,7 +13,8 @@ const AUDIO_MODEL = 'openai/gpt-4o-audio-preview';
 // --- Audio types ---
 
 export type TTSVoice = 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer';
-export type AudioFormat = 'wav' | 'mp3' | 'opus' | 'pcm16';
+/** TTS output formats */
+export type TTSAudioFormat = 'wav' | 'mp3' | 'opus' | 'pcm16' | 'flac';
 
 interface AudioChunk {
   type: 'audio' | 'transcript' | 'done';
@@ -22,7 +23,7 @@ interface AudioChunk {
 
 interface TTSOptions {
   voice?: TTSVoice;
-  format?: AudioFormat;
+  format?: TTSAudioFormat;
   temperature?: number;
 }
 
@@ -115,7 +116,27 @@ export async function* streamChatCompletion(
   }
 
   const reader = response.body?.getReader();
-  if (!reader) throw new Error('Không thể đọc stream response');
+
+  // Fallback: if streaming is not supported (React Native), read full response
+  if (!reader) {
+    const text = await response.text();
+    // Try to parse as SSE
+    const lines = text.split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('data: ')) continue;
+      const data = trimmed.slice(6);
+      if (data === '[DONE]') return;
+      try {
+        const parsed = JSON.parse(data);
+        const chunk = parsed.choices?.[0]?.delta?.content ?? parsed.choices?.[0]?.message?.content;
+        if (chunk) yield chunk;
+      } catch {
+        // ignore
+      }
+    }
+    return;
+  }
 
   const decoder = new TextDecoder();
   let buffer = '';
@@ -287,6 +308,77 @@ Quy tắc:
 }
 
 // ============================================================
+// Shared SSE audio parser (with RN fallback)
+// ============================================================
+
+function parseAudioChunkFromSSELine(line: string): AudioChunk | null {
+  const trimmed = line.trim();
+  if (!trimmed.startsWith('data: ')) return null;
+  const data = trimmed.slice(6);
+  if (data === '[DONE]') return { type: 'done', data: '' };
+
+  try {
+    const parsed = JSON.parse(data);
+    const delta = parsed.choices?.[0]?.delta;
+    const message = parsed.choices?.[0]?.message;
+
+    // Streaming delta
+    if (delta?.audio) return { type: 'audio', data: delta.audio };
+    if (delta?.transcript) return { type: 'transcript', data: delta.transcript };
+    if (delta?.content) return { type: 'transcript', data: delta.content };
+
+    // Non-streaming fallback (full message)
+    if (message?.audio?.data) return { type: 'audio', data: message.audio.data };
+    if (message?.audio?.transcript) return { type: 'transcript', data: message.audio.transcript };
+    if (message?.content) return { type: 'transcript', data: message.content };
+  } catch {
+    // ignore malformed
+  }
+  return null;
+}
+
+async function* parseAudioSSE(response: Response): AsyncGenerator<AudioChunk> {
+  const reader = response.body?.getReader();
+
+  // Fallback: RN may not support streaming body
+  if (!reader) {
+    const text = await response.text();
+    for (const line of text.split('\n')) {
+      const chunk = parseAudioChunkFromSSELine(line);
+      if (chunk) {
+        if (chunk.type === 'done') return;
+        yield chunk;
+      }
+    }
+    return;
+  }
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() ?? '';
+
+      for (const line of lines) {
+        const chunk = parseAudioChunkFromSSELine(line);
+        if (chunk) {
+          if (chunk.type === 'done') return;
+          yield chunk;
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+// ============================================================
 // TTS — Text-to-Speech via OpenRouter Audio API
 // ============================================================
 
@@ -333,57 +425,7 @@ export async function* streamTTS(
     throw new Error(`OpenRouter TTS lỗi (${response.status}): ${errorText}`);
   }
 
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error('Không thể đọc TTS stream');
-
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() ?? '';
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith('data: ')) continue;
-
-        const data = trimmed.slice(6);
-        if (data === '[DONE]') {
-          yield { type: 'done', data: '' };
-          return;
-        }
-
-        try {
-          const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta;
-
-          // Audio chunk (base64)
-          if (delta?.audio) {
-            yield { type: 'audio', data: delta.audio };
-          }
-
-          // Transcript text
-          if (delta?.transcript) {
-            yield { type: 'transcript', data: delta.transcript };
-          }
-
-          // Also check content for text fallback
-          if (delta?.content) {
-            yield { type: 'transcript', data: delta.content };
-          }
-        } catch {
-          // ignore malformed SSE chunks
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
-  }
+  yield* parseAudioSSE(response);
 }
 
 /**
@@ -412,18 +454,22 @@ export async function textToSpeech(
 
 // ============================================================
 // STT — Speech-to-Text via OpenRouter Audio API
+// Format: text content first, then input_audio (per OpenRouter docs)
+// Supported audio formats: wav, mp3
 // ============================================================
 
 /**
  * Transcribe audio to text using OpenRouter audio input.
  * @param audioBase64 - Base64-encoded audio data
- * @param format - Audio format (wav, mp3, etc.)
+ * @param format - Audio format: 'wav' or 'mp3'
  * @returns Transcribed text
  */
 export async function speechToText(
   audioBase64: string,
-  format: AudioFormat = 'mp3'
+  format: 'wav' | 'mp3' = 'wav'
 ): Promise<string> {
+  console.log('[STT] Sending audio to OpenRouter, format:', format, 'base64 length:', audioBase64.length);
+
   const response = await fetch(OPENROUTER_BASE_URL, {
     method: 'POST',
     headers: {
@@ -439,15 +485,15 @@ export async function speechToText(
           role: 'user',
           content: [
             {
+              type: 'text',
+              text: 'Please transcribe this audio file into Vietnamese text. Only return the transcribed text, nothing else.',
+            },
+            {
               type: 'input_audio',
               input_audio: {
                 data: audioBase64,
                 format,
               },
-            },
-            {
-              type: 'text',
-              text: 'Hãy chuyển đoạn ghi âm này thành văn bản tiếng Việt chính xác. Chỉ trả về văn bản, không thêm gì khác.',
             },
           ],
         },
@@ -459,16 +505,20 @@ export async function speechToText(
 
   if (!response.ok) {
     const errorText = await response.text();
+    console.error('[STT] API error:', response.status, errorText);
     throw new Error(`OpenRouter STT lỗi (${response.status}): ${errorText}`);
   }
 
   const data: OpenRouterResponse = await response.json();
+  console.log('[STT] Response received, choices:', data.choices?.length);
   const content = data.choices?.[0]?.message?.content;
 
   if (!content) {
+    console.error('[STT] No content in response:', JSON.stringify(data));
     throw new Error('Không nhận được kết quả chuyển giọng nói');
   }
 
+  console.log('[STT] Transcribed text:', content.trim().substring(0, 100));
   return content.trim();
 }
 
@@ -510,50 +560,5 @@ export async function* streamVoiceChat(
     throw new Error(`OpenRouter Voice Chat lỗi (${response.status}): ${errorText}`);
   }
 
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error('Không thể đọc voice stream');
-
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() ?? '';
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith('data: ')) continue;
-
-        const data = trimmed.slice(6);
-        if (data === '[DONE]') {
-          yield { type: 'done', data: '' };
-          return;
-        }
-
-        try {
-          const parsed = JSON.parse(data);
-          const delta = parsed.choices?.[0]?.delta;
-
-          if (delta?.audio) {
-            yield { type: 'audio', data: delta.audio };
-          }
-          if (delta?.transcript) {
-            yield { type: 'transcript', data: delta.transcript };
-          }
-          if (delta?.content) {
-            yield { type: 'transcript', data: delta.content };
-          }
-        } catch {
-          // ignore malformed SSE chunks
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
-  }
+  yield* parseAudioSSE(response);
 }

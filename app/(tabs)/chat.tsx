@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
   Send,
@@ -20,12 +20,16 @@ import {
   Clock,
   CheckCircle,
   Save,
+  Volume2,
+  VolumeX,
 } from 'lucide-react-native';
+import { Audio } from 'expo-av';
 import ChatBubble from '../../src/components/ChatBubble';
 import { ChatMessage, ParsedEntry } from '../../src/types';
 import {
   parseUserInput,
   streamAIConfirmation,
+  textToSpeech,
 } from '../../src/lib/openrouter';
 import { addEntry } from '../../src/lib/supabase';
 import { Colors } from '@/theme';
@@ -45,6 +49,7 @@ const WELCOME_MESSAGE: ChatMessage = {
 
 export default function ChatScreen() {
   const router = useRouter();
+  const { voiceText } = useLocalSearchParams<{ voiceText?: string }>();
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -52,10 +57,21 @@ export default function ChatScreen() {
     new Set()
   );
   const [savingMessageIds, setSavingMessageIds] = useState<Set<string>>(new Set());
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const abortRef = useRef(false);
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const voiceTextProcessed = useRef<string | null>(null);
 
   const showQuickPrompts = messages.length <= 1;
+
+  // Handle voice text from recording screen — put in input for review
+  useEffect(() => {
+    if (voiceText && voiceText !== voiceTextProcessed.current) {
+      voiceTextProcessed.current = voiceText;
+      setInputText(voiceText);
+    }
+  }, [voiceText]);
 
   // ── Scroll ──────────────────────────────────────────────────────────────────
 
@@ -162,6 +178,77 @@ export default function ChatScreen() {
     [savingMessageIds, savedMessageIds]
   );
 
+  // ── TTS playback ───────────────────────────────────────────────────────────
+
+  const handlePlayVoice = useCallback(
+    async (messageId: string, content: string) => {
+      // If already playing this message, stop it
+      if (playingMessageId === messageId) {
+        if (soundRef.current) {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+        }
+        setPlayingMessageId(null);
+        return;
+      }
+
+      // Stop any currently playing audio
+      if (soundRef.current) {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+      }
+
+      setPlayingMessageId(messageId);
+
+      try {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+        });
+
+        const { audio } = await textToSpeech(content, { voice: 'nova', format: 'mp3' });
+
+        if (!audio) {
+          throw new Error('Không nhận được audio từ AI');
+        }
+
+        // Create a data URI and play it
+        const dataUri = `data:audio/mp3;base64,${audio}`;
+        const { sound } = await Audio.Sound.createAsync({ uri: dataUri });
+        soundRef.current = sound;
+
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.isLoaded && status.didJustFinish) {
+            setPlayingMessageId(null);
+            sound.unloadAsync();
+            soundRef.current = null;
+          }
+        });
+
+        await sound.playAsync();
+      } catch (err) {
+        console.error('[TTS] Error:', err);
+        setPlayingMessageId(null);
+        Alert.alert(
+          'Lỗi phát giọng nói',
+          err instanceof Error ? err.message : 'Không thể phát giọng nói AI.'
+        );
+      }
+    },
+    [playingMessageId]
+  );
+
+  // Cleanup sound on unmount
+  useEffect(() => {
+    return () => {
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
+  }, []);
+
   // ── Render message item ──────────────────────────────────────────────────────
 
   const renderMessage = useCallback(
@@ -170,9 +257,52 @@ export default function ChatScreen() {
       const isSaving = savingMessageIds.has(item.id);
       const hasEntries = item.parsed_entries && item.parsed_entries.length > 0;
 
+      const isPlaying = playingMessageId === item.id;
+      const isAIWithContent = item.role === 'assistant' && item.content.length > 0 && item.id !== 'welcome';
+
       return (
         <View>
           <ChatBubble message={item} />
+
+          {/* Voice playback button for AI messages */}
+          {isAIWithContent && (
+            <Pressable
+              onPress={() => handlePlayVoice(item.id, item.content)}
+              hitSlop={8}
+              accessibilityLabel={isPlaying ? 'Dừng phát giọng nói' : 'Phát giọng nói AI'}
+              accessibilityRole="button"
+              style={({ pressed }) => ({
+                marginLeft: 58,
+                marginRight: 16,
+                marginTop: -8,
+                marginBottom: 4,
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignSelf: 'flex-start',
+                paddingVertical: 6,
+                paddingHorizontal: 12,
+                borderRadius: 12,
+                backgroundColor: isPlaying ? Colors.aiPurpleAlpha10 : 'transparent',
+                opacity: pressed ? 0.6 : 1,
+              })}
+            >
+              {isPlaying ? (
+                <VolumeX size={14} color={Colors.aiPurple} />
+              ) : (
+                <Volume2 size={14} color={Colors.textTertiary} />
+              )}
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: '500',
+                  color: isPlaying ? Colors.aiPurple : Colors.textTertiary,
+                  marginLeft: 4,
+                }}
+              >
+                {isPlaying ? 'Đang phát...' : 'Nghe'}
+              </Text>
+            </Pressable>
+          )}
 
           {/* Save button block */}
           {hasEntries && (
@@ -248,7 +378,7 @@ export default function ChatScreen() {
         </View>
       );
     },
-    [savedMessageIds, savingMessageIds, handleSave]
+    [savedMessageIds, savingMessageIds, handleSave, playingMessageId, handlePlayVoice]
   );
 
   const typingMsg: ChatMessage = {
