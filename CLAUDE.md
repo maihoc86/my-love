@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-AI Love - Trợ lý tình yêu AI thông minh. Mobile app ghi nhận thông tin về người yêu, hỗ trợ bởi AI.
+AI Love - Trợ lý tình yêu AI thông minh. Mobile app giúp ghi nhận, phân loại, và nhắc nhở mọi thông tin về người yêu, hỗ trợ bởi AI — từ nhập liệu bằng ngôn ngữ tự nhiên đến gợi ý hẹn hò cá nhân hóa.
+
+**Chủ dự án:** Thái Hoàng Mai Học (dự án cá nhân, KHÔNG phải dự án công ty CDS).
 
 **Brand Identity (Nano Banana Pro)**:
 - **Logo**: "AI" (golden `#FFB800`) + "Love" (coral `#FF2D55`)
@@ -14,6 +16,8 @@ AI Love - Trợ lý tình yêu AI thông minh. Mobile app ghi nhận thông tin 
 - **Text**: `#1A1033` (Deep Midnight) — violet-tinted, distinctive
 
 **Tech stack**: React Native 0.81.5 + Expo SDK 54 + Expo Router 6 + TypeScript + Supabase + OpenRouter AI + Telegram Bot.
+
+**Architecture pattern**: Serverless BaaS — Supabase làm backend hoàn chỉnh (Auth + DB + Storage + RLS), không có custom backend server. AI gọi qua OpenRouter gateway.
 
 ## Architecture
 
@@ -128,6 +132,56 @@ src/components/
 - **Hooks**: `import { useAuth, useEntries } from '@/hooks'`
 - **Lib**: `import { parseUserInput, addEntry } from '@/lib'`
 - **Theme**: `import { Colors, Shadows } from '@/theme'`
+
+## Domain Model
+
+### 11 Danh Mục Ghi Chú (Entry Categories)
+
+| # | Tiếng Việt | Key | Icon |
+|---|-----------|-----|------|
+| 1 | Ẩm thực | food | UtensilsCrossed |
+| 2 | Địa điểm | place | MapPin |
+| 3 | Sở thích | hobby | Heart |
+| 4 | Phong cách | style | Shirt |
+| 5 | Âm nhạc | music | Music |
+| 6 | Phim ảnh | movie | Film |
+| 7 | Quà tặng | gift | Gift |
+| 8 | Sức khỏe | health | Activity |
+| 9 | Gia đình | family | Users |
+| 10 | Công việc | work | Briefcase |
+| 11 | Khác | other | MoreHorizontal |
+
+### 5 Mức Cảm Xúc (Sentiments)
+
+| # | Tiếng Việt | Key | Biểu tượng |
+|---|-----------|-----|------------|
+| 1 | Yêu thích | love | Heart đỏ |
+| 2 | Thích | like | ThumbsUp xanh |
+| 3 | Bình thường | neutral | Meh vàng |
+| 4 | Không thích | dislike | ThumbsDown cam |
+| 5 | Ghét | hate | X đỏ đậm |
+
+### AI Models (qua OpenRouter Gateway)
+
+| Model | Mục đích | Latency |
+|-------|----------|---------|
+| Claude Sonnet 4 | NLP Chat — parse text Tiếng Việt → structured entries | 2-5s |
+| GPT-4o Audio Preview | STT (Speech-to-Text) + TTS (Text-to-Speech) | 3-8s |
+| Gemini 2.0 Flash | Fallback STT khi OpenRouter Audio unavailable | 1-3s |
+
+### Database Tables (Supabase PostgreSQL + RLS)
+
+| Table | Mô tả |
+|-------|--------|
+| `users` | Profile, lover info, onboarding, avatar, anniversary |
+| `entries` | Ghi chú: category (11), sentiment (5), title, detail, tags, event_date |
+| `special_dates` | Ngày đặc biệt: title, date, category (4), recurring, reminder_days |
+| `voice_notes` | audio_url, transcription, duration, parsed_entries (JSONB) |
+| `photos` | url, thumbnail_url, event_title, event_date, category |
+| `saved_places` | name, address, lat/lng, category (5), rating, visited_date |
+| `chat_sessions` | type (text/voice/suggestion), messages (JSONB[]), entries_created |
+
+Chi tiết schema: `docs/SOLUTION_ARCHITECTURE.md` (Section 4)
 
 ## Hooks System
 
@@ -274,8 +328,11 @@ const requestCamera = async () => {
 
 | File | Nội dung |
 |------|----------|
-| `docs/BRD.md` | Business Requirements Document |
+| `docs/BRD.md` | Business Requirements Document (v3.0) — 17 modules, chi tiết trường dữ liệu |
 | `docs/SRS.md` | Software Requirements Specification |
+| `docs/TECHNICAL_PROPOSAL.md` | Đề xuất kỹ thuật — vấn đề, giải pháp, ROI, chi phí |
+| `docs/SOLUTION_ARCHITECTURE.md` | Kiến trúc giải pháp — system design, data model, security, scaling |
+| `docs/PROJECT_PLAN.md` | Kế hoạch dự án — timeline 18 tuần, milestones, nguồn lực, rủi ro |
 | `docs/user-stories.json` | User Stories (JSON format) |
 | `docs/STORE_GUIDELINES.md` | Quy định Google Play & App Store đầy đủ |
 | `docs/STITCH_PROMPT.md` | Google Stitch prompts |
@@ -288,6 +345,19 @@ Khi cần tham chiếu User Story, **bắt buộc dùng file JSON**:
 - **File**: `docs/user-stories.json`
 - **Không dùng** file `.md` (đã xóa)
 - **ID format**: `US-DASH-01`, `US-ENTRY-01`, `US-CHAT-01`, `US-CAL-01`, `US-SET-01~03` (stories cũ) và `US-1.5`, `US-1.6`, `US-5.1~5.5`, `US-6.1~6.5`, `US-7.1~7.4`, `US-8.1~8.2`, `US-9.1`, `US-10.1~10.2`, `US-11.1~11.2`, `US-12.1~12.3`, `US-13.1` (stories mới)
+
+## Project Timeline
+
+| Phase | Thời gian | Nội dung |
+|-------|-----------|----------|
+| Phase 0: Setup & Design | W1-W3 (17/03 - 04/04) | BRD, SRS, UI mockups, Architecture |
+| Phase 1: Core Development | W4-W9 (07/04 - 16/05) | Auth, Dashboard, Entry CRUD, Calendar, Settings |
+| Phase 2: AI & Voice | W7-W10 (28/04 - 23/05) | AI Chat, Voice Note, Daily Reminder, Telegram |
+| Phase 3: Advanced Features | W10-W14 (19/05 - 20/06) | Date Map, Album, Love Counter, Insight, Chat History |
+| Phase 4: Testing & Polish | W14-W16 (16/06 - 04/07) | E2E tests, performance, Store compliance |
+| Phase 5: Store Submission | W16-W18 (30/06 - 18/07) | TestFlight, Google Play, monitoring |
+
+Chi tiết: `docs/PROJECT_PLAN.md`
 
 ## Conventions
 
